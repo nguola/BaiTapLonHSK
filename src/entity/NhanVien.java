@@ -20,6 +20,11 @@ public class NhanVien {
 		this.loai = loai;
 	}
 
+	public NhanVien(String maNhanVien) {
+		super();
+		this.maNhanVien = maNhanVien;
+	}
+
 	public String getTen() {
 		return ten;
 	}

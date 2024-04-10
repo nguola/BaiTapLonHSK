@@ -12,6 +12,12 @@ public class NhaCungCap {
 		this.tenNhaCungCap = tenNhaCungCap;
 		this.diaChi = diaChi;
 	}
+	
+	public NhaCungCap(String maNhaCungCap) {
+		super();
+		this.maNhaCungCap = maNhaCungCap;
+	}
+
 	public String getTenNhaCungCap() {
 		return tenNhaCungCap;
 	}

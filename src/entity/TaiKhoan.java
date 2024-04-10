@@ -10,15 +10,24 @@ public class TaiKhoan {
 		this.nhanvien = nhanvien;
 		this.matKhau = matKhau;
 	}
+	
+	public TaiKhoan(NhanVien nhanvien) {
+		super();
+		this.nhanvien = nhanvien;
+	}
+	
 	public String getMatKhau() {
 		return matKhau;
 	}
+	
 	public void setMatKhau(String matKhau) {
 		this.matKhau = matKhau;
 	}
+	
 	public NhanVien getNhanvien() {
 		return nhanvien;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(nhanvien);

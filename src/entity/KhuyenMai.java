@@ -20,39 +20,56 @@ public class KhuyenMai {
 		this.dieuKien = dieuKien;
 		this.mucGiamToiDa = mucGiamToiDa;
 	}
+	
+	public KhuyenMai(String maKhuyenMai) {
+		super();
+		this.maKhuyenMai = maKhuyenMai;
+	}
+	
 	public Date getNgayBatDau() {
 		return ngayBatDau;
 	}
+	
 	public void setNgayBatDau(Date ngayBatDau) {
 		this.ngayBatDau = ngayBatDau;
 	}
+	
 	public Date getNgayKetThuc() {
 		return ngayKetThuc;
 	}
+	
 	public void setNgayKetThuc(Date ngayKetThuc) {
 		this.ngayKetThuc = ngayKetThuc;
 	}
+	
 	public double getGiamGia() {
 		return giamGia;
 	}
+	
 	public void setGiamGia(double giamGia) {
 		this.giamGia = giamGia;
 	}
+	
 	public double getDieuKien() {
 		return dieuKien;
 	}
+	
 	public void setDieuKien(double dieuKien) {
 		this.dieuKien = dieuKien;
 	}
+	
 	public double getMucGiamToiDa() {
 		return mucGiamToiDa;
 	}
+	
 	public void setMucGiamToiDa(double mucGiamToiDa) {
 		this.mucGiamToiDa = mucGiamToiDa;
 	}
+	
 	public String getMaKhuyenMai() {
 		return maKhuyenMai;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(maKhuyenMai);

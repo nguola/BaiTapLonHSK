@@ -14,28 +14,42 @@ public class ChiTietHoaDon {
 		this.thanhTien = thanhTien;
 		this.soLuong = soLuong;
 	}
+	
+	public ChiTietHoaDon(HoaDon hoaDon, SanPham sanPham) {
+		super();
+		this.hoaDon = hoaDon;
+		this.sanPham = sanPham;
+	}
+	
 	public double getThanhTien() {
 		return thanhTien;
 	}
+	
 	public void setThanhTien(double thanhTien) {
 		this.thanhTien = thanhTien;
 	}
+	
 	public int getSoLuong() {
 		return soLuong;
 	}
+	
 	public void setSoLuong(int soLuong) {
 		this.soLuong = soLuong;
 	}
+	
 	public HoaDon getHoaDon() {
 		return hoaDon;
 	}
+	
 	public SanPham getSanPham() {
 		return sanPham;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(hoaDon, sanPham);
 	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

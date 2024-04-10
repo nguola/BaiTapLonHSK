@@ -20,39 +20,56 @@ public class HoaDon {
 		this.ngayMua = ngayMua;
 		this.tongTien = tongTien;
 	}
+
+	public HoaDon(String maDon) {
+		super();
+		this.maDon = maDon;
+	}
+
 	public KhachHang getKhachHang() {
 		return khachHang;
 	}
+	
 	public void setKhachHang(KhachHang khachHang) {
 		this.khachHang = khachHang;
 	}
+	
 	public NhanVien getNhanVien() {
 		return nhanVien;
 	}
+	
 	public void setNhanVien(NhanVien nhanVien) {
 		this.nhanVien = nhanVien;
 	}
+	
 	public KhuyenMai getKhuyenMai() {
 		return khuyenMai;
 	}
+	
 	public void setKhuyenMai(KhuyenMai khuyenMai) {
 		this.khuyenMai = khuyenMai;
 	}
+	
 	public Date getNgayMua() {
 		return ngayMua;
 	}
+	
 	public void setNgayMua(Date ngayMua) {
 		this.ngayMua = ngayMua;
 	}
+	
 	public double getTongTien() {
 		return tongTien;
 	}
+	
 	public void setTongTien(double tongTien) {
 		this.tongTien = tongTien;
 	}
+	
 	public String getMaDon() {
 		return maDon;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(maDon);

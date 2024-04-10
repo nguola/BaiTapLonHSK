@@ -16,33 +16,48 @@ public class KhachHang {
 		this.diaChi = diaChi;
 		this.loaiKhachHang = loaiKhachHang;
 	}
+	
+	public KhachHang(String maKhachHang) {
+		super();
+		this.maKhachHang = maKhachHang;
+	}
+
 	public String getTen() {
 		return ten;
 	}
+	
 	public void setTen(String ten) {
 		this.ten = ten;
 	}
+	
 	public String getSoDienThoai() {
 		return soDienThoai;
 	}
+	
 	public void setSoDienThoai(String soDienThoai) {
 		this.soDienThoai = soDienThoai;
 	}
+	
 	public String getDiaChi() {
 		return diaChi;
 	}
+	
 	public void setDiaChi(String diaChi) {
 		this.diaChi = diaChi;
 	}
+	
 	public String getLoaiKhachHang() {
 		return loaiKhachHang;
 	}
+	
 	public void setLoaiKhachHang(String loaiKhachHang) {
 		this.loaiKhachHang = loaiKhachHang;
 	}
+	
 	public String getMaKhachHang() {
 		return maKhachHang;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(maKhachHang);

@@ -18,6 +18,11 @@ public class SanPham {
 		this.loaiSanPham = loaiSanPham;
 	}
 
+	public SanPham(String maSanPham) {
+		super();
+		this.maSanPham = maSanPham;
+	}
+
 	public String getTen() {
 		return ten;
 	}

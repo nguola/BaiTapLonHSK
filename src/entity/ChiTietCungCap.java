@@ -10,6 +10,7 @@ public class ChiTietCungCap {
 	public int soLuong;
 	public double gia;
 	public String donVi;
+	
 	public ChiTietCungCap(SanPham sanPham, NhaCungCap nhaCungCap, Date ngayGiao, int soLuong, double gia,
 			String donVi) {
 		super();
@@ -20,36 +21,55 @@ public class ChiTietCungCap {
 		this.gia = gia;
 		this.donVi = donVi;
 	}
+	
+	public ChiTietCungCap(String maSanPham, String maNhaCungCap) {
+		super();
+		SanPham sp = new SanPham(maNhaCungCap);
+		NhaCungCap ncc = new NhaCungCap(maNhaCungCap);
+		this.sanPham = sp;
+		this.nhaCungCap = ncc;
+	}
+
 	public Date getNgayGiao() {
 		return ngayGiao;
 	}
+	
 	public void setNgayGiao(Date ngayGiao) {
 		this.ngayGiao = ngayGiao;
 	}
+	
 	public int getSoLuong() {
 		return soLuong;
 	}
+	
 	public void setSoLuong(int soLuong) {
 		this.soLuong = soLuong;
 	}
+	
 	public double getGia() {
 		return gia;
 	}
+	
 	public void setGia(double gia) {
 		this.gia = gia;
 	}
+	
 	public String getDonVi() {
 		return donVi;
 	}
+	
 	public void setDonVi(String donVi) {
 		this.donVi = donVi;
 	}
+	
 	public SanPham getSanPham() {
 		return sanPham;
 	}
+	
 	public NhaCungCap getNhaCungCap() {
 		return nhaCungCap;
 	}
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(nhaCungCap, sanPham);
