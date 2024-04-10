@@ -21,10 +21,6 @@ public class TrangChu_GUI extends JFrame implements ActionListener{
 		
 		setVisible(true);
 	}
-	
-	public static void main(String[] args) {
-		new TrangChu_GUI();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
