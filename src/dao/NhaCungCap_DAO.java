@@ -39,7 +39,7 @@ public class NhaCungCap_DAO {
 		return dsNCC;
 	}
 	
-	public NhaCungCap getNhaCungCapTheoMa (String id){
+	public NhaCungCap getNhaCungCapTheoMa (int id){
 		NhaCungCap ncc = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -48,7 +48,7 @@ public class NhaCungCap_DAO {
 		try {
 			String sql = "select * from NhaCungCap where maNhaCungCap = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, id);
+			stament.setInt(1, id);
 			
 			ResultSet rs = stament.executeQuery();
 

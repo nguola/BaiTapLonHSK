@@ -41,7 +41,7 @@ public class NhanVien_DAO {
 		return dsNV;
 	}
 	
-	public NhanVien getNhanVienTheoMaNV (String id){
+	public NhanVien getNhanVienTheoMaNV (int id){
 		NhanVien nv = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -50,7 +50,7 @@ public class NhanVien_DAO {
 		try {
 			String sql = "select * from NhanVien where maNV = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, id);
+			stament.setInt(1, id);
 			
 			ResultSet rs = stament.executeQuery();
 
@@ -110,7 +110,7 @@ public class NhanVien_DAO {
 		return n > 0;
 	}
 	
-	public boolean remove(String maNV) {
+	public boolean remove(int maNV) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		
@@ -120,7 +120,7 @@ public class NhanVien_DAO {
 		try {
 			String sql = "Delete from NhanVien where maNV = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, maNV);
+			stament.setInt(1, maNV);
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -47,7 +47,7 @@ public class ChiTietCungCap_DAO {
 		return dsCtcc;
 	}
 	
-	public ChiTietCungCap getChiTietCungCapTheoNhaCungCap (String id){
+	public ChiTietCungCap getChiTietCungCapTheoNhaCungCap (int id){
 		ChiTietCungCap ctcc = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -56,7 +56,7 @@ public class ChiTietCungCap_DAO {
 		try {
 			String sql = "select * from ChiTietCungCap where maNhaCungCap = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, id);
+			stament.setInt(1, id);
 			
 			ResultSet rs = stament.executeQuery();
 
@@ -87,7 +87,7 @@ public class ChiTietCungCap_DAO {
 		return ctcc;
 	}
 	
-	public ChiTietCungCap getChiTietCungCapTheoSanPham (String id){
+	public ChiTietCungCap getChiTietCungCapTheoSanPham (int id){
 		ChiTietCungCap ctcc = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -96,7 +96,7 @@ public class ChiTietCungCap_DAO {
 		try {
 			String sql = "select * from ChiTietCungCap where maSanPham = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, id);
+			stament.setInt(1, id);
 			
 			ResultSet rs = stament.executeQuery();
 
@@ -127,7 +127,7 @@ public class ChiTietCungCap_DAO {
 		return ctcc;
 	}
 	
-	public ChiTietCungCap getChiTietCungCapTheoSanPham_NhaCungCap (String id_sanPham, String id_nhaCungCap){
+	public ChiTietCungCap getChiTietCungCapTheoSanPham_NhaCungCap (int id_sanPham,int id_nhaCungCap){
 		ChiTietCungCap ctcc = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -136,8 +136,8 @@ public class ChiTietCungCap_DAO {
 		try {
 			String sql = "select * from ChiTietCungCap where maSanPham = ? and maNhaCungCap = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, id_sanPham);
-			stament.setString(2, id_nhaCungCap);
+			stament.setInt(1, id_sanPham);
+			stament.setInt(2, id_nhaCungCap);
 			
 			ResultSet rs = stament.executeQuery();
 

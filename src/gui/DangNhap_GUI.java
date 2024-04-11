@@ -3,6 +3,9 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -12,15 +15,15 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-public class DangNhap_GUI extends JFrame{
+public class DangNhap_GUI extends JFrame implements ActionListener{
 	private JPanel jp_North;
 	private JLabel lb_Header;
 	private JPanel jp_Center;
 	private JPanel jp_username;
 	private JPanel jp_password;
 	private JTextField tf_username;
-	private JPasswordField tpf_password;
-	private JButton btn_login;
+	private JPasswordField tpf_matKhau;
+	private JButton btn_dangNhap;
 	private JPanel jp_South;
 	private JCheckBox cb_pass;
 
@@ -51,8 +54,8 @@ public class DangNhap_GUI extends JFrame{
 		jp_username.add(tf_username);
 		
 		jp_password = new JPanel();
-		tpf_password = new JPasswordField(20);
-		jp_password.add(tpf_password);
+		tpf_matKhau = new JPasswordField(20);
+		jp_password.add(tpf_matKhau);
 		
 		cb_pass = new JCheckBox("Show password");
 		
@@ -65,9 +68,9 @@ public class DangNhap_GUI extends JFrame{
 		
 		// code South
 		jp_South = new JPanel();
-		btn_login = new JButton("Đăng nhập");
+		btn_dangNhap = new JButton("Đăng nhập");
 		
-		jp_South.add(btn_login);
+		jp_South.add(btn_dangNhap);
 		this.add(jp_South, BorderLayout.SOUTH);
 		//
 		
@@ -76,5 +79,14 @@ public class DangNhap_GUI extends JFrame{
 	
 	public static void main(String[] args) {
 		new DangNhap_GUI();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		Object o = e.getSource();
+		
+		if(o.equals(btn_dangNhap)) {
+			String matKhau = String.valueOf(tpf_matKhau.getPassword());
+		}
 	}
 }
