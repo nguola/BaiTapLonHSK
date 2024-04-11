@@ -3,8 +3,6 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,7 +71,7 @@ public class DangNhap_GUI extends JFrame{
 		jp_South.add(btn_login);
 		this.add(jp_South, BorderLayout.SOUTH);
 		//
-				
+		
 		setVisible(true);
 	}
 	

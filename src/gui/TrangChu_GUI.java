@@ -1,12 +1,19 @@
 package gui;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class TrangChu_GUI extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
+	private JPanel jp_North;
+	private JLabel lb_Header;
 
 	public TrangChu_GUI() {
 		// tạo giao diện chiều rộng 1500 chiều cao 800 và vị trí tương đối giữa màng hình
@@ -15,8 +22,15 @@ public class TrangChu_GUI extends JFrame implements ActionListener{
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
 		
-		// code
+		// code North
+		jp_North = new JPanel();
+		lb_Header = new JLabel("Goods Store");
+		lb_Header.setForeground(Color.BLUE);
+		lb_Header.setFont(new Font("Time new roman", Font.BOLD, 40));
 		
+		jp_North.add(lb_Header);
+		
+		this.add(jp_North, BorderLayout.NORTH);
 		//
 		
 		setVisible(true);

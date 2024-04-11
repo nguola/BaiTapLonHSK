@@ -6,11 +6,11 @@ public class NhanVien {
 	public final String maNhanVien;
 	public String ten;
 	public String soDienThoai;
-	public String gioiTinh;
+	public boolean gioiTinh;
 	public double Luong;
 	public String loai;
 	
-	public NhanVien(String maNhanVien, String ten, String soDienThoai, String gioiTinh, double luong, String loai) {
+	public NhanVien(String maNhanVien, String ten, String soDienThoai, Boolean gioiTinh, double luong, String loai) {
 		super();
 		this.maNhanVien = maNhanVien;
 		this.ten = ten;
@@ -41,11 +41,11 @@ public class NhanVien {
 		this.soDienThoai = soDienThoai;
 	}
 
-	public String getGioiTinh() {
+	public Boolean getGioiTinh() {
 		return gioiTinh;
 	}
 
-	public void setGioiTinh(String gioiTinh) {
+	public void setGioiTinh(Boolean gioiTinh) {
 		this.gioiTinh = gioiTinh;
 	}
 
