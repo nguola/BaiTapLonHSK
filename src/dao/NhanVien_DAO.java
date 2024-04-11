@@ -145,7 +145,7 @@ public class NhanVien_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update NhanVien set ten = ?, soDienThoai = ?" + "gioiTinh = ?, tienLuong = ?, loai = ?";
+			String sql = "update NhanVien set maNV = ?, ten = ?" + "sdt = ?, phai = ?, luong = ?, loai = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, nv.getMaNhanVien());
 			stament.setString(2, nv.getTen());
