@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -17,17 +18,16 @@ public class DangNhap_GUI extends JFrame{
 	private JPanel jp_Center;
 	private JPanel jp_username;
 	private JPanel jp_password;
-	private JLabel lb_username;
 	private JTextField tf_username;
-	private JLabel lb_password;
 	private JPasswordField tpf_password;
 	private JButton btn_login;
 	private JPanel jp_South;
+	private JCheckBox cb_pass;
 
 	public DangNhap_GUI(){
 		// tạo giao diện chiều rộng 1500 chiều cao 800 và vị trí tương đối giữa màng hình
 		super();
-		setSize(400, 200);
+		setSize(400, 220);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
 				
@@ -47,19 +47,18 @@ public class DangNhap_GUI extends JFrame{
 		jp_Center.setLayout(new BoxLayout(jp_Center, BoxLayout.Y_AXIS));
 		
 		jp_username = new JPanel();
-		lb_username = new JLabel("User Name:");
 		tf_username = new JTextField(20);
-		jp_username.add(lb_username);
 		jp_username.add(tf_username);
 		
 		jp_password = new JPanel();
-		lb_password = new JLabel("Pass Word:");
 		tpf_password = new JPasswordField(20);
-		jp_password.add(lb_password);
 		jp_password.add(tpf_password);
 		
+		cb_pass = new JCheckBox("Show password");
+		
 		jp_Center.add(jp_username);
-		jp_Center.add(jp_password);
+		jp_Center.add(jp_password);	
+		jp_Center.add(cb_pass);
 		
 		this.add(jp_Center, BorderLayout.CENTER);
 		//

@@ -26,7 +26,7 @@ public class NhaCungCap_DAO {
 			ResultSet rs = stm.executeQuery(sql);
 			
 			while(rs.next()) {
-				String maNCC = rs.getNString(1);
+				int maNCC = rs.getInt(1);
 				String ten = rs.getNString(2);
 				String diaChi = rs.getString(3);
 				NhaCungCap ncc = new NhaCungCap(maNCC, ten, diaChi);
@@ -53,7 +53,7 @@ public class NhaCungCap_DAO {
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
-				String maNCC = rs.getNString(1);
+				int maNCC = rs.getInt(1);
 				String ten = rs.getNString(2);
 				String diaChi = rs.getString(3);
 				ncc = new NhaCungCap(maNCC, ten, diaChi);
@@ -84,7 +84,7 @@ public class NhaCungCap_DAO {
 		try {
 			String sql = "insert into NhaCungCap values(?, ?, ?)";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, ncc.getMaNhaCungCap());
+			stament.setInt(1, ncc.getMaNhaCungCap());
 			stament.setString(2, ncc.getTenNhaCungCap());
 			stament.setString(3, ncc.getDiaChi());
 			n = stament.executeUpdate();
@@ -139,7 +139,7 @@ public class NhaCungCap_DAO {
 		try {
 			String sql = "update NhaCungCap set naNhaCungCap = ?, tenNhaCungCap = ?, diaChi = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, ncc.getMaNhaCungCap());
+			stament.setInt(1, ncc.getMaNhaCungCap());
 			stament.setString(2, ncc.getTenNhaCungCap());
 			stament.setString(3, ncc.getDiaChi());
 			n = stament.executeUpdate();

@@ -4,13 +4,13 @@ import java.sql.Date;
 import java.util.Objects;
 
 public class KhuyenMai {
-	public final String maKhuyenMai;
+	public final int maKhuyenMai;
 	public Date ngayBatDau;
 	public Date ngayKetThuc;
 	public double giamGia;
 	public double dieuKien;
 	public double mucGiamToiDa;
-	public KhuyenMai(String maKhuyenMai, Date ngayBatDau, Date ngayKetThuc, double giamGia, double dieuKien,
+	public KhuyenMai(int maKhuyenMai, Date ngayBatDau, Date ngayKetThuc, double giamGia, double dieuKien,
 			double mucGiamToiDa) {
 		super();
 		this.maKhuyenMai = maKhuyenMai;
@@ -21,7 +21,7 @@ public class KhuyenMai {
 		this.mucGiamToiDa = mucGiamToiDa;
 	}
 	
-	public KhuyenMai(String maKhuyenMai) {
+	public KhuyenMai(int maKhuyenMai) {
 		super();
 		this.maKhuyenMai = maKhuyenMai;
 	}
@@ -66,7 +66,7 @@ public class KhuyenMai {
 		this.mucGiamToiDa = mucGiamToiDa;
 	}
 	
-	public String getMaKhuyenMai() {
+	public int getMaKhuyenMai() {
 		return maKhuyenMai;
 	}
 	

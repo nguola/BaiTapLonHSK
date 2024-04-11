@@ -3,12 +3,12 @@ package entity;
 import java.util.Objects;
 
 public class KhachHang {
-	public final String maKhachHang;
+	public final int maKhachHang;
 	public String ten;
 	public String soDienThoai;
 	public String diaChi;
 	public String loaiKhachHang;
-	public KhachHang(String maKhachHang, String ten, String soDienThoai, String diaChi, String loaiKhachHang) {
+	public KhachHang(int maKhachHang, String ten, String soDienThoai, String diaChi, String loaiKhachHang) {
 		super();
 		this.maKhachHang = maKhachHang;
 		this.ten = ten;
@@ -17,7 +17,7 @@ public class KhachHang {
 		this.loaiKhachHang = loaiKhachHang;
 	}
 	
-	public KhachHang(String maKhachHang) {
+	public KhachHang(int maKhachHang) {
 		super();
 		this.maKhachHang = maKhachHang;
 	}
@@ -54,7 +54,7 @@ public class KhachHang {
 		this.loaiKhachHang = loaiKhachHang;
 	}
 	
-	public String getMaKhachHang() {
+	public int getMaKhachHang() {
 		return maKhachHang;
 	}
 	

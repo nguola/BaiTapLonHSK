@@ -3,17 +3,17 @@ package entity;
 import java.util.Objects;
 
 public class NhaCungCap {
-	public final String maNhaCungCap;
+	public final int maNhaCungCap;
 	public String tenNhaCungCap;
 	public String diaChi;
-	public NhaCungCap(String maNhaCungCap, String tenNhaCungCap, String diaChi) {
+	public NhaCungCap(int maNhaCungCap, String tenNhaCungCap, String diaChi) {
 		super();
 		this.maNhaCungCap = maNhaCungCap;
 		this.tenNhaCungCap = tenNhaCungCap;
 		this.diaChi = diaChi;
 	}
 	
-	public NhaCungCap(String maNhaCungCap) {
+	public NhaCungCap(int maNhaCungCap) {
 		super();
 		this.maNhaCungCap = maNhaCungCap;
 	}
@@ -30,7 +30,7 @@ public class NhaCungCap {
 	public void setDiaChi(String diaChi) {
 		this.diaChi = diaChi;
 	}
-	public String getMaNhaCungCap() {
+	public int getMaNhaCungCap() {
 		return maNhaCungCap;
 	}
 	@Override

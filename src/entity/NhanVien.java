@@ -3,14 +3,14 @@ package entity;
 import java.util.Objects;
 
 public class NhanVien {
-	public final String maNhanVien;
+	public final int maNhanVien;
 	public String ten;
 	public String soDienThoai;
 	public boolean gioiTinh;
 	public double Luong;
 	public String loai;
 	
-	public NhanVien(String maNhanVien, String ten, String soDienThoai, Boolean gioiTinh, double luong, String loai) {
+	public NhanVien(int maNhanVien, String ten, String soDienThoai, Boolean gioiTinh, double luong, String loai) {
 		super();
 		this.maNhanVien = maNhanVien;
 		this.ten = ten;
@@ -20,7 +20,7 @@ public class NhanVien {
 		this.loai = loai;
 	}
 
-	public NhanVien(String maNhanVien) {
+	public NhanVien(int maNhanVien) {
 		super();
 		this.maNhanVien = maNhanVien;
 	}
@@ -65,7 +65,7 @@ public class NhanVien {
 		this.loai = loai;
 	}
 
-	public String getMaNhanVien() {
+	public int getMaNhanVien() {
 		return maNhanVien;
 	}
 

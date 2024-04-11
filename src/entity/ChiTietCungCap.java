@@ -22,7 +22,7 @@ public class ChiTietCungCap {
 		this.donVi = donVi;
 	}
 	
-	public ChiTietCungCap(String maSanPham, String maNhaCungCap) {
+	public ChiTietCungCap(int maSanPham, int maNhaCungCap) {
 		super();
 		SanPham sp = new SanPham(maNhaCungCap);
 		NhaCungCap ncc = new NhaCungCap(maNhaCungCap);

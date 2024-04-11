@@ -3,13 +3,13 @@ package entity;
 import java.util.Objects;
 
 public class SanPham {
-	public final String maSanPham;
+	public final int maSanPham;
 	public String ten;
 	public double giaSanPham;
 	public String donVi;
 	public String loaiSanPham;
 	
-	public SanPham(String maSanPham, String ten, double giaSanPham, String donVi, String loaiSanPham) {
+	public SanPham(int maSanPham, String ten, double giaSanPham, String donVi, String loaiSanPham) {
 		super();
 		this.maSanPham = maSanPham;
 		this.ten = ten;
@@ -18,7 +18,7 @@ public class SanPham {
 		this.loaiSanPham = loaiSanPham;
 	}
 
-	public SanPham(String maSanPham) {
+	public SanPham(int maSanPham) {
 		super();
 		this.maSanPham = maSanPham;
 	}
@@ -55,7 +55,7 @@ public class SanPham {
 		this.loaiSanPham = loaiSanPham;
 	}
 
-	public String getMaSanPham() {
+	public int getMaSanPham() {
 		return maSanPham;
 	}
 

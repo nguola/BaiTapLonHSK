@@ -29,9 +29,9 @@ public class ChiTietCungCap_DAO {
 			ResultSet rs = stm.executeQuery(sql);
 			
 			while(rs.next()) {
-				String maSanPham = rs.getNString(1);
+				int maSanPham = rs.getInt(1);
 				SanPham sanPham = new SanPham(maSanPham);
-				String maNhaCungCap = rs.getNString(2);
+				int maNhaCungCap = rs.getInt(2);
 				NhaCungCap nhaCungCap = new NhaCungCap(maNhaCungCap);
 				Date ngayGiao = rs.getDate(3);
 				int soLuong = rs.getInt(4);
@@ -61,9 +61,9 @@ public class ChiTietCungCap_DAO {
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
-				String maSanPham = rs.getNString(1);
+				int maSanPham = rs.getInt(1);
 				SanPham sanPham = new SanPham(maSanPham);
-				String maNhaCungCap = rs.getNString(2);
+				int maNhaCungCap = rs.getInt(2);
 				NhaCungCap nhaCungCap = new NhaCungCap(maNhaCungCap);
 				Date ngayGiao = rs.getDate(3);
 				int soLuong = rs.getInt(4);
@@ -101,9 +101,9 @@ public class ChiTietCungCap_DAO {
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
-				String maSanPham = rs.getNString(1);
+				int maSanPham = rs.getInt(1);
 				SanPham sanPham = new SanPham(maSanPham);
-				String maNhaCungCap = rs.getNString(2);
+				int maNhaCungCap = rs.getInt(2);
 				NhaCungCap nhaCungCap = new NhaCungCap(maNhaCungCap);
 				Date ngayGiao = rs.getDate(3);
 				int soLuong = rs.getInt(4);
@@ -142,9 +142,9 @@ public class ChiTietCungCap_DAO {
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
-				String maSanPham = rs.getNString(1);
+				int maSanPham = rs.getInt(1);
 				SanPham sanPham = new SanPham(maSanPham);
-				String maNhaCungCap = rs.getNString(2);
+				int maNhaCungCap = rs.getInt(2);
 				NhaCungCap nhaCungCap = new NhaCungCap(maNhaCungCap);
 				Date ngayGiao = rs.getDate(3);
 				int soLuong = rs.getInt(4);
@@ -178,8 +178,8 @@ public class ChiTietCungCap_DAO {
 		try {
 			String sql = "insert into ChiTietCungCap values(?, ?, ?, ?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, ctcc.getSanPham().getMaSanPham());
-			stament.setString(2, ctcc.getNhaCungCap().getMaNhaCungCap());
+			stament.setInt(1, ctcc.getSanPham().getMaSanPham());
+			stament.setInt(2, ctcc.getNhaCungCap().getMaNhaCungCap());
 			stament.setDate(3, ctcc.getNgayGiao());
 			stament.setInt(4, ctcc.getSoLuong());
 			stament.setDouble(5, ctcc.getGia());

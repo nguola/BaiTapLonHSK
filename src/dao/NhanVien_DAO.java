@@ -25,7 +25,7 @@ public class NhanVien_DAO {
 			ResultSet rs = stm.executeQuery(sql);
 			
 			while(rs.next()) {
-				String maNV = rs.getNString(1);
+				int maNV = rs.getInt(1);
 				String ten = rs.getNString(2);
 				String sdt = rs.getString(3);
 				boolean phai = rs.getBoolean(4);
@@ -55,7 +55,7 @@ public class NhanVien_DAO {
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
-				String maNV = rs.getNString(1);
+				int maNV = rs.getInt(1);
 				String ten = rs.getNString(2);
 				String sdt = rs.getNString(3);
 				boolean phai = rs.getBoolean(4);
@@ -89,7 +89,7 @@ public class NhanVien_DAO {
 		try {
 			String sql = "insert into NhanVien values(?, ?, ?, ?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, nv.getMaNhanVien());
+			stament.setInt(1, nv.getMaNhanVien());
 			stament.setString(2, nv.getTen());
 			stament.setString(3, nv.getSoDienThoai());
 			stament.setBoolean(4, nv.getGioiTinh());
@@ -147,7 +147,7 @@ public class NhanVien_DAO {
 		try {
 			String sql = "update NhanVien set ho = ?, ten = ?" + "tuoi = ?, phai = ?, tienLuong = ?, maPhong = ?";
 			stament = con.prepareStatement(sql);
-			stament.setString(1, nv.getMaNhanVien());
+			stament.setInt(1, nv.getMaNhanVien());
 			stament.setString(2, nv.getTen());
 			stament.setString(3, nv.getSoDienThoai());
 			stament.setBoolean(4, nv.getGioiTinh());

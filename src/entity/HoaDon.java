@@ -4,13 +4,13 @@ import java.sql.Date;
 import java.util.Objects;
 
 public class HoaDon {
-	public final String maDon;
+	public final int maDon;
 	public KhachHang khachHang;
 	public NhanVien nhanVien;
 	public KhuyenMai khuyenMai;
 	public Date ngayMua;
 	public double tongTien;
-	public HoaDon(String maDon, KhachHang khachHang, NhanVien nhanVien, KhuyenMai khuyenMai, Date ngayMua,
+	public HoaDon(int maDon, KhachHang khachHang, NhanVien nhanVien, KhuyenMai khuyenMai, Date ngayMua,
 			double tongTien) {
 		super();
 		this.maDon = maDon;
@@ -21,7 +21,7 @@ public class HoaDon {
 		this.tongTien = tongTien;
 	}
 
-	public HoaDon(String maDon) {
+	public HoaDon(int maDon) {
 		super();
 		this.maDon = maDon;
 	}
@@ -66,7 +66,7 @@ public class HoaDon {
 		this.tongTien = tongTien;
 	}
 	
-	public String getMaDon() {
+	public int getMaDon() {
 		return maDon;
 	}
 	
