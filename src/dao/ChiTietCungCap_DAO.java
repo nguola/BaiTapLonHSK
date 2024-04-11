@@ -127,7 +127,7 @@ public class ChiTietCungCap_DAO {
 		return ctcc;
 	}
 	
-	public ChiTietCungCap getChiTietCungCapTheoSanPham_NhaCungCap (int id_sanPham,int id_nhaCungCap){
+	public ChiTietCungCap getChiTietCungCapTheoSanPham_NhaCungCap (int id_sanPham, int id_nhaCungCap){
 		ChiTietCungCap ctcc = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -176,7 +176,7 @@ public class ChiTietCungCap_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "insert into ChiTietCungCap values(?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into ChiTietCungCap values(?, ?, ?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, ctcc.getSanPham().getMaSanPham());
 			stament.setInt(2, ctcc.getNhaCungCap().getMaNhaCungCap());

@@ -48,7 +48,7 @@ public class NhanVien_DAO {
 		 	
 		PreparedStatement stament = null;
 		try {
-			String sql = "select * from NhanVien where maNV = ?";
+			String sql = "select * from NhanVien where maNhanVien = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, id);
 			
@@ -87,7 +87,7 @@ public class NhanVien_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "insert into NhanVien values(?, ?, ?, ?, ?, ?, ?)";
+			String sql = "insert into NhanVien values(?, ?, ?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, nv.getMaNhanVien());
 			stament.setString(2, nv.getTen());
@@ -118,7 +118,7 @@ public class NhanVien_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "Delete from NhanVien where maNV = ?";
+			String sql = "Delete from NhanVien where maNhanVien = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, maNV);
 			n = stament.executeUpdate();
@@ -145,7 +145,7 @@ public class NhanVien_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update NhanVien set ho = ?, ten = ?" + "tuoi = ?, phai = ?, tienLuong = ?, maPhong = ?";
+			String sql = "update NhanVien set ten = ?, soDienThoai = ?" + "gioiTinh = ?, tienLuong = ?, loai = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, nv.getMaNhanVien());
 			stament.setString(2, nv.getTen());

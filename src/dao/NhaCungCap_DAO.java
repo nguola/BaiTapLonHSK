@@ -137,7 +137,7 @@ public class NhaCungCap_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update NhaCungCap set naNhaCungCap = ?, tenNhaCungCap = ?, diaChi = ?";
+			String sql = "update NhaCungCap set maNhaCungCap = ?, tenNhaCungCap = ?, diaChi = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, ncc.getMaNhaCungCap());
 			stament.setString(2, ncc.getTenNhaCungCap());
