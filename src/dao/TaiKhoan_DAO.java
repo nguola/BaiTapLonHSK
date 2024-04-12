@@ -10,56 +10,53 @@ import java.util.ArrayList;
 import connectDB.ConnectDB;
 import entity.KhachHang;
 import entity.NhanVien;
+import entity.TaiKhoan;
 
-public class KhachHang_DAO {
-	public KhachHang_DAO() {
+public class TaiKhoan_DAO {
+
+	public TaiKhoan_DAO() {
 		
 	}
-	public ArrayList<KhachHang> getalltbKhachHang(){
-		ArrayList<KhachHang> dsKH = new ArrayList<KhachHang>();
+	public ArrayList<TaiKhoan> getalltbTaiKhoan(){
+		ArrayList<TaiKhoan> dsTK = new ArrayList<TaiKhoan>();
 		try {
 			ConnectDB.getInstance();
 			Connection con = ConnectDB.getConnection();
 			
-			String sql = "Select * from KhachHang";
+			String sql = "Select * from TaiKhoan";
 			Statement stm = con.createStatement();
 			ResultSet rs = stm.executeQuery(sql);
 			
 			while(rs.next()) {
-				int maKH = rs.getInt(1);
-				String ten  = rs.getString(2);
-				String sdt = rs.getString(3);
-				String dc = rs.getString(4);
-				String loaiKH = rs.getString(5);
-				KhachHang kh = new KhachHang(maKH, ten, sdt, dc, loaiKH);
-				dsKH.add(kh);
+				NhanVien maNhanVien = new NhanVien(rs.getInt(1));
+				String matKhau  = rs.getString(2);
+				TaiKhoan tk = new TaiKhoan(maNhanVien, matKhau);
+				dsTK.add(tk);
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception
 		}
-		return dsKH;
+		return dsTK;
 	}
-	public KhachHang getKhachHangTheoMa(int id) {
-		KhachHang kh = null;
+	
+	public TaiKhoan getTaiKhoanTheoMaNV(int id) {
+		TaiKhoan tk = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		 	
 		PreparedStatement stament = null;
 		try {
-			String sql = "select * from KhachHang where maKhachHang = ?";
+			String sql = "select * from TaiKhoan where maNhanVien = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, id);
 			
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
-				int maKH = rs.getInt(1);
-				String ten  = rs.getString(2);
-				String sdt = rs.getString(3);
-				String dc = rs.getString(4);
-				String loaiKH = rs.getString(5);
-				kh = new KhachHang(maKH, ten, sdt, dc, loaiKH);
+				NhanVien maNhanVien = new NhanVien(rs.getInt(1));
+				String matKhau  = rs.getString(2);
+				tk = new TaiKhoan(maNhanVien, matKhau);
 			}
 			
 		} catch (SQLException e) {
@@ -74,10 +71,42 @@ public class KhachHang_DAO {
 				// TODO: handle exception
 			}
 		}
-		return kh;
+		return tk;
 	}
 	
-	public boolean create(KhachHang kh) {
+	public String getTKTheoMatKhau(int id) {
+		String matKhau = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		 	
+		PreparedStatement stament = null;
+		try {
+			String sql = "select matKhau from TaiKhoan where maNhanVien = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, id);
+			
+			ResultSet rs = stament.executeQuery();
+
+			if(rs.next()) {
+				matKhau = rs.getString("matKhau");
+			}
+			
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return matKhau;
+	}
+	
+	public boolean create(TaiKhoan tk) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		
@@ -85,13 +114,10 @@ public class KhachHang_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "insert into KhachHang values(?, ?, ?, ?, ?)";
+			String sql = "insert into TaiKhoan values(?, ?)";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, kh.getMaKhachHang());
-			stament.setString(2, kh.getTen());
-			stament.setString(3, kh.getSoDienThoai());
-			stament.setString(4, kh.getDiaChi());
-			stament.setString(5, kh.getLoaiKhachHang());
+			stament.setInt(1, tk.getNhanvien().getMaNhanVien());
+			stament.setString(2, tk.getMatKhau());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -107,7 +133,7 @@ public class KhachHang_DAO {
 		return n > 0;
 	}
 	
-	public boolean remove(int maKH) {
+	public boolean remove(int maTK) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		
@@ -115,9 +141,9 @@ public class KhachHang_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "Delete from KhachHang where maKhachHang = ?";
+			String sql = "Delete from TaiKhoan where maNhanVien = ?";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, maKH);
+			stament.setInt(1, maTK);
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -133,7 +159,7 @@ public class KhachHang_DAO {
 		return n > 0;
 	}
 	
-	public boolean update(KhachHang kh) {
+	public boolean update(TaiKhoan tk) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		
@@ -142,13 +168,10 @@ public class KhachHang_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update KhachHang set maKhachHang = ?, ten = ?" + "soDienThoai = ?, diaChi = ?, loaiKH = ?";
+			String sql = "update TaiKhoan set maNhanVien = ?, matKhau = ?";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, kh.getMaKhachHang());
-			stament.setString(2, kh.getTen());
-			stament.setString(3, kh.getSoDienThoai());
-			stament.setString(4, kh.getDiaChi());
-			stament.setString(5, kh.getLoaiKhachHang());
+			stament.setInt(1, tk.getNhanvien().getMaNhanVien());
+			stament.setString(2, tk.getMatKhau());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			// TODO: handle exception
