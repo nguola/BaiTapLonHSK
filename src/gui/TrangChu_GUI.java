@@ -65,8 +65,8 @@ public class TrangChu_GUI extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource().equals(btn_dangNhap)) {
-			new DangNhap_GUI();
 			this.setVisible(false);
+			new DangNhap_GUI();
 		}
 	}
 }

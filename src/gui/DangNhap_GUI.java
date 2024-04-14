@@ -107,7 +107,12 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 			if (tenDangNhap.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Tên đăng nhập không được để trống");
 				tf_tenDangNhap.requestFocus();
-			} else if (matKhau.trim().isEmpty()) {
+			}else if(!tenDangNhap.matches("\\d+")) {
+				JOptionPane.showMessageDialog(this, "Tên đăng nhập không chứa kí tự");
+				tf_tenDangNhap.requestFocus();
+				tf_tenDangNhap.setText("");				
+				tpf_matKhau.setText("");
+			}else if (matKhau.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Hãy nhập mật khẩu");
 				tpf_matKhau.requestFocus();
 			} else if (kiemTra(Integer.parseInt(tenDangNhap), matKhau) == -1) {
@@ -197,6 +202,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 			@Override
 			public void windowClosed(WindowEvent e) {
 				TrangChu_GUI trangChu = new TrangChu_GUI();
+				trangChu.setVisible(true);
 			}
 
 			@Override
