@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import connectDB.ConnectDB;
-import entity.KhachHang;
 import entity.NhanVien;
 import entity.TaiKhoan;
 
@@ -17,6 +16,7 @@ public class TaiKhoan_DAO {
 	public TaiKhoan_DAO() {
 		
 	}
+	
 	public ArrayList<TaiKhoan> getalltbTaiKhoan(){
 		ArrayList<TaiKhoan> dsTK = new ArrayList<TaiKhoan>();
 		try {

@@ -2,15 +2,11 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
@@ -19,8 +15,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
-
 import connectDB.ConnectDB;
+import dao.TaiKhoan_DAO;
+import entity.TaiKhoan;
 
 public class DangNhap_GUI extends JFrame implements ActionListener {
 	private JPanel jp_North;
@@ -33,7 +30,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 	private JButton btn_dangNhap;
 	private JPanel jp_South;
 	private JCheckBox cb_pass;
-	private PreparedStatement stm;
+	TaiKhoan_DAO tk_dao = new TaiKhoan_DAO();
 
 	public DangNhap_GUI() {
 
@@ -115,19 +112,24 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 			}else if (matKhau.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Hãy nhập mật khẩu");
 				tpf_matKhau.requestFocus();
-			} else if (kiemTra(Integer.parseInt(tenDangNhap), matKhau) == -1) {
-				JOptionPane.showMessageDialog(this, "Tài khoản không tồn tại");
-				tf_tenDangNhap.setText("");
-				tpf_matKhau.setText("");
-				tf_tenDangNhap.requestFocus();
-			} else if (kiemTra(Integer.parseInt(tenDangNhap), matKhau) == 0) {
-				JOptionPane.showMessageDialog(this, "Mật khảu không đúng nhập lại");
-				tpf_matKhau.setText("");
-				tpf_matKhau.requestFocus();
-			} else if (kiemTra(Integer.parseInt(tenDangNhap), matKhau) == 1) {
-				JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
-				new BanHang_GUI();
-				dispose();
+			} else {
+				TaiKhoan tk = tk_dao.getTaiKhoanTheoMaNV(Integer.parseInt(tenDangNhap));
+				if(tk == null) {
+					JOptionPane.showMessageDialog(this, "Tài khoảng không tồn tại");
+					tf_tenDangNhap.setText("");
+					tf_tenDangNhap.requestFocus();
+					tpf_matKhau.setText("");
+				}
+				else if(!tk.getMatKhau().equalsIgnoreCase(matKhau)) {
+					JOptionPane.showMessageDialog(this, "Mật khẩu không chính xác");
+					tpf_matKhau.setText("");
+					tpf_matKhau.requestFocus();
+				}
+				else {
+					JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
+					new BanHang_GUI();
+					dispose();
+				}
 			}
 		} else if (o.equals(cb_pass)) {
 			if (cb_pass.isSelected()) {
@@ -136,32 +138,6 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 				tpf_matKhau.setEchoChar('*');
 			}
 		}
-	}
-
-	public int kiemTra(int tenDangNhap, String matKhau) {
-		int status = 1;
-		try {
-			ConnectDB.getInstance();
-			Connection con = ConnectDB.getConnection();
-			String sql = "select * from TaiKhoan where maNhanVien = ?";
-
-			stm = con.prepareStatement(sql);
-			stm.setInt(1, tenDangNhap);
-
-			ResultSet rs = stm.executeQuery();
-			if (rs.next()) {
-				String matKhau_sql = rs.getString(2);
-				if (!matKhau_sql.equalsIgnoreCase(matKhau))
-					status = 0;
-			} else {
-				status = -1;
-			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-
-		}
-		return status;
 	}
 
 	@Override
