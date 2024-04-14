@@ -5,78 +5,68 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 import javax.swing.*;
 
-public class TrangChu_GUI extends JFrame implements ActionListener{
+public class TrangChu_GUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	private JPanel jp_North;
 	private JLabel lb_Header;
-	private JPanel jp_West;
-	private JMenuBar menu;
+	private JLabel background;
+	private JPanel jp_Center;
+	private JButton btn_dangNhap;
 
 	public TrangChu_GUI() {
-		// tạo giao diện chiều rộng 1500 chiều cao 800 và vị trí tương đối giữa màng hình
+		// tạo giao diện chiều rộng 1500 chiều cao 800 và vị trí tương đối giữa màng
+		// hình
 		super();
-		setSize(1500, 800);
+		setSize(600, 600);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
-		
+
 		// code North
 		jp_North = new JPanel();
-		jp_North.setBackground(new Color(153, 234, 158));
+		jp_North.setBackground(new Color(35, 177, 77));
 		lb_Header = new JLabel("Goods Store");
-		lb_Header.setForeground(Color.BLUE);
+		lb_Header.setForeground(Color.white);
 		lb_Header.setFont(new Font("Time new roman", Font.BOLD, 40));
-		
 		jp_North.add(lb_Header);
-		
+
 		this.add(jp_North, BorderLayout.NORTH);
-		//
-		
-		// code West
-		jp_West = new JPanel();
-		menu = new JMenuBar();
-		menu.setLayout(new GridLayout(0, 1));
-		JMenu fileMenu = new JMenu("File");
-	      fileMenu.setMnemonic(KeyEvent.VK_F);
-	      menu.add(fileMenu);
-	      JMenuItem menuItem1 = new JMenuItem("New", KeyEvent.VK_N);
-	      fileMenu.add(menuItem1);
-	      JMenuItem menuItem2 = new JMenuItem("Open File", KeyEvent.VK_O);
-	      fileMenu.add(menuItem2);
-	      JMenu editMenu = new JMenu("Edit");
-	      editMenu.setMnemonic(KeyEvent.VK_E);
-	      menu.add(editMenu);
-	      JMenuItem menuItem3 = new JMenuItem("Cut", KeyEvent.VK_C);
-	      editMenu.add(menuItem3);
-	      JMenu sourceMenu = new JMenu("Source");
-	      sourceMenu.setMnemonic(KeyEvent.VK_S);
-	      menu.add(sourceMenu);
-	      JMenu refactorMenu = new JMenu("Refactor");
-	      refactorMenu.setMnemonic(KeyEvent.VK_R);
-	      menu.add(refactorMenu);
-	      JMenu navigateMenu = new JMenu("Navigate");
-	      navigateMenu.setMnemonic(KeyEvent.VK_A);
-	      menu.add(navigateMenu);
-	      menu.setSize(new Dimension(300, 800));
-	      //
-	      jp_West.add(menu);
-	      this.add(menu, BorderLayout.WEST);
-		//
-		
+
+		// code center
+		jp_Center = new JPanel();
+
+		ImageIcon backgroundImg = new ImageIcon("img/trangCHuImg/background.jpg");
+		Image img = backgroundImg.getImage();
+		Image scaledImg = img.getScaledInstance(getWidth() - 100, getHeight() - 180, Image.SCALE_SMOOTH);
+		ImageIcon scaledBackgroundImg = new ImageIcon(scaledImg);
+		background = new JLabel("", scaledBackgroundImg, JLabel.CENTER);
+		jp_Center.add(background);
+
+		btn_dangNhap = new JButton("Đăng nhập");
+		btn_dangNhap.setFont(new Font("Time new romance", Font.BOLD, 30));
+		btn_dangNhap.setBackground(new Color(0, 255, 204));
+		jp_Center.add(btn_dangNhap);
+		this.add(jp_Center, BorderLayout.CENTER);
+
+		btn_dangNhap.addActionListener(this);
 		setVisible(true);
 	}
-	
+
 	public static void main(String[] args) {
 		new TrangChu_GUI();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		
+		if (e.getSource().equals(btn_dangNhap)) {
+			new DangNhap_GUI();
+			this.setVisible(false);
+		}
 	}
 }
