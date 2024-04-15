@@ -26,6 +26,7 @@ public class BanHang_GUI extends JFrame implements ActionListener{
 	private JMenu mnuNhaCungCap;
 	private JMenu mnuHoaDon;
 	private JMenu mnuKhachHang;
+	private JPanel jp_Center;
 
 	public BanHang_GUI() throws HeadlessException {
 		super();
@@ -82,6 +83,9 @@ public class BanHang_GUI extends JFrame implements ActionListener{
 		//
 		
 		// code Center
+		jp_Center = new JPanel();
+		jp_Center.setLayout(new BorderLayout());
+		
 		//
 		
 		// code South

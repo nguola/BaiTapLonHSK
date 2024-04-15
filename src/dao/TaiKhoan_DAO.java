@@ -187,4 +187,60 @@ public class TaiKhoan_DAO {
 		}
 		return n > 0;
 	}
+	
+	public boolean setStatus_on(int maTk) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		
+		PreparedStatement stament = null;
+		
+		int n = 0;
+		
+		try {
+			String sql = "update TaiKhoan set status = 1 where maNhanVien = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maTk);
+			n = stament.executeUpdate();
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return n > 0;
+	}
+	
+	public boolean setStatus_off(int maTk) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		
+		PreparedStatement stament = null;
+		
+		int n = 0;
+		
+		try {
+			String sql = "update TaiKhoan set status = 0 where maNhanVien = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maTk);
+			n = stament.executeUpdate();
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return n > 0;
+	}
 }

@@ -33,7 +33,8 @@ create table NhanVien(
 create table TaiKhoan(
 	maNhanVien int PRIMARY KEY NOT NULL,
     matKhau NVARCHAR(50) NOT NULL,
-    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
+    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
+	trangThai bit
 );
 create table NhaCungCap(
 	maNhaCungCap INT IDENTITY(4000,1) PRIMARY KEY NOT NULL,
