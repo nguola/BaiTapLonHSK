@@ -197,7 +197,7 @@ public class TaiKhoan_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update TaiKhoan set status = 1 where maNhanVien = ?";
+			String sql = "update TaiKhoan set trangThai = 1 where maNhanVien = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, maTk);
 			n = stament.executeUpdate();
@@ -225,7 +225,7 @@ public class TaiKhoan_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update TaiKhoan set status = 0 where maNhanVien = ?";
+			String sql = "update TaiKhoan set trangThai = 0 where maNhanVien = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, maTk);
 			n = stament.executeUpdate();
