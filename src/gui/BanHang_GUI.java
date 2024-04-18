@@ -2,14 +2,12 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.Image;
-import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -26,12 +24,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
 
 import connectDB.ConnectDB;
@@ -60,10 +55,9 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 	private JLabel lb_TenNhaVien;
 	private Box jp_SouthThongTin;
 	private DefaultTableModel model_HoaDon;
-	private JPanel jp_btnFunction;
+	private Box jp_btnFunction;
 	private JButton btn_them;
 	private JButton btn_sua;
-	private JButton btn_xoa;
 	private JPanel jp_title;
 	private DefaultTableModel model_sanPham;
 	private JTable table_SanPham;
@@ -99,16 +93,19 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 	private JLabel lb_loaiKH;
 	private JTextField tf_loaiKH;
 	private Box jp_lapHoaDon;
-	private Box jp_func_lapHoaDon;
 	private Box jp_content_lapHoaDon;
-	private JButton btn_lapHoaDon;
 	private JLabel lb_thanhtien;
 	private JPanel thanhtien;
 	private JPanel giamgia;
 	private JLabel lb_giamgia;
 	private JTextField tf_giamgia;
 	private JTextField tf_thanhtien;
-	private JButton btn_inHoaDon;
+	private JPanel jp_LapHoaDon;
+	private JButton btn_LapHoaDon;
+	private JButton btn_xoa;
+	private JPanel jp_InHoaDon;
+	private JButton btn_InHoaDon;
+	private JPanel jp_btnLoc;
 
 	public BanHang_GUI(TaiKhoan tk) throws HeadlessException {
 		super();
@@ -120,6 +117,7 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 			// TODO: handle exception
 		}
 		setSize(1500, 800);
+		this.setResizable(false);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
 
@@ -178,28 +176,34 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 		// code lọc sản phầm
 		jp_loc = Box.createVerticalBox();
 		
-		JPanel msp = new JPanel();
+		JPanel msp = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_Msp = new JLabel("Mã sản phẩm:");
 		tf_Msp = new JTextField(30);
+		msp.add(Box.createHorizontalStrut(20));
 		msp.add(lb_Msp);
+		msp.add(Box.createHorizontalStrut(20));
 		msp.add(tf_Msp);
 		jp_loc.add(msp);
 		
-		JPanel tensp = new JPanel();
+		JPanel tensp = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_tensp = new JLabel("Tên sản phẩm:");
 		tf_tensp = new JTextField(30);
+		tensp.add(Box.createHorizontalStrut(20));
 		tensp.add(lb_tensp);
+		tensp.add(Box.createHorizontalStrut(15));
 		tensp.add(tf_tensp);
 		jp_loc.add(tensp);
 		
-		JPanel donvi = new JPanel();
+		JPanel donvi = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_donvi = new JLabel("Đơn vị tính:");
 		tf_donvi = new JTextField(30);
+		donvi.add(Box.createHorizontalStrut(20));
 		donvi.add(lb_donvi);
+		donvi.add(Box.createHorizontalStrut(30));
 		donvi.add(tf_donvi);
 		jp_loc.add(donvi);
 		
-		JPanel loaisanpham = new JPanel();
+		JPanel loaisanpham = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_loai = new JLabel("Loại sản phẩm:");
 		cb_loai = new JComboBox<String>();
 		cb_loai.setPreferredSize(new Dimension(300, 25));
@@ -208,12 +212,19 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 			cb_loai.addItem(loai);
 		}
 		
+		loaisanpham.add(Box.createHorizontalStrut(20));
 		loaisanpham.add(lb_loai);
+		loaisanpham.add(Box.createHorizontalStrut(14));
 		loaisanpham.add(cb_loai);
 		jp_loc.add(loaisanpham);
 		
+		jp_btnLoc = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		btn_loc = new JButton("Lọc");
-		jp_loc.add(btn_loc);
+		btn_loc.setFont(new Font("Arial", Font.BOLD, 15));
+		btn_loc.setPreferredSize(new Dimension(80, 30));
+		jp_btnLoc.add(Box.createHorizontalStrut(20));
+		jp_btnLoc.add(btn_loc);
+		jp_loc.add(jp_btnLoc);
 		
 		jp_loc.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Lọc sản phẩm"));
 		
@@ -249,29 +260,42 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 		jp_Center.add(jp_title, BorderLayout.NORTH);
 
 		// code chọn tác vụ
-		jp_btnFunction = new JPanel();
-		jp_btnFunction.setLayout(new GridLayout(0, 1));
+		jp_btnFunction = Box.createVerticalBox();
 		
 		jp_them = new JPanel();
 		btn_them = new JButton("Thêm");
 		btn_them.setFont(new Font("Arial", Font.BOLD, 15));
-		btn_them.setPreferredSize(new Dimension(80, 30));
+		btn_them.setPreferredSize(new Dimension(140, 40));
 		jp_them.add(btn_them);
 		jp_btnFunction.add(jp_them);
 		
 		jp_sua = new JPanel();
 		btn_sua = new JButton("Sửa");
 		btn_sua.setFont(new Font("Arial", Font.BOLD, 15));
-		btn_sua.setPreferredSize(new Dimension(80, 30));
+		btn_sua.setPreferredSize(new Dimension(140, 40));
 		jp_sua.add(btn_sua);
 		jp_btnFunction.add(jp_sua);
 		
 		jp_xoa = new JPanel();
 		btn_xoa = new JButton("Xóa");
 		btn_xoa.setFont(new Font("Arial", Font.BOLD, 15));
-		btn_xoa.setPreferredSize(new Dimension(80, 30));
+		btn_xoa.setPreferredSize(new Dimension(140, 40));
 		jp_xoa.add(btn_xoa);
 		jp_btnFunction.add(jp_xoa);
+		
+		jp_LapHoaDon = new JPanel();
+		btn_LapHoaDon = new JButton("Lập hóa đơn");
+		btn_LapHoaDon.setFont(new Font("Arial", Font.BOLD, 15));
+		btn_LapHoaDon.setPreferredSize(new Dimension(140, 40));
+		jp_LapHoaDon.add(btn_LapHoaDon);
+		jp_btnFunction.add(jp_LapHoaDon);
+		
+		jp_InHoaDon = new JPanel();
+		btn_InHoaDon = new JButton("In hóa đơn");
+		btn_InHoaDon.setFont(new Font("Arial", Font.BOLD, 15));
+		btn_InHoaDon.setPreferredSize(new Dimension(140, 40));
+		jp_InHoaDon.add(btn_InHoaDon);
+		jp_btnFunction.add(jp_InHoaDon);
 		
 		jp_btnFunction.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Chọn tác vụ"));
 		jp_Center.add(jp_btnFunction, BorderLayout.WEST);
@@ -281,31 +305,40 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 		jp_thongtin.setLayout(new BorderLayout());
 		
 		Box NhapThongTin = Box.createVerticalBox();
-		maKH = new JPanel();
+		
+		maKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_maKH = new JLabel("Mã khách hàng:");
-		tf_maKH = new JTextField(30);
+		tf_maKH = new JTextField(50);
+		maKH.add(Box.createHorizontalStrut(100));
 		maKH.add(lb_maKH);
+		maKH.add(Box.createHorizontalStrut(20));
 		maKH.add(tf_maKH);
 		NhapThongTin.add(maKH);
 		
-		tenKH = new JPanel();
+		tenKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_tenKH = new JLabel("Tên khách hàng:");
-		tf_tenKH = new JTextField(30);
+		tf_tenKH = new JTextField(50);
+		tenKH.add(Box.createHorizontalStrut(100));
 		tenKH.add(lb_tenKH);
+		tenKH.add(Box.createHorizontalStrut(14));
 		tenKH.add(tf_tenKH);
 		NhapThongTin.add(tenKH);
 		
-		dtKH = new JPanel();
+		dtKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_dtKH = new JLabel("Số điện thoại:");
-		tf_dtKH = new JTextField(30);
+		tf_dtKH = new JTextField(50);
+		dtKH.add(Box.createHorizontalStrut(100));
 		dtKH.add(lb_dtKH);
+		dtKH.add(Box.createHorizontalStrut(30));
 		dtKH.add(tf_dtKH);
 		NhapThongTin.add(dtKH);
 		
-		loaiKH = new JPanel();
+		loaiKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_loaiKH = new JLabel("Loại khách hàng:");
-		tf_loaiKH = new JTextField(30);
+		tf_loaiKH = new JTextField(50);
+		loaiKH.add(Box.createHorizontalStrut(100));
 		loaiKH.add(lb_loaiKH);
+		loaiKH.add(Box.createHorizontalStrut(13));
 		loaiKH.add(tf_loaiKH);
 		NhapThongTin.add(loaiKH);
 		
@@ -325,40 +358,31 @@ public class BanHang_GUI extends JFrame implements ActionListener {
 		
 		// code lập hóa đơn
 		jp_lapHoaDon = Box.createHorizontalBox();
-		// code các nút chức năng lập hóa đơn
-		jp_func_lapHoaDon = Box.createVerticalBox();
-		jp_func_lapHoaDon.add(Box.createHorizontalStrut(60));
-		
-		btn_lapHoaDon = new JButton("Lập hóa đơn");
-		jp_func_lapHoaDon.add(btn_lapHoaDon);
-		
-		jp_func_lapHoaDon.add(Box.createVerticalStrut(10));
-		
-		btn_inHoaDon = new JButton("In hóa đơn");
-		jp_func_lapHoaDon.add(btn_inHoaDon);
+		jp_lapHoaDon.add(Box.createHorizontalStrut(380));
 		
 		// code thông tin hóa đơn
 		jp_content_lapHoaDon = Box.createVerticalBox();
 		
-		thanhtien = new JPanel();
+		thanhtien = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_thanhtien = new JLabel("Tổng thành tiền:");
 		tf_thanhtien = new JTextField(30);
 		tf_thanhtien.setEditable(false);
 		thanhtien.add(lb_thanhtien);
+		thanhtien.add(Box.createHorizontalGlue());
 		thanhtien.add(tf_thanhtien);
 		jp_content_lapHoaDon.add(thanhtien);
 		
-		giamgia = new JPanel();
+		giamgia = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_giamgia = new JLabel("Giảm giá:");
 		tf_giamgia = new JTextField(30);
 		tf_giamgia.setEditable(false);
 		giamgia.add(lb_giamgia);
+		giamgia.add(Box.createHorizontalStrut(40));
 		giamgia.add(tf_giamgia);
 		jp_content_lapHoaDon.add(giamgia);
-		
-		jp_lapHoaDon.add(jp_func_lapHoaDon);
+		jp_content_lapHoaDon.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Lập hóa đơn"));
+
 		jp_lapHoaDon.add(jp_content_lapHoaDon);
-		jp_lapHoaDon.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Lập hóa đơn"));
 		jp_thongtin.add(jp_lapHoaDon, BorderLayout.SOUTH);
 		// code South
 		
