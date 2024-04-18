@@ -70,6 +70,26 @@ public class SanPham_DAO {
 		return sp;
 	}
 	
+	public ArrayList<String> getAllLoaiSP(){
+		ArrayList<String> list_loai = new ArrayList<String>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select loaiSanPham\r\n"+ "from SanPham\r\n"+ "group by loaiSanPham";
+			Statement stm = con.createStatement();			
+			ResultSet rs = stm.executeQuery(sql);
+
+			while(rs.next()) {
+				String loai = rs.getString(1);
+				list_loai.add(loai);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return list_loai;
+	}
+	
 	public boolean create(SanPham sp) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
