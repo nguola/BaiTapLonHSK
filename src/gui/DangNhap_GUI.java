@@ -33,7 +33,6 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 	TaiKhoan_DAO tk_dao = new TaiKhoan_DAO();
 
 	public DangNhap_GUI() {
-
 		// tạo giao diện chiều rộng 1500 chiều cao 800 và vị trí tương đối giữa màng
 		// hình
 		super();
@@ -128,7 +127,7 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 				else {
 					JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
 					tk_dao.setStatus_on(Integer.parseInt(tenDangNhap));
-					new BanHang_GUI();
+					new BanHang_GUI(tk);
 					dispose();
 				}
 			}
