@@ -1,7 +1,11 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.LayoutManager;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +13,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -24,7 +30,7 @@ import dao.KhachHang_DAO;
 import entity.KhachHang;
 import entity.NhanVien;
 
-public class Panel_QuanLiKhachHang extends JFrame implements ActionListener{
+public class Panel_QuanLiKhachHang extends JPanel implements ActionListener{
 	private JTextField txtTimKiem;
 	private TableModel khachhangModel;
 	private JTable tableKhachHang;
@@ -40,60 +46,77 @@ public class Panel_QuanLiKhachHang extends JFrame implements ActionListener{
 			e.printStackTrace();
 		}
 		khachhang_dao = new KhachHang_DAO();
-		setLayout(null);
-		//chừng sau xóa
-		setSize(1000,680);
-		setVisible(true);
-		//------------
+		//pNor
+		JPanel pNor = new JPanel();
+		pNor.setLayout(new BoxLayout(pNor, BoxLayout.Y_AXIS));
 		JLabel lblTitle = new JLabel("QUẢN LÝ KHÁCH HÀNG");
 		lblTitle.setBackground(Color.LIGHT_GRAY);
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 34));
-		lblTitle.setBounds(212, 11, 374, 50);
-		add(lblTitle);
+		pNor.add(lblTitle);
+		pNor.add(Box.createVerticalStrut(20));
 		
+		//pCompon chứa các componet
+		JPanel pCompon = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		pCompon.add(Box.createHorizontalStrut(20));
 		JButton btnThem = new JButton("Thêm");
 		btnThem.setBackground(new Color(35, 177, 77));
 		btnThem.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnThem.setBounds(10, 77, 172, 38);
-		add(btnThem);
-		
+		btnThem.setPreferredSize(new Dimension(140, 40));
+		pCompon.add(btnThem);
+		pCompon.add(Box.createHorizontalStrut(10));
+
 		JButton btnSua = new JButton("Sửa");
 		btnSua.setBackground(new Color(35, 177, 77));
 		btnSua.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnSua.setBounds(192, 77, 164, 38);
-		add(btnSua);
+		btnSua.setPreferredSize(new Dimension(140, 40));
+		pCompon.add(btnSua);
+		pCompon.add(Box.createHorizontalStrut(10));
 		
 		JButton btnXoa = new JButton("Xóa");
 		btnXoa.setBackground(new Color(35, 177, 77));
 		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 13));
-		btnXoa.setBounds(366, 77, 164, 38);
-		add(btnXoa);
+		btnXoa.setPreferredSize(new Dimension(140, 40));
+		pCompon.add(btnXoa);
+		pCompon.add(Box.createHorizontalStrut(50));
 		
 		txtTimKiem = new JTextField();
-		txtTimKiem.setBounds(609, 78, 172, 38);
 		add(txtTimKiem);
-		txtTimKiem.setColumns(10);
+		txtTimKiem.setColumns(20);
+		txtTimKiem.setPreferredSize(new Dimension(70, 40));
+		pCompon.add(txtTimKiem);
+		pCompon.add(Box.createHorizontalStrut(10));
 	
 		JButton btnTim = new JButton("Tìm");
 		btnTim.setBackground(SystemColor.control);
 		btnTim.setFont(new Font("Tahoma", Font.BOLD, 14));
-		btnTim.setBounds(788, 77, 62, 38);
-		add(btnTim);
+		btnTim.setPreferredSize(new Dimension(70, 40));
+		pCompon.add(btnTim);
+		pNor.add(pCompon, BorderLayout.SOUTH);
+		pNor.add(Box.createVerticalStrut(10));
+		add(pNor, BorderLayout.NORTH);
 		
 		//table
 		String [] col = {"Mã khách hàng", "Tên khách hàng", "Số điện thoại", "Địa chỉ", "Loại khách hàng"};
 		khachhangModel = new DefaultTableModel(col,0);
 		tableKhachHang = new JTable(khachhangModel);
 		JScrollPane scroll = new JScrollPane(tableKhachHang);
-		scroll.setBounds(10, 126, 950, 468);
-		add(scroll);
+		add(scroll, BorderLayout.CENTER);
+		
+		
+		//chừng sau xóa
+		setSize(1000,680);
+		setVisible(true);
+		//------------
+		
+		
+		
 		//đọc dữ liệu vào bảng
 		DocDuLieuDatabaseVaoTable();
 		
 		
 	}
 	public void DocDuLieuDatabaseVaoTable() {
-		List<KhachHang> list = khachhang_dao.getalltbKhachHang();
+		ArrayList<KhachHang> list = khachhang_dao.getalltbKhachHang();
 		for(KhachHang kh : list) {
 			((DefaultTableModel) khachhangModel).addRow(new Object[] {
 					kh.getMaKhachHang(),

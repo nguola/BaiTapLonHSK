@@ -22,6 +22,11 @@ public class KhachHang {
 		this.maKhachHang = maKhachHang;
 	}
 
+	public KhachHang() {
+		this.maKhachHang = 0;
+		
+	}
+
 	public String getTen() {
 		return ten;
 	}
