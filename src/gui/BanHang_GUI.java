@@ -60,14 +60,12 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 	private DefaultTableModel model_HoaDon;
 	private Box jp_btnFunction;
 	private JButton btn_them;
-	private JButton btn_sua;
 	private JPanel jp_title;
 	private DefaultTableModel model_sanPham;
 	private JTable table_SanPham;
 	SanPham_DAO sanPham_dao = new SanPham_DAO();
 	private JPanel jp_tieuDeTrai;
 	private JPanel jp_them;
-	private JPanel jp_sua;
 	private JPanel jp_xoa;
 	private JTable table_HoaDon;
 	private Box jp_loc;
@@ -97,18 +95,19 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 	private JTextField tf_loaiKH;
 	private Box jp_lapHoaDon;
 	private Box jp_content_lapHoaDon;
-	private JLabel lb_thanhtien;
-	private JPanel thanhtien;
+	private JLabel lb_Tongthanhtien;
+	private JPanel Tongthanhtien;
 	private JPanel giamgia;
 	private JLabel lb_giamgia;
 	private JTextField tf_giamgia;
-	private JTextField tf_thanhtien;
 	private JPanel jp_LapHoaDon;
 	private JButton btn_LapHoaDon;
 	private JButton btn_xoa;
 	private JPanel jp_InHoaDon;
 	private JButton btn_InHoaDon;
 	private JPanel jp_btnLoc;
+	private JTextField tf_Tongthanhtien;
+	private JPanel jp_banHang;
 
 	public BanHang_GUI(TaiKhoan tk) throws HeadlessException {
 		super();
@@ -166,8 +165,8 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		this.add(jp_North, BorderLayout.NORTH);
 
 		// code West
-		jp_West = new JPanel();
-		jp_West.setLayout(new BorderLayout());
+		jp_banHang = new JPanel(new BorderLayout());
+		jp_West = new JPanel(new BorderLayout());
 
 		// code Tieu de
 		jp_tieuDeTrai = new JPanel();
@@ -236,6 +235,11 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		// code Table SanPham
 		String[] colnames_sanPham = { "Mã sản phầm", "Tên sản phầm", "Loại", "Giá", "Đơn vị" };
 		model_sanPham = new DefaultTableModel(colnames_sanPham, 0) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
 				return false;
@@ -253,7 +257,7 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		scroll_tableSp = new JScrollPane(table_SanPham);
 		scroll_tableSp.setPreferredSize(new Dimension(500, 330));
 		jp_West.add(scroll_tableSp, BorderLayout.SOUTH);
-		this.add(jp_West, BorderLayout.WEST);
+		jp_banHang.add(jp_West, BorderLayout.WEST);
 
 		// code Center
 
@@ -278,13 +282,6 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		jp_them.add(btn_them);
 		jp_btnFunction.add(jp_them);
 
-		jp_sua = new JPanel();
-		btn_sua = new JButton("Sửa");
-		btn_sua.setFont(new Font("Arial", Font.BOLD, 15));
-		btn_sua.setPreferredSize(new Dimension(140, 40));
-		jp_sua.add(btn_sua);
-		jp_btnFunction.add(jp_sua);
-
 		jp_xoa = new JPanel();
 		btn_xoa = new JButton("Xóa");
 		btn_xoa.setFont(new Font("Arial", Font.BOLD, 15));
@@ -305,6 +302,8 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		btn_InHoaDon.setPreferredSize(new Dimension(140, 40));
 		jp_InHoaDon.add(btn_InHoaDon);
 		jp_btnFunction.add(jp_InHoaDon);
+		
+		jp_btnFunction.add(Box.createVerticalStrut(300));
 
 		jp_btnFunction
 				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Chọn tác vụ"));
@@ -357,22 +356,25 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		jp_thongtin.add(NhapThongTin, BorderLayout.NORTH);
 
 		// Code table hóa đơn
-		String[] colnames = { "Mã sản phẩm", "Tên sản phầm", "Đơn vị", "Giá", "Số lượng", "Thành tiền" };
-		model_HoaDon = new DefaultTableModel(colnames, 0) {
+		String[] colnames_HoaDon = { "Mã sản phầm", "Tên sản phầm", "Đơn vị", "Giá", "Số lượng", "Thành tiền"};
+		model_HoaDon = new DefaultTableModel(colnames_HoaDon, 0) {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				if (column == 4 || column == 5)
-					return true;
+				if(column == 4) return true;
 				return false;
 			}
 		};
 		table_HoaDon = new JTable(model_HoaDon);
-
 		scroll_hoaDon = new JScrollPane(table_HoaDon);
 		jp_thongtin.add(scroll_hoaDon, BorderLayout.CENTER);
 
 		jp_Center.add(jp_thongtin, BorderLayout.CENTER);
-		this.add(jp_Center, BorderLayout.CENTER);
+		jp_banHang.add(jp_Center, BorderLayout.CENTER);
 
 		// code lập hóa đơn
 		jp_lapHoaDon = Box.createHorizontalBox();
@@ -381,14 +383,14 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		// code thông tin hóa đơn
 		jp_content_lapHoaDon = Box.createVerticalBox();
 
-		thanhtien = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		lb_thanhtien = new JLabel("Tổng thành tiền:");
-		tf_thanhtien = new JTextField(30);
-		tf_thanhtien.setEditable(false);
-		thanhtien.add(lb_thanhtien);
-		thanhtien.add(Box.createHorizontalGlue());
-		thanhtien.add(tf_thanhtien);
-		jp_content_lapHoaDon.add(thanhtien);
+		Tongthanhtien = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		lb_Tongthanhtien = new JLabel("Tổng thành tiền:");
+		tf_Tongthanhtien = new JTextField(30);
+		tf_Tongthanhtien.setEditable(false);
+		Tongthanhtien.add(lb_Tongthanhtien);
+		Tongthanhtien.add(Box.createHorizontalGlue());
+		Tongthanhtien.add(tf_Tongthanhtien);
+		jp_content_lapHoaDon.add(Tongthanhtien);
 
 		giamgia = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_giamgia = new JLabel("Giảm giá:");
@@ -403,6 +405,8 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 
 		jp_lapHoaDon.add(jp_content_lapHoaDon);
 		jp_thongtin.add(jp_lapHoaDon, BorderLayout.SOUTH);
+		
+		this.add(jp_banHang, BorderLayout.CENTER);
 		// code South
 
 		// Code btn_DangXuat
@@ -445,7 +449,9 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		this.add(jp_South, BorderLayout.SOUTH);
 
 		btn_them.addActionListener(this);
+		btn_xoa.addActionListener(this);
 		model_HoaDon.addTableModelListener(this);
+		
 		this.setVisible(true);
 	}
 
@@ -454,14 +460,9 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		return scaled;
 	}
 
-	public static void main(String[] args) {
-		new BanHang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
-	}
-
 	public void update_TableHoaDon(SanPham sp) {
-		int soLuong = 1;
-		model_HoaDon.addRow(new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getDonVi(), sp.getGiaSanPham(), soLuong,
-				soLuong * sp.getGiaSanPham() });
+		model_HoaDon.addRow(
+				new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getDonVi(), sp.getGiaSanPham(), 1 , sp.getGiaSanPham()});
 	}
 
 	@Override
@@ -475,22 +476,37 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 			SanPham sp = sanPham_dao.getSanPhamTheoMa(maSP);
 			update_TableHoaDon(sp);
 		}
+		else if(o.equals(btn_xoa)) {
+			int selected_row = table_HoaDon.getSelectedRow();
+			model_HoaDon.removeRow(selected_row);
+		}
 	}
 
 	@Override
 	public void tableChanged(TableModelEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getType() == TableModelEvent.UPDATE) {
+		if(e.getType() == TableModelEvent.UPDATE) {
 			int row = e.getFirstRow();
-			double gia = 0;
-			int soLuong = 0;
-			double tien = 0;
-
-			gia = Double.parseDouble(model_HoaDon.getValueAt(row, 3).toString());
-			soLuong = Integer.parseInt(model_HoaDon.getValueAt(row, 4).toString());
-			tien = (double)soLuong * gia;
-			
-			model_HoaDon.setValueAt(tien, row, 5);
+			try {
+				double gia = Double.parseDouble(table_HoaDon.getValueAt(row, 3).toString());
+				int soLuong = Integer.parseInt(table_HoaDon.getValueAt(row, 4).toString());
+				Object Thanhtien = gia * soLuong;
+				DefaultTableModel md = (DefaultTableModel) table_HoaDon.getModel();
+				md.setValueAt(Thanhtien, row, 5);
+			} catch (Exception e2) {
+				e2.printStackTrace();
+				// TODO: handle exception
+			}
 		}
+		int numRow = model_HoaDon.getRowCount();
+
+		double TongTien = 0;
+
+		for (int i = 0; i < numRow; i++) {
+			
+			TongTien += Double.parseDouble(table_HoaDon.getValueAt(i, 5).toString());
+		}
+
+		tf_Tongthanhtien.setText(String.valueOf(TongTien));
 	}
 }
