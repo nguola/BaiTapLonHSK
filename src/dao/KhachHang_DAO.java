@@ -85,13 +85,18 @@ public class KhachHang_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "insert into KhachHang values(?, ?, ?, ?, ?)";
+			//String sql = "insert into KhachHang values( ?, ?, ?, ?, ?)";
+	        String sql = "insert into KhachHang (ten, soDienThoai, diaChi, loaiKhachHang) values (?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, kh.getMaKhachHang());
-			stament.setString(2, kh.getTen());
-			stament.setString(3, kh.getSoDienThoai());
-			stament.setString(4, kh.getDiaChi());
-			stament.setString(5, kh.getLoaiKhachHang());
+//			stament.setInt(1, kh.getMaKhachHang());
+//			stament.setString(2, kh.getTen());
+//			stament.setString(3, kh.getSoDienThoai());
+//			stament.setString(4, kh.getDiaChi());
+//			stament.setString(5, kh.getLoaiKhachHang());
+			stament.setString(1, kh.getTen());
+	        stament.setString(2, kh.getSoDienThoai());
+	        stament.setString(3, kh.getDiaChi());
+	        stament.setString(4, kh.getLoaiKhachHang());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -142,13 +147,13 @@ public class KhachHang_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update KhachHang set maKhachHang = ?, ten = ?" + "soDienThoai = ?, diaChi = ?, loaiKH = ?";
+			String sql = "update KhachHang set ten = ?" + "soDienThoai = ?, diaChi = ?, loaiKhachHang = ? Where maKhachHang = ?";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, kh.getMaKhachHang());
-			stament.setString(2, kh.getTen());
-			stament.setString(3, kh.getSoDienThoai());
-			stament.setString(4, kh.getDiaChi());
-			stament.setString(5, kh.getLoaiKhachHang());
+			stament.setString(1, kh.getTen());
+			stament.setString(2, kh.getSoDienThoai());
+			stament.setString(3, kh.getDiaChi());
+			stament.setString(4, kh.getLoaiKhachHang());
+			stament.setInt(5, kh.getMaKhachHang());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			// TODO: handle exception

@@ -1,52 +1,35 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.LayoutManager;
-import java.awt.SystemColor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 import connectDB.ConnectDB;
 import dao.KhachHang_DAO;
 import entity.KhachHang;
-import entity.NhanVien;
 
-public class Panel_QuanLiKhachHang extends JPanel implements ActionListener{
+public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, MouseListener {
+
 	private JTextField txtTimKiem;
-	private TableModel khachhangModel;
 	private JTable tableKhachHang;
-	private KhachHang_DAO khachhang_dao;
-	private ArrayList<KhachHang> listKhachHang = new ArrayList<KhachHang>();
-	
-	
+	private DefaultTableModel khachHangModel;
+	private KhachHang_DAO khachHangDAO;
+
 	public Panel_QuanLiKhachHang() {
 		try {
 			ConnectDB.getInstance().connect();
 			System.out.println("Connected!!!");
-		}catch(SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		khachhang_dao = new KhachHang_DAO();
-		//pNor
+		khachHangDAO = new KhachHang_DAO();
+		setLayout(new BorderLayout());
+		setPreferredSize(new Dimension(800, 600));
+
+		// Phần tiêu đề
 		JPanel pNor = new JPanel();
 		pNor.setLayout(new BoxLayout(pNor, BoxLayout.Y_AXIS));
 		JLabel lblTitle = new JLabel("QUẢN LÝ KHÁCH HÀNG");
@@ -54,8 +37,8 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener{
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 34));
 		pNor.add(lblTitle);
 		pNor.add(Box.createVerticalStrut(20));
-		
-		//pCompon chứa các componet
+
+		// Phần chứa các nút chức năng
 		JPanel pCompon = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		pCompon.add(Box.createHorizontalStrut(20));
 		JButton btnThem = new JButton("Thêm");
@@ -71,21 +54,20 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener{
 		btnSua.setPreferredSize(new Dimension(140, 40));
 		pCompon.add(btnSua);
 		pCompon.add(Box.createHorizontalStrut(10));
-		
+
 		JButton btnXoa = new JButton("Xóa");
 		btnXoa.setBackground(new Color(35, 177, 77));
 		btnXoa.setFont(new Font("Tahoma", Font.BOLD, 13));
 		btnXoa.setPreferredSize(new Dimension(140, 40));
 		pCompon.add(btnXoa);
 		pCompon.add(Box.createHorizontalStrut(50));
-		
+
 		txtTimKiem = new JTextField();
-		add(txtTimKiem);
 		txtTimKiem.setColumns(20);
 		txtTimKiem.setPreferredSize(new Dimension(70, 40));
 		pCompon.add(txtTimKiem);
 		pCompon.add(Box.createHorizontalStrut(10));
-	
+
 		JButton btnTim = new JButton("Tìm");
 		btnTim.setBackground(SystemColor.control);
 		btnTim.setFont(new Font("Tahoma", Font.BOLD, 14));
@@ -94,47 +76,143 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener{
 		pNor.add(pCompon, BorderLayout.SOUTH);
 		pNor.add(Box.createVerticalStrut(10));
 		add(pNor, BorderLayout.NORTH);
-		
-		//table
-		String [] col = {"Mã khách hàng", "Tên khách hàng", "Số điện thoại", "Địa chỉ", "Loại khách hàng"};
-		khachhangModel = new DefaultTableModel(col,0);
-		tableKhachHang = new JTable(khachhangModel);
+
+		// Phần bảng hiển thị khách hàng
+		String[] col = { "Mã khách hàng", "Tên khách hàng", "Số điện thoại", "Địa chỉ", "Loại khách hàng" };
+		khachHangModel = new DefaultTableModel(col, 0);
+		tableKhachHang = new JTable(khachHangModel);
 		JScrollPane scroll = new JScrollPane(tableKhachHang);
 		add(scroll, BorderLayout.CENTER);
-		
-		
-		//chừng sau xóa
-		setSize(1000,680);
+
+		setSize(1480, 680);
+		// setSize(1000,680);
 		setVisible(true);
-		//------------
-		
-		
-		
-		//đọc dữ liệu vào bảng
-		DocDuLieuDatabaseVaoTable();
-		
-		
-	}
-	public void DocDuLieuDatabaseVaoTable() {
-		ArrayList<KhachHang> list = khachhang_dao.getalltbKhachHang();
-		for(KhachHang kh : list) {
-			((DefaultTableModel) khachhangModel).addRow(new Object[] {
-					kh.getMaKhachHang(),
-					kh.getTen(),
-					kh.getSoDienThoai(),
-					kh.getDiaChi(),
-					kh.getLoaiKhachHang()
-			});
-		}
-	}
-	public static void main(String[] args) {
-		new Panel_QuanLiKhachHang();
-	}
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+
+		// Đọc dữ liệu từ cơ sở dữ liệu vào bảng
+		docDuLieuVaoTable();
+
+		// Xử lý sự kiện nút
+		btnThem.addActionListener(this);
+		btnThem.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				// Hiển thị DialogThemKhachHang
+				DialogThemKhachHang dialogThem = new DialogThemKhachHang("them");
+				dialogThem.setVisible(true);
+				dialogThem.setResizable(false);
+				dialogThem.addWindowListener(new WindowListener() {
+
+					@Override
+					public void windowOpened(WindowEvent e) {}
+
+					@Override
+					public void windowIconified(WindowEvent e) {}
+
+					@Override
+					public void windowDeiconified(WindowEvent e) {}
+
+					@Override
+					public void windowDeactivated(WindowEvent e) {}
+
+					@Override
+					public void windowClosing(WindowEvent e) {}
+
+					@Override
+					public void windowClosed(WindowEvent e) {
+						// TODO Auto-generated method stub
+						if (dialogThem.isTrangThaiThem()) {
+							docDuLieuVaoTable();
+						}
+					}
+
+					@Override
+					public void windowActivated(WindowEvent e) {}
+				});
+			}
+		});
+
+		btnSua.addActionListener(this);
+		btnSua.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Hiển thị DialogSua
+				int index = tableKhachHang.getSelectedRow();
+				if (index < 0) {
+					JOptionPane.showMessageDialog(null, "Chọn người cần sửa");
+				} else {
+					int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(index, 0).toString());
+					KhachHang khachHang = khachHangDAO.getKhachHangTheoMa(maKhachHang); // Lấy thông tin khách hàng từ cơ sở dữ liệu
+					try {
+						DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua"+ maKhachHang);
+						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+						dialog.setVisible(true);
+						dialog.addWindowListener(new WindowListener() {
+							@Override
+							public void windowClosed(WindowEvent e) {
+								if (dialog.isTrangThaiSua()) {
+									docDuLieuVaoTable();
+								}
+
+							}
+
+							@Override
+							public void windowOpened(WindowEvent e) {}
+
+							@Override
+							public void windowClosing(WindowEvent e) {}
+
+							@Override
+							public void windowIconified(WindowEvent e) {}
+
+							@Override
+							public void windowDeiconified(WindowEvent e) {}
+
+							@Override
+							public void windowActivated(WindowEvent e) {}
+
+							@Override
+							public void windowDeactivated(WindowEvent e) {}
+						});
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		btnTim.addActionListener(this);
+		btnXoa.addActionListener(this);
 	}
 
+	// Phương thức đọc dữ liệu từ cơ sở dữ liệu vào bảng
+	public void docDuLieuVaoTable() {
+		ArrayList<KhachHang> list = khachHangDAO.getalltbKhachHang();
+		for (KhachHang kh : list) {
+			((DefaultTableModel) khachHangModel).addRow(new Object[] { kh.getMaKhachHang(), kh.getTen(),
+					kh.getSoDienThoai(), kh.getDiaChi(), kh.getLoaiKhachHang() });
+		}
+	}
+
+	// Xử lý sự kiện cho các nút chức năng và nút Tìm
+	@Override
+	public void actionPerformed(ActionEvent e) {
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {}
+
+	@Override
+	public void mouseExited(MouseEvent e) {}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+//  public static void main(String[] args) {
+//		new Panel_QuanLiKhachHang();
+//	}
 
 }

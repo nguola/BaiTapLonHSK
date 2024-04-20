@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -10,6 +11,9 @@ import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
@@ -108,8 +112,9 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 	private JPanel jp_btnLoc;
 	private JTextField tf_Tongthanhtien;
 	private JPanel jp_banHang;
+	private Panel_QuanLiKhachHang panelQuanLiKhachHang; 
 
-	public BanHang_GUI(TaiKhoan tk) throws HeadlessException {
+	public BanHang_GUI(TaiKhoan tk) throws HeadlessException{
 		super();
 		this.tk = tk;
 		try {
@@ -140,6 +145,20 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 
 		mnuKhachHang = new JMenu("Khách Hàng");
 		mnuKhachHang.setFont(new Font("Arial", Font.BOLD, 15));
+		panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
+		this.add(panelQuanLiKhachHang, BorderLayout.CENTER);
+		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
+		mnuKhachHang.addMouseListener((MouseListener) new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Hiển thị Panel_QuanLiKhachHang và ẩn các panel khác
+		        panelQuanLiKhachHang.setVisible(true);
+		        // Ẩn các panel khác
+		        jp_banHang.setVisible(false); 
+				CardLayout cardLayout = (CardLayout) jp_banHang.getLayout();
+				cardLayout.show(jp_banHang, "Panel_QuanLiKhachHang");
+			}
+		});
 
 		mnuSanPham.add(new JMenuItem("SP"));
 		mnuSanPham.add(new JMenuItem("SP"));
@@ -165,7 +184,7 @@ public class BanHang_GUI extends JFrame implements ActionListener, TableModelLis
 		this.add(jp_North, BorderLayout.NORTH);
 
 		// code West
-		jp_banHang = new JPanel(new BorderLayout());
+		jp_banHang = new JPanel(new CardLayout());
 		jp_West = new JPanel(new BorderLayout());
 
 		// code Tieu de
