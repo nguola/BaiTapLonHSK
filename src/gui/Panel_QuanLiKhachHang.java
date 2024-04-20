@@ -149,7 +149,7 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 					int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(index, 0).toString());
 					KhachHang khachHang = khachHangDAO.getKhachHangTheoMa(maKhachHang); // Lấy thông tin khách hàng từ cơ sở dữ liệu
 					try {
-						DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang, Panel_QuanLiKhachHang.this);
+						DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
 						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setVisible(true);
 						dialog.addWindowListener(new WindowListener() {
