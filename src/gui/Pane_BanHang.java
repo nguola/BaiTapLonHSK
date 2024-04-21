@@ -80,8 +80,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
-//		setLayout(new BorderLayout());
-		setLayout(new CardLayout());
 		setSize(800, 600);
 		
 		
@@ -200,7 +198,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		scroll_tableSp.setPreferredSize(new Dimension(500, 330));
 		jp_West.add(scroll_tableSp, BorderLayout.SOUTH);
 		
-		add(jp_West, BorderLayout.WEST);
+		this.add(jp_West, BorderLayout.WEST);
 
 		// Code title cho phần Center
 		jp_Center = new JPanel(new BorderLayout());
@@ -359,7 +357,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		jp_lapHoaDon.add(jp_content_lapHoaDon);
 		jp_thongtin.add(jp_lapHoaDon, BorderLayout.SOUTH);
 		
-		add(jp_Center, BorderLayout.CENTER);
+		this.add(jp_Center, BorderLayout.CENTER);
 
 		btn_them.addActionListener(this);
 		btn_xoa.addActionListener(this);

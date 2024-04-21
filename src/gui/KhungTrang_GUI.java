@@ -78,8 +78,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		mnuKhachHang.setFont(new Font("Arial", Font.BOLD, 15));
 		panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
 		this.add(panelQuanLiKhachHang, BorderLayout.CENTER);
-		
-//		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
+
 		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
 		mnuKhachHang.addMouseListener((MouseListener) new MouseAdapter() {
 			@Override
@@ -96,7 +95,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		
 		itemBanHang = new JMenuItem("Bán hàng");
 		pane_BanHang = new Pane_BanHang();
-		pane_BanHang.setVisible(false);
+
 		this.add(pane_BanHang, BorderLayout.CENTER);
 		itemBanHang.addActionListener(new ActionListener() {
 		    @Override
