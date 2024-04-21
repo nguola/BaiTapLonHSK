@@ -11,7 +11,7 @@ public class test {
 		try {
 			ConnectDB.getInstance().connect();
 			UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-			new BanHang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
+			new KhungTrang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
 		} catch (Exception e) {
 			e.printStackTrace();
 			// TODO: handle exception

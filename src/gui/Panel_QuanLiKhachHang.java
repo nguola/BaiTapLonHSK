@@ -20,12 +20,13 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 	private KhachHang_DAO khachHangDAO;
 
 	public Panel_QuanLiKhachHang() {
-		try {
-			ConnectDB.getInstance().connect();
-			System.out.println("Connected!!!");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			ConnectDB.getInstance().connect();
+//			System.out.println("Connected!!!");
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+		
 		khachHangDAO = new KhachHang_DAO();
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(800, 600));

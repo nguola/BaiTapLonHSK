@@ -24,6 +24,7 @@ public class ConnectDB {
 		if(con != null) {
 			try {
 				con.close();
+				System.out.println("Ngắt kết nối thành công");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
