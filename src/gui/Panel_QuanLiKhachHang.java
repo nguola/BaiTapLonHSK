@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.*;
+import java.awt.dnd.MouseDragGestureRecognizer;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -103,19 +104,24 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 				dialogThem.addWindowListener(new WindowListener() {
 
 					@Override
-					public void windowOpened(WindowEvent e) {}
+					public void windowOpened(WindowEvent e) {
+					}
 
 					@Override
-					public void windowIconified(WindowEvent e) {}
+					public void windowIconified(WindowEvent e) {
+					}
 
 					@Override
-					public void windowDeiconified(WindowEvent e) {}
+					public void windowDeiconified(WindowEvent e) {
+					}
 
 					@Override
-					public void windowDeactivated(WindowEvent e) {}
+					public void windowDeactivated(WindowEvent e) {
+					}
 
 					@Override
-					public void windowClosing(WindowEvent e) {}
+					public void windowClosing(WindowEvent e) {
+					}
 
 					@Override
 					public void windowClosed(WindowEvent e) {
@@ -126,7 +132,8 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 					}
 
 					@Override
-					public void windowActivated(WindowEvent e) {}
+					public void windowActivated(WindowEvent e) {
+					}
 				});
 			}
 		});
@@ -143,7 +150,7 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 					int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(index, 0).toString());
 					KhachHang khachHang = khachHangDAO.getKhachHangTheoMa(maKhachHang); // Lấy thông tin khách hàng từ cơ sở dữ liệu
 					try {
-						DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua"+ maKhachHang);
+						DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
 						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 						dialog.setVisible(true);
 						dialog.addWindowListener(new WindowListener() {
@@ -156,22 +163,28 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 							}
 
 							@Override
-							public void windowOpened(WindowEvent e) {}
+							public void windowOpened(WindowEvent e) {
+							}
 
 							@Override
-							public void windowClosing(WindowEvent e) {}
+							public void windowClosing(WindowEvent e) {
+							}
 
 							@Override
-							public void windowIconified(WindowEvent e) {}
+							public void windowIconified(WindowEvent e) {
+							}
 
 							@Override
-							public void windowDeiconified(WindowEvent e) {}
+							public void windowDeiconified(WindowEvent e) {
+							}
 
 							@Override
-							public void windowActivated(WindowEvent e) {}
+							public void windowActivated(WindowEvent e) {
+							}
 
 							@Override
-							public void windowDeactivated(WindowEvent e) {}
+							public void windowDeactivated(WindowEvent e) {
+							}
 						});
 					} catch (Exception e1) {
 						e1.printStackTrace();
@@ -181,6 +194,59 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 		});
 		btnTim.addActionListener(this);
 		btnXoa.addActionListener(this);
+		tableKhachHang.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        int row = tableKhachHang.getSelectedRow();
+		        if (row >= 0) {
+		            // Lấy dữ liệu từ hàng được chọn
+		            int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(row, 0).toString());
+		            String tenKhachHang = tableKhachHang.getValueAt(row, 1).toString();
+		            String soDienThoai = tableKhachHang.getValueAt(row, 2).toString();
+		            String diaChi = tableKhachHang.getValueAt(row, 3).toString();
+		            String loaiKhachHang = tableKhachHang.getValueAt(row, 4).toString();
+		            
+		            // Hiển thị DialogSuaKhachHang với dữ liệu của hàng được chọn
+		            DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
+		            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		            
+		            // Đổ dữ liệu vào các JTextField trong dialog
+		            dialog.getTxtTen().setText(tenKhachHang);
+		            dialog.getTxtSoDienThoai().setText(soDienThoai);
+		            dialog.getTxtDiaChi().setText(diaChi);
+		            dialog.getTxtLoai().setText(loaiKhachHang);
+		            
+		            dialog.setVisible(true);
+		            
+		            // Thêm WindowListener để theo dõi sự kiện đóng của dialog
+		            dialog.addWindowListener(new WindowListener() {
+		                @Override
+		                public void windowClosed(WindowEvent e) {
+		                    // Kiểm tra nếu trạng thái sửa của dialog là true (đã thực hiện sửa thông tin)
+		                    if (dialog.isTrangThaiSua()) {
+		                        // Cập nhật lại bảng sau khi sửa thông tin khách hàng
+		                        docDuLieuVaoTable();
+		                    }
+		                }
+		                
+		                // Các phương thức khác của WindowListener
+		                @Override
+		                public void windowOpened(WindowEvent e) {}
+		                @Override
+		                public void windowClosing(WindowEvent e) {}
+		                @Override
+		                public void windowIconified(WindowEvent e) {}
+		                @Override
+		                public void windowDeiconified(WindowEvent e) {}
+		                @Override
+		                public void windowActivated(WindowEvent e) {}
+		                @Override
+		                public void windowDeactivated(WindowEvent e) {}
+		            });
+		        }
+		    }
+		});
+
 	}
 
 	// Phương thức đọc dữ liệu từ cơ sở dữ liệu vào bảng
@@ -191,26 +257,35 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 					kh.getSoDienThoai(), kh.getDiaChi(), kh.getLoaiKhachHang() });
 		}
 	}
-
+	
+	public void UpdateTable() {
+		DefaultTableModel model = (DefaultTableModel) tableKhachHang.getModel();
+		model.setRowCount(0);
+	}
 	// Xử lý sự kiện cho các nút chức năng và nút Tìm
 	@Override
 	public void actionPerformed(ActionEvent e) {
 	}
 
 	@Override
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseReleased(MouseEvent e) {}
+	public void mouseReleased(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) {}
+	public void mouseEntered(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseExited(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {
+	}
 
 //  public static void main(String[] args) {
 //		new Panel_QuanLiKhachHang();

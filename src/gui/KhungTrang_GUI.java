@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.HeadlessException;
@@ -79,6 +80,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		this.add(panelQuanLiKhachHang, BorderLayout.CENTER);
 		
 //		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
+		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
 		mnuKhachHang.addMouseListener((MouseListener) new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -87,8 +89,8 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 				// Ẩn các panel khác
 				pane_BanHang.setVisible(false);
 				
-//				CardLayout cardLayout = (CardLayout) pane_BanHang.getLayout();
-//				cardLayout.show(pane_BanHang, "Panel_QuanLiKhachHang");
+				CardLayout cardLayout = (CardLayout) pane_BanHang.getLayout();
+				cardLayout.show(pane_BanHang, "Panel_QuanLiKhachHang");
 			}
 		});
 		

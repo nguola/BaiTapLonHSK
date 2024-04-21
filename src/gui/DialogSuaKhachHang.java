@@ -18,7 +18,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-
 import dao.KhachHang_DAO;
 import entity.KhachHang;
 
@@ -29,18 +28,28 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	private JTextField txtMa, txtTen, txtSoDienThoai, txtDiaChi, txtLoai;
 	private JButton btnSua;
 	private KhachHang khachhang = new KhachHang();
+	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
 
 	public boolean isTrangThaiSua() {
 		return trangThaiSua;
 	}
-
 	public void setTrangThaiSua(boolean trangThaiSua) {
 		this.trangThaiSua = trangThaiSua;
 	}
-
+	public JTextField getTxtMa() {return txtMa;}
+	
+	public JTextField getTxtTen() {return txtTen;}
+	
+	public JTextField getTxtSoDienThoai() {return txtSoDienThoai;}
+	
+	public JTextField getTxtDiaChi() {return txtDiaChi;}
+	
+	public JTextField getTxtLoai() {return txtLoai;}
+	
 	public static void main(String[] args) {
+		Panel_QuanLiKhachHang panel = new Panel_QuanLiKhachHang();
 		try {
-			DialogSuaKhachHang dialog = new DialogSuaKhachHang("Sửa");
+			DialogSuaKhachHang dialog = new DialogSuaKhachHang("Sửa",2000,panel);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -48,7 +57,8 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		}
 	}
 
-	public DialogSuaKhachHang(String type) {
+	public DialogSuaKhachHang(String type, int maKhachHang, Panel_QuanLiKhachHang panel) {
+		this.panelQuanLiKhachHang = panel;
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		lblTitle = new JLabel("Sửa Khách Hàng");
@@ -117,19 +127,20 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 			btnSua.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
-					KhachHang khachHang = new KhachHang();
-					khachHang.setTen(txtTen.getText());
-					khachHang.setSoDienThoai(txtSoDienThoai.getText());
-					khachHang.setDiaChi(txtDiaChi.getText());
-					khachHang.setLoaiKhachHang(txtLoai.getText());
+					 	String ten = txtTen.getText();
+				        String soDienThoai = txtSoDienThoai.getText();
+				        String diaChi = txtDiaChi.getText();
+				        String loaiKhachHang = txtLoai.getText();
+				        KhachHang khachHang = new KhachHang(maKhachHang, ten, soDienThoai, diaChi, loaiKhachHang);
 					if(!new KhachHang_DAO().update(khachHang)) {
 						JOptionPane.showMessageDialog(null, "Sửa không thành công!");
 					} else {
 						JOptionPane.showMessageDialog(null, "Sửa thành công.");
+						panelQuanLiKhachHang.UpdateTable();
 						setTrangThaiSua(true);
 						dispose();
 					}
-					
+					docDuLieuVaoFormSua(maKhachHang);
 				}
 			});
 		}

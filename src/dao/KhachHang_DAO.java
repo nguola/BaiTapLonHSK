@@ -147,7 +147,7 @@ public class KhachHang_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update KhachHang set ten = ?" + "soDienThoai = ?, diaChi = ?, loaiKhachHang = ? Where maKhachHang = ?";
+			String sql = "update KhachHang set ten = ?, soDienThoai = ?, diaChi = ?, loaiKhachHang = ? Where maKhachHang = ?";
 			stament = con.prepareStatement(sql);
 			stament.setString(1, kh.getTen());
 			stament.setString(2, kh.getSoDienThoai());

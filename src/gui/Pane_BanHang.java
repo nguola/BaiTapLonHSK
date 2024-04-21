@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -76,9 +77,11 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	private SanPham_DAO sanPham_dao = new SanPham_DAO();
 
 	public Pane_BanHang() {
-		
+
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
+//		setLayout(new BorderLayout());
+		setLayout(new CardLayout());
 		setSize(800, 600);
 		
 		
@@ -363,7 +366,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		model_HoaDon.addTableModelListener(this);
 		
 	}
-	
+
 	public void update_TableHoaDon(SanPham sp) {
 		model_HoaDon.addRow(
 				new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getDonVi(), sp.getGiaSanPham(), 1 , sp.getGiaSanPham()});
