@@ -79,6 +79,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	public Pane_BanHang() {
 
 		// Cấu hình cho trang
+		//setLayout(new CardLayout());
 		setLayout(new BorderLayout());
 		setSize(800, 600);
 		

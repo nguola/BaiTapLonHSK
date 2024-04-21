@@ -35,12 +35,15 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 		}
 	}
 
+	/**
+	 * @param type
+	 */
 	public DialogThemKhachHang(String type) {
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		
 		lblTitle = new JLabel("Thêm Khách Hàng");
-		lblTitle.setBackground(Color.LIGHT_GRAY);
+		lblTitle.setForeground(Color.WHITE);
         lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 26));
 		
 		lblTenKhachHang = new JLabel("Tên khách hàng:");
@@ -60,14 +63,19 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 		txtLoai.setPreferredSize(new Dimension(100, 30));
 		
 		btnThem = new JButton("Thêm");
-
+		btnThem.setBackground(new Color(0, 255, 204));
+		btnThem.setPreferredSize(new Dimension(140,40));
+		btnThem.setFont(new Font("Arial", Font.BOLD, 16));
 		
 		
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
 		//title
-		add(Box.createHorizontalStrut(50));
-		add(lblTitle,BorderLayout.NORTH);
-		add(Box.createVerticalStrut(20));
+		JPanel jpTitle = new JPanel();
+		jpTitle.setLayout(new FlowLayout(FlowLayout.CENTER));
+		jpTitle.setPreferredSize(new Dimension(100, 50));
+		jpTitle.setBackground(new Color(7, 65, 115));
+		jpTitle.add(lblTitle);
+		add(jpTitle,BorderLayout.NORTH);
 	
 		// prow2
 		JPanel prow2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -101,7 +109,7 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 		contentPanel.add(buttonPanel);
 
 		add(contentPanel);
-		setSize(400, 500);
+		setSize(360, 500);
 		setVisible(true);
 		if(type.equals("them")) {
 			btnThem.addMouseListener(new MouseAdapter() {

@@ -246,6 +246,7 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 			public void mouseClicked(MouseEvent e) {
 				UpdateTable();
 				docDuLieuVaoTable();
+				txtTimKiem.setText("");
 			}
 		});
 
