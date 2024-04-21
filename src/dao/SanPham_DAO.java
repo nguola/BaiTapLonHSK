@@ -90,6 +90,28 @@ public class SanPham_DAO {
 		return list_loai;
 	}
 	
+	public ArrayList<String> getAllDonViSP(){
+		ArrayList<String> list_donVi = new ArrayList<String>();
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "select donVi\r\n"
+						+ "from SanPham\r\n"
+						+ "group by donVi";
+			Statement stm = con.createStatement();			
+			ResultSet rs = stm.executeQuery(sql);
+
+			while(rs.next()) {
+				String loai = rs.getString(1);
+				list_donVi.add(loai);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return list_donVi;
+	}
+	
 	public boolean create(SanPham sp) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();

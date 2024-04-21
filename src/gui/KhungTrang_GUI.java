@@ -77,6 +77,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		mnuKhachHang.setFont(new Font("Arial", Font.BOLD, 15));
 		panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
 		this.add(panelQuanLiKhachHang, BorderLayout.CENTER);
+		
 //		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
 		mnuKhachHang.addMouseListener((MouseListener) new MouseAdapter() {
 			@Override
