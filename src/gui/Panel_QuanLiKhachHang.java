@@ -18,6 +18,7 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 	private JTable tableKhachHang;
 	private DefaultTableModel khachHangModel;
 	private KhachHang_DAO khachHangDAO;
+	private ArrayList<KhachHang> khachHangs = new ArrayList<KhachHang>();
 
 	public Panel_QuanLiKhachHang() {
 //		try {
@@ -75,12 +76,21 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 		btnTim.setFont(new Font("Tahoma", Font.BOLD, 14));
 		btnTim.setPreferredSize(new Dimension(70, 40));
 		pCompon.add(btnTim);
+		pCompon.add(Box.createHorizontalStrut(10));
+		
+		JButton btnQuayVe = new JButton("Trở Lại");
+		btnQuayVe.setBackground(SystemColor.control);
+		btnQuayVe.setFont(new Font("Tahoma", Font.BOLD, 14));
+		btnQuayVe.setPreferredSize(new Dimension(100, 40));
+		pCompon.add(btnQuayVe);
+		
 		pNor.add(pCompon, BorderLayout.SOUTH);
 		pNor.add(Box.createVerticalStrut(10));
 		add(pNor, BorderLayout.NORTH);
+		
 
 		// Phần bảng hiển thị khách hàng
-		String[] col = { "Mã khách hàng", "Tên khách hàng", "Số điện thoại", "Địa chỉ", "Loại khách hàng" };
+		String[] col = { "Mã khách hàng", "Tên khách hàng", "Số điện thoại", "Địa chỉ", "Loại khách hàng" ,"Tổng tiền mua"};
 		khachHangModel = new DefaultTableModel(col, 0);
 		tableKhachHang = new JTable(khachHangModel);
 		JScrollPane scroll = new JScrollPane(tableKhachHang);
@@ -193,7 +203,70 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 			}
 		});
 		btnTim.addActionListener(this);
+		btnTim.addMouseListener(new MouseAdapter() {
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        String timKiemText = txtTimKiem.getText().trim();
+		        if (timKiemText.isEmpty()) {
+		            docDuLieuVaoTable();
+		        } else {
+		        	int maKhachHang = Integer.parseInt(timKiemText);
+		            try {
+		                khachHangs = new KhachHang_DAO().getDanhSachKhachHangTheoMa(maKhachHang);
+		            } catch (NumberFormatException ex) {
+		                JOptionPane.showMessageDialog(null, "Mã khách hàng phải là số");
+		                return;
+		            }
+		            if (khachHangs == null) {
+		                JOptionPane.showMessageDialog(null, "Tìm không thành công!");
+		            } else {
+		                khachHangModel.setRowCount(0);
+		                ArrayList<KhachHang> temp = new KhachHang_DAO().getDanhSachKhachHangTheoMa(maKhachHang);
+		                for (KhachHang khachHang : temp) {
+							if (!khachHangs.contains(khachHang)) {
+								khachHangs.add(khachHang);
+							}
+						}
+		                for (KhachHang kh : khachHangs) {
+		                    khachHangModel.addRow(new Object[]{
+		                    		maKhachHang,
+		                            kh.getTen(),
+		                            kh.getSoDienThoai(),
+		                            kh.getDiaChi(),
+		                            kh.getLoaiKhachHang(),
+		                            new KhachHang_DAO().getTotalPrice(maKhachHang)
+		                    });
+		                }
+		            }
+		        }
+		    }
+		});
+		btnQuayVe.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				UpdateTable();
+				docDuLieuVaoTable();
+			}
+		});
+
 		btnXoa.addActionListener(this);
+		btnXoa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int index = tableKhachHang.getSelectedRow();
+				if(index == -1) {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn khách hàng cần xóa");
+					return;
+				}
+				int maKH = Integer.parseInt(khachHangModel.getValueAt(index, 0).toString());
+				try {
+					new KhachHang_DAO().remove(maKH);
+					khachHangModel.removeRow(index);
+				}catch (Exception err) {
+					JOptionPane.showMessageDialog(null, "Lỗi khi xóa" + err.getMessage());
+				}
+			}
+		});
 		tableKhachHang.addMouseListener(new MouseAdapter() {
 		    @Override
 		    public void mouseClicked(MouseEvent e) {
@@ -254,7 +327,8 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 		ArrayList<KhachHang> list = khachHangDAO.getalltbKhachHang();
 		for (KhachHang kh : list) {
 			((DefaultTableModel) khachHangModel).addRow(new Object[] { kh.getMaKhachHang(), kh.getTen(),
-					kh.getSoDienThoai(), kh.getDiaChi(), kh.getLoaiKhachHang() });
+					kh.getSoDienThoai(), kh.getDiaChi(), kh.getLoaiKhachHang(),
+					new KhachHang_DAO().getTotalPrice(kh.getMaKhachHang())});
 		}
 	}
 	

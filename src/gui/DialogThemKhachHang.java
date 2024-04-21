@@ -38,6 +38,7 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 	public DialogThemKhachHang(String type) {
 		this.setResizable(false);
 		setLocationRelativeTo(null);
+		
 		lblTitle = new JLabel("Thêm Khách Hàng");
 		lblTitle.setBackground(Color.LIGHT_GRAY);
         lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 26));

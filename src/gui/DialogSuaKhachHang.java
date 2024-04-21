@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -61,6 +62,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		this.panelQuanLiKhachHang = panel;
 		this.setResizable(false);
 		setLocationRelativeTo(null);
+		
 		lblTitle = new JLabel("Sửa Khách Hàng");
 		lblTitle.setBackground(Color.LIGHT_GRAY);
 		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 26));
