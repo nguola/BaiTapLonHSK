@@ -87,9 +87,6 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 				panelQuanLiKhachHang.setVisible(true);
 				// Ẩn các panel khác
 				pane_BanHang.setVisible(false);
-				
-				CardLayout cardLayout = (CardLayout) pane_BanHang.getLayout();
-				cardLayout.show(pane_BanHang, "Panel_QuanLiKhachHang");
 			}
 		});
 		
