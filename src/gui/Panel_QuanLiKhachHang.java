@@ -1,12 +1,16 @@
 package gui;
 
 import java.awt.*;
-import java.awt.dnd.MouseDragGestureRecognizer;
 import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.*;
+import javax.swing.RowSorter.SortKey;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import connectDB.ConnectDB;
 import dao.KhachHang_DAO;
@@ -19,6 +23,7 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 	private DefaultTableModel khachHangModel;
 	private KhachHang_DAO khachHangDAO;
 	private ArrayList<KhachHang> khachHangs = new ArrayList<KhachHang>();
+	private TableRowSorter<TableModel> sort;
 
 	public Panel_QuanLiKhachHang() {
 //		try {
@@ -94,15 +99,34 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 		khachHangModel = new DefaultTableModel(col, 0);
 		tableKhachHang = new JTable(khachHangModel);
 		JScrollPane scroll = new JScrollPane(tableKhachHang);
+		
+		//khởi tạo TableSorter
+		sort = new TableRowSorter<TableModel>(khachHangModel);
+		tableKhachHang.setRowSorter(sort);
 		add(scroll, BorderLayout.CENTER);
 
 		setSize(1480, 680);
-		// setSize(1000,680);
 		setVisible(true);
 
 		// Đọc dữ liệu từ cơ sở dữ liệu vào bảng
 		docDuLieuVaoTable();
 
+		//Xử lí sự kiện khi click vào tiêu đề cột
+		tableKhachHang.getTableHeader().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int colIndex = tableKhachHang.columnAtPoint(e.getPoint());
+				if(colIndex == -1) return; //Khi click không phải tiêu đề
+				else {
+					if(sort.getSortKeys().isEmpty() || sort.getSortKeys().get(0).getColumn() != colIndex) {
+						// Nếu chưa được sắp xếphoặc đã được sắp xếp nhưng không theo thứ tự tăng dần,thì sắp xếp tăng dần
+						sort.setSortKeys(List.of(new RowSorter.SortKey(colIndex, SortOrder.ASCENDING)));
+                        sort.sort();
+					}
+				}
+			}
+		});
+		
 		// Xử lý sự kiện nút
 		btnThem.addActionListener(this);
 		btnThem.addMouseListener(new MouseAdapter() {
@@ -137,6 +161,7 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 					public void windowClosed(WindowEvent e) {
 						// TODO Auto-generated method stub
 						if (dialogThem.isTrangThaiThem()) {
+							UpdateTable();
 							docDuLieuVaoTable();
 						}
 					}
@@ -153,53 +178,57 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// Hiển thị DialogSua
-				int index = tableKhachHang.getSelectedRow();
-				if (index < 0) {
+				int row = tableKhachHang.getSelectedRow();
+				if (row < 0) {
 					JOptionPane.showMessageDialog(null, "Chọn người cần sửa");
 				} else {
-					int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(index, 0).toString());
-					KhachHang khachHang = khachHangDAO.getKhachHangTheoMa(maKhachHang); // Lấy thông tin khách hàng từ cơ sở dữ liệu
-					try {
-						DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
-						dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-						dialog.setVisible(true);
-						dialog.addWindowListener(new WindowListener() {
-							@Override
-							public void windowClosed(WindowEvent e) {
-								if (dialog.isTrangThaiSua()) {
-									docDuLieuVaoTable();
-								}
-
-							}
-
-							@Override
-							public void windowOpened(WindowEvent e) {
-							}
-
-							@Override
-							public void windowClosing(WindowEvent e) {
-							}
-
-							@Override
-							public void windowIconified(WindowEvent e) {
-							}
-
-							@Override
-							public void windowDeiconified(WindowEvent e) {
-							}
-
-							@Override
-							public void windowActivated(WindowEvent e) {
-							}
-
-							@Override
-							public void windowDeactivated(WindowEvent e) {
-							}
-						});
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-				}
+					if (row >= 0) {
+    		            // Lấy dữ liệu từ hàng được chọn
+    		            int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(row, 0).toString());
+    		            String tenKhachHang = tableKhachHang.getValueAt(row, 1).toString();
+    		            String soDienThoai = tableKhachHang.getValueAt(row, 2).toString();
+    		            String diaChi = tableKhachHang.getValueAt(row, 3).toString();
+    		            String loaiKhachHang = tableKhachHang.getValueAt(row, 4).toString();
+    		            
+    		            // Hiển thị DialogSuaKhachHang với dữ liệu của hàng được chọn
+    		            DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
+    		            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    		            
+    		            // Đổ dữ liệu vào các JTextField trong dialog
+    		            dialog.getTxtTen().setText(tenKhachHang);
+    		            dialog.getTxtSoDienThoai().setText(soDienThoai);
+    		            dialog.getTxtDiaChi().setText(diaChi);
+    		            dialog.getTxtLoai().setSelectedItem(loaiKhachHang);
+    		            
+    		            dialog.setVisible(true);
+    		            
+    		            // Thêm WindowListener để theo dõi sự kiện đóng của dialog
+    		            dialog.addWindowListener(new WindowListener() {
+    		                @Override
+    		                public void windowClosed(WindowEvent e) {
+    		                    // Kiểm tra nếu trạng thái sửa của dialog là true (đã thực hiện sửa thông tin)
+    		                    if (dialog.isTrangThaiSua()) {
+    		                        // Cập nhật lại bảng sau khi sửa thông tin khách hàng
+    		                        docDuLieuVaoTable();
+    		                    }
+    		                }
+    		                
+    		                // Các phương thức khác của WindowListener
+    		                @Override
+    		                public void windowOpened(WindowEvent e) {}
+    		                @Override
+    		                public void windowClosing(WindowEvent e) {}
+    		                @Override
+    		                public void windowIconified(WindowEvent e) {}
+    		                @Override
+    		                public void windowDeiconified(WindowEvent e) {}
+    		                @Override
+    		                public void windowActivated(WindowEvent e) {}
+    		                @Override
+    		                public void windowDeactivated(WindowEvent e) {}
+    		            });
+    		        }
+                }
 			}
 		});
 		btnTim.addActionListener(this);
@@ -268,55 +297,73 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 				}
 			}
 		});
-		tableKhachHang.addMouseListener(new MouseAdapter() {
+		tableKhachHang.addMouseListener(new MouseAdapter() {		    
 		    @Override
-		    public void mouseClicked(MouseEvent e) {
-		        int row = tableKhachHang.getSelectedRow();
-		        if (row >= 0) {
-		            // Lấy dữ liệu từ hàng được chọn
-		            int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(row, 0).toString());
-		            String tenKhachHang = tableKhachHang.getValueAt(row, 1).toString();
-		            String soDienThoai = tableKhachHang.getValueAt(row, 2).toString();
-		            String diaChi = tableKhachHang.getValueAt(row, 3).toString();
-		            String loaiKhachHang = tableKhachHang.getValueAt(row, 4).toString();
-		            
-		            // Hiển thị DialogSuaKhachHang với dữ liệu của hàng được chọn
-		            DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
-		            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-		            
-		            // Đổ dữ liệu vào các JTextField trong dialog
-		            dialog.getTxtTen().setText(tenKhachHang);
-		            dialog.getTxtSoDienThoai().setText(soDienThoai);
-		            dialog.getTxtDiaChi().setText(diaChi);
-		            dialog.getTxtLoai().setText(loaiKhachHang);
-		            
-		            dialog.setVisible(true);
-		            
-		            // Thêm WindowListener để theo dõi sự kiện đóng của dialog
-		            dialog.addWindowListener(new WindowListener() {
+		    public void mousePressed(MouseEvent e) {
+		        // Kiểm tra nếu người dùng click chuột phải và có dòng được chọn
+		        if (SwingUtilities.isRightMouseButton(e) && tableKhachHang.getSelectedRow() != -1) {
+		            // Lấy vị trí của dòng được chọn
+		            int row = tableKhachHang.getSelectedRow();
+		            // Tạo JPopupMenu
+		            JPopupMenu popupMenu = new JPopupMenu();
+		            // Tạo JMenuItem cho tùy chọn "Sửa"
+		            JMenuItem menuItemSua = new JMenuItem("Sửa");
+		            // Đặt ActionListener cho JMenuItem "Sửa"
+		            menuItemSua.addActionListener(new ActionListener() {
 		                @Override
-		                public void windowClosed(WindowEvent e) {
-		                    // Kiểm tra nếu trạng thái sửa của dialog là true (đã thực hiện sửa thông tin)
-		                    if (dialog.isTrangThaiSua()) {
-		                        // Cập nhật lại bảng sau khi sửa thông tin khách hàng
-		                        docDuLieuVaoTable();
-		                    }
+		                public void actionPerformed(ActionEvent e) {
+		                	if (row >= 0) {
+		    		            // Lấy dữ liệu từ hàng được chọn
+		    		            int maKhachHang = Integer.parseInt(tableKhachHang.getValueAt(row, 0).toString());
+		    		            String tenKhachHang = tableKhachHang.getValueAt(row, 1).toString();
+		    		            String soDienThoai = tableKhachHang.getValueAt(row, 2).toString();
+		    		            String diaChi = tableKhachHang.getValueAt(row, 3).toString();
+		    		            String loaiKhachHang = tableKhachHang.getValueAt(row, 4).toString();
+		    		            
+		    		            // Hiển thị DialogSuaKhachHang với dữ liệu của hàng được chọn
+		    		            DialogSuaKhachHang dialog = new DialogSuaKhachHang("sua", maKhachHang,Panel_QuanLiKhachHang.this);
+		    		            dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+		    		            
+		    		            // Đổ dữ liệu vào các JTextField trong dialog
+		    		            dialog.getTxtTen().setText(tenKhachHang);
+		    		            dialog.getTxtSoDienThoai().setText(soDienThoai);
+		    		            dialog.getTxtDiaChi().setText(diaChi);
+		    		            dialog.getTxtLoai().setSelectedItem(loaiKhachHang);
+		    		            
+		    		            dialog.setVisible(true);
+		    		            
+		    		            // Thêm WindowListener để theo dõi sự kiện đóng của dialog
+		    		            dialog.addWindowListener(new WindowListener() {
+		    		                @Override
+		    		                public void windowClosed(WindowEvent e) {
+		    		                    // Kiểm tra nếu trạng thái sửa của dialog là true (đã thực hiện sửa thông tin)
+		    		                    if (dialog.isTrangThaiSua()) {
+		    		                        // Cập nhật lại bảng sau khi sửa thông tin khách hàng
+		    		                        docDuLieuVaoTable();
+		    		                    }
+		    		                }
+		    		                
+		    		                // Các phương thức khác của WindowListener
+		    		                @Override
+		    		                public void windowOpened(WindowEvent e) {}
+		    		                @Override
+		    		                public void windowClosing(WindowEvent e) {}
+		    		                @Override
+		    		                public void windowIconified(WindowEvent e) {}
+		    		                @Override
+		    		                public void windowDeiconified(WindowEvent e) {}
+		    		                @Override
+		    		                public void windowActivated(WindowEvent e) {}
+		    		                @Override
+		    		                public void windowDeactivated(WindowEvent e) {}
+		    		            });
+		    		        }
 		                }
-		                
-		                // Các phương thức khác của WindowListener
-		                @Override
-		                public void windowOpened(WindowEvent e) {}
-		                @Override
-		                public void windowClosing(WindowEvent e) {}
-		                @Override
-		                public void windowIconified(WindowEvent e) {}
-		                @Override
-		                public void windowDeiconified(WindowEvent e) {}
-		                @Override
-		                public void windowActivated(WindowEvent e) {}
-		                @Override
-		                public void windowDeactivated(WindowEvent e) {}
 		            });
+		            // Thêm JMenuItem "Sửa" vào JPopupMenu
+		            popupMenu.add(menuItemSua);
+		            // Hiển thị JPopupMenu tại vị trí chuột
+		            popupMenu.show(tableKhachHang, e.getX(), e.getY());
 		        }
 		    }
 		});

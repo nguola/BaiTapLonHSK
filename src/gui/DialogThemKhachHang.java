@@ -2,18 +2,18 @@ package gui;
 
 import javax.swing.*;
 
-
 import dao.KhachHang_DAO;
 import entity.KhachHang;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class DialogThemKhachHang extends JDialog implements MouseListener{
+public class DialogThemKhachHang extends JDialog implements MouseListener {
 	private final JPanel contentPanel = new JPanel();
 	private JLabel lblMaKhachHang, lblTenKhachHang, lblSoDienThoai, lblDiaChi, lblLoaiKhachHang, lblTitle;
 	private boolean trangThaiThem = false;
-	private JTextField txtMa, txtTen, txtSoDienThoai, txtDiaChi, txtLoai;
+	private JTextField txtMa, txtTen, txtSoDienThoai, txtDiaChi;
+	JComboBox<String> cbxLoai;
 	private JButton btnThem;
 	private KhachHang khachhang = new KhachHang();
 
@@ -35,48 +35,47 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 		}
 	}
 
-	/**
-	 * @param type
-	 */
 	public DialogThemKhachHang(String type) {
+		setModal(true);// chặn tất cả các sự kiện tương tác với các cửa sổ khác của ứng dụng cho đến
+						// khi nó được đóng
 		this.setResizable(false);
 		setLocationRelativeTo(null);
-		
+
 		lblTitle = new JLabel("Thêm Khách Hàng");
 		lblTitle.setForeground(Color.WHITE);
-        lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 26));
-		
+		lblTitle.setFont(new Font("Tahoma", Font.PLAIN, 26));
+
 		lblTenKhachHang = new JLabel("Tên khách hàng:");
 		txtTen = new JTextField(30);
 		txtTen.setPreferredSize(new Dimension(100, 30));
-		
+
 		lblSoDienThoai = new JLabel("Số điện thoại:");
 		txtSoDienThoai = new JTextField(30);
 		txtSoDienThoai.setPreferredSize(new Dimension(100, 30));
-		
+
 		lblDiaChi = new JLabel("Địa chỉ:");
 		txtDiaChi = new JTextField(30);
 		txtDiaChi.setPreferredSize(new Dimension(100, 30));
-		
+
 		lblLoaiKhachHang = new JLabel("Loại khách hàng:");
-		txtLoai = new JTextField(30);
-		txtLoai.setPreferredSize(new Dimension(100, 30));
-		
+		String[] item = {"Thường","VIP"};
+		cbxLoai = new JComboBox<String>(item);
+		cbxLoai.setPreferredSize(new Dimension(100, 30));
+
 		btnThem = new JButton("Thêm");
 		btnThem.setBackground(new Color(0, 255, 204));
-		btnThem.setPreferredSize(new Dimension(140,40));
+		btnThem.setPreferredSize(new Dimension(140, 40));
 		btnThem.setFont(new Font("Arial", Font.BOLD, 16));
-		
-		
+
 		contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-		//title
+		// title
 		JPanel jpTitle = new JPanel();
 		jpTitle.setLayout(new FlowLayout(FlowLayout.CENTER));
 		jpTitle.setPreferredSize(new Dimension(100, 50));
 		jpTitle.setBackground(new Color(7, 65, 115));
 		jpTitle.add(lblTitle);
-		add(jpTitle,BorderLayout.NORTH);
-	
+		add(jpTitle, BorderLayout.NORTH);
+
 		// prow2
 		JPanel prow2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		prow2.add(lblTenKhachHang);
@@ -100,7 +99,7 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 		// prow5
 		JPanel prow5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		prow5.add(lblLoaiKhachHang);
-		prow5.add(txtLoai);
+		prow5.add(cbxLoai);
 		contentPanel.add(prow5);
 
 		// Button panel
@@ -110,8 +109,8 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 
 		add(contentPanel);
 		setSize(360, 500);
-		setVisible(true);
-		if(type.equals("them")) {
+
+		if (type.equals("them")) {
 			btnThem.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
@@ -120,8 +119,8 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 					khachHang.setTen(txtTen.getText());
 					khachHang.setSoDienThoai(txtSoDienThoai.getText());
 					khachHang.setDiaChi(txtDiaChi.getText());
-					khachHang.setLoaiKhachHang(txtLoai.getText());
-					if(!new KhachHang_DAO().create(khachHang)) {
+					khachHang.setLoaiKhachHang(cbxLoai.getSelectedItem().toString());
+					if (!new KhachHang_DAO().create(khachHang)) {
 						JOptionPane.showMessageDialog(null, "Thêm không thành công!");
 					} else {
 						JOptionPane.showMessageDialog(null, "Thêm thành công.");
@@ -136,31 +135,31 @@ public class DialogThemKhachHang extends JDialog implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

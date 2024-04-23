@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,8 +27,9 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	private final JPanel contentPanel = new JPanel();
 	private JLabel lblMaKhachHang, lblTenKhachHang, lblSoDienThoai, lblDiaChi, lblLoaiKhachHang, lblTitle;
 	private boolean trangThaiSua = false;
-	private JTextField txtMa, txtTen, txtSoDienThoai, txtDiaChi, txtLoai;
+	private JTextField txtMa, txtTen, txtSoDienThoai, txtDiaChi;
 	private JButton btnSua;
+	JComboBox<String> cbxLoai;
 	private KhachHang khachhang = new KhachHang();
 	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
 
@@ -45,7 +47,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	
 	public JTextField getTxtDiaChi() {return txtDiaChi;}
 	
-	public JTextField getTxtLoai() {return txtLoai;}
+	public JComboBox<String> getTxtLoai() {return cbxLoai;}
 	
 	public static void main(String[] args) {
 		Panel_QuanLiKhachHang panel = new Panel_QuanLiKhachHang();
@@ -59,6 +61,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	}
 
 	public DialogSuaKhachHang(String type, int maKhachHang, Panel_QuanLiKhachHang panel) {
+		setModal(true);//chặn tất cả các sự kiện tương tác với các cửa sổ khác của ứng dụng cho đến khi nó được đóng
 		this.panelQuanLiKhachHang = panel;
 		this.setResizable(false);
 		setLocationRelativeTo(null);
@@ -80,8 +83,9 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		txtDiaChi.setPreferredSize(new Dimension(100, 30));
 
 		lblLoaiKhachHang = new JLabel("Loại khách hàng:");
-		txtLoai = new JTextField(30);
-		txtLoai.setPreferredSize(new Dimension(100, 30));
+		String[] item = {"Thường","VIP"};
+		cbxLoai = new JComboBox<String>(item);
+		cbxLoai.setPreferredSize(new Dimension(100, 30));
 
 		btnSua = new JButton("Sửa");
 		btnSua.setBackground(new Color(0, 255, 204));
@@ -120,7 +124,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		// prow5
 		JPanel prow5 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		prow5.add(lblLoaiKhachHang);
-		prow5.add(txtLoai);
+		prow5.add(cbxLoai);
 		contentPanel.add(prow5);
 
 		// Button panel
@@ -130,7 +134,6 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 
 		add(contentPanel);
 		setSize(360, 500);
-		setVisible(true);
 		if(type.equals("sua")) {
 			btnSua.addMouseListener(new MouseAdapter() {
 				@Override
@@ -138,7 +141,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 					 	String ten = txtTen.getText();
 				        String soDienThoai = txtSoDienThoai.getText();
 				        String diaChi = txtDiaChi.getText();
-				        String loaiKhachHang = txtLoai.getText();
+				        String loaiKhachHang = (String) cbxLoai.getSelectedItem();
 				        KhachHang khachHang = new KhachHang(maKhachHang, ten, soDienThoai, diaChi, loaiKhachHang);
 					if(!new KhachHang_DAO().update(khachHang)) {
 						JOptionPane.showMessageDialog(null, "Sửa không thành công!");
@@ -158,7 +161,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		txtTen.setText(khachhang.getTen());
 		txtSoDienThoai.setText(khachhang.getSoDienThoai());
 		txtDiaChi.setText(khachhang.getDiaChi());
-		txtLoai.setText(khachhang.getLoaiKhachHang());
+		cbxLoai.setSelectedItem(khachhang.loaiKhachHang);
 		
 	}
 	@Override
