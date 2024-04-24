@@ -16,5 +16,12 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="library/poi/commons-codec-1.11.jar"/>
+	<classpathentry kind="lib" path="library/poi/commons-collections4-4.2.jar"/>
+	<classpathentry kind="lib" path="library/poi/commons-compress-1.18.jar"/>
+	<classpathentry kind="lib" path="library/poi/poi-4.0.1.jar"/>
+	<classpathentry kind="lib" path="library/poi/poi-ooxml-4.0.1.jar"/>
+	<classpathentry kind="lib" path="library/poi/poi-ooxml-schemas-4.0.1.jar"/>
+	<classpathentry kind="lib" path="library/poi/xmlbeans-3.0.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

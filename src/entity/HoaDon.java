@@ -7,16 +7,14 @@ public class HoaDon {
 	public final int maDon;
 	public KhachHang khachHang;
 	public NhanVien nhanVien;
-	public KhuyenMai khuyenMai;
 	public Date ngayMua;
 	public double tongTien;
-	public HoaDon(int maDon, KhachHang khachHang, NhanVien nhanVien, KhuyenMai khuyenMai, Date ngayMua,
+	public HoaDon(int maDon, KhachHang khachHang, NhanVien nhanVien, Date ngayMua,
 			double tongTien) {
 		super();
 		this.maDon = maDon;
 		this.khachHang = khachHang;
 		this.nhanVien = nhanVien;
-		this.khuyenMai = khuyenMai;
 		this.ngayMua = ngayMua;
 		this.tongTien = tongTien;
 	}
@@ -40,14 +38,6 @@ public class HoaDon {
 	
 	public void setNhanVien(NhanVien nhanVien) {
 		this.nhanVien = nhanVien;
-	}
-	
-	public KhuyenMai getKhuyenMai() {
-		return khuyenMai;
-	}
-	
-	public void setKhuyenMai(KhuyenMai khuyenMai) {
-		this.khuyenMai = khuyenMai;
 	}
 	
 	public Date getNgayMua() {
