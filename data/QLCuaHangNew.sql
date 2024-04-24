@@ -12,8 +12,7 @@ create table KhuyenMai(
 	ngayBatDau datetime NOT NULL,
 	ngayKetThuc datetime NOT NULL,
     giamGia float,
-    dieuKien float NOT NULL,
-    mucGiamToiDa float
+    dieuKien NVARCHAR(100) NOT NULL,
 );
 create table KhachHang(
 	maKhachHang INT IDENTITY(2000,1) PRIMARY KEY NOT NULL,
@@ -33,42 +32,31 @@ create table NhanVien(
 create table TaiKhoan(
 	maNhanVien int PRIMARY KEY NOT NULL,
     matKhau NVARCHAR(50) NOT NULL,
-    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
-	trangThai bit
+    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
-create table NhaCungCap(
-	maNhaCungCap INT IDENTITY(4000,1) PRIMARY KEY NOT NULL,
-    tenNhaCungCap NVARCHAR(100) NOT NULL,
-    diaChi NVARCHAR(100) NULL
+create table KhuVuc(
+	maKhuVuc INT IDENTITY(4000,1) PRIMARY KEY NOT NULL,
+    tenKhuVuc NVARCHAR(100) NOT NULL
 );
 create table SanPham(
 	maSanPham INT IDENTITY(5000,1) PRIMARY KEY NOT NULL,
+	maKhuyenMai int NOT NULL,
+	maKhuVuc int not null,
     ten NVARCHAR(255) NOT NULL,
     giaSanPham FLOAT NOT NULL,
     donVi NVARCHAR(50) NULL,
-	loaiSanPham NVARCHAR(50) NULL
+	loaiSanPham NVARCHAR(50) NULL,
+	 FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai),
+    FOREIGN KEY (maKhuVuc) REFERENCES KhuVuc(maKhuVuc),
 )
-create table ChiTietCungCap(
-	maSanPham int NOT NULL,
-    maNhaCungCap int NOT NULL,
-    ngayGiao DATETIME NOT NULL,
-    soLuong INT NOT NULL,
-    gia FLOAT,
-    donVi NVARCHAR(50) NULL,
-    PRIMARY KEY (maSanPham, maNhaCungCap),
-    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham),
-    FOREIGN KEY (maNhaCungCap) REFERENCES NhaCungCap(maNhaCungCap)
-);
 create table HoaDon(
 	maDon INT IDENTITY(6000,1) PRIMARY KEY NOT NULL,
     maKhachHang int NOT NULL,
     maNhanVien int NOT NULL,
-    maKhuyenMai int,
     ngayMua DATETIME NOT NULL,
     tongTien FLOAT NOT NULL,
     FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang),
     FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
-    FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai)
 )
 create table ChiTietHoaDon(
 	maDon int,
@@ -79,76 +67,46 @@ create table ChiTietHoaDon(
     FOREIGN KEY (maDon) REFERENCES HoaDon(maDon),
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
-
--- Dữ liệu cho bảng KhuyenMai
-INSERT INTO KhuyenMai (ngayBatDau, ngayKetThuc, giamGia, dieuKien, mucGiamToiDa)
-VALUES
-('2024-04-01', '2024-04-30', 0.1, 500000, 200000),
-('2024-05-01', '2024-05-31', 0.15, 700000, 250000),
-('2024-07-01', '2024-07-31', 0.11, 510000, 205000),
-('2024-08-01', '2024-08-30', 0.12, 520000, 210000),
-('2024-09-01', '2024-09-05', 0.13, 530000, 215000),
-('2024-10-01', '2024-10-11', 0.14, 540000, 220000),
-('2024-11-01', '2024-11-26', 0.15, 550000, 225000),
-('2024-12-01', '2024-12-21', 0.16, 560000, 230000),
-('2025-01-01', '2023-01-15', 0.17, 570000, 235000),
-('2025-02-01', '2023-02-28', 0.18, 580000, 240000),
-('2025-03-01', '2024-03-12', 0.19, 590000, 245000),
-('2025-04-01', '2025-04-17', 0.20, 600000, 250000),
-('2025-05-01', '2025-05-22', 0.21, 610000, 255000),
-('2025-06-01', '2025-06-01', 0.22, 620000, 260000),
-('2025-07-01', '2025-07-09', 0.23, 630000, 265000),
-('2025-08-01', '2025-08-29', 0.24, 640000, 270000),
-('2025-09-01', '2025-09-13', 0.25, 650000, 275000),
-('2025-10-01', '2025-10-05', 0.26, 660000, 280000),
-('2025-11-01', '2025-11-24', 0.27, 670000, 285000),
-('2025-12-01', '2025-12-19', 0.28, 680000, 290000);
-
+create table PhieuDat(
+	maPhieu INT IDENTITY(7000,1) PRIMARY KEY NOT NULL,
+	maNhanVien int not null,
+	nhaCungCap nvarchar(100) not null,
+	ngayDat Datetime not null,
+	tongTien float not null
+	 FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
+);
+create table ChiTietPhieuDat(
+	maPhieu int,
+    maSanPham int,
+    thanhTien float,
+	soLuong int,
+    PRIMARY KEY (maPhieu, maSanPham),
+	FOREIGN KEY (maPhieu) REFERENCES PhieuDat(maPhieu),
+    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
+);
 -- Dữ liệu cho bảng KhachHang
 INSERT INTO KhachHang (ten, soDienThoai, diaChi, loaiKhachHang)
 VALUES
 (N'Nguyễn Phúc Vinh', '0123456789', N'123 Đường Cộng Hòa, Quận Tân Bình, TP. HCM', N'VIP'),
 (N'Trần Văn Phi', '0987654321', N'456 Đường Nguyễn Văn, Quận Bình Thạnh, TP. HCM', N'Thường'),
 (N'Nguyễn Văn Tùng', '0123456789', N'123 Đường Nguyễn Trãi, Quận 1, TP. HCM', N'VIP'),
-(N'Nguyễn Thị Thanh Thảo', '0987654321', N'456 Đường Nguyễn Kiệm, Quận Phú Nhuận, TP. HCM', NULL),
-(N'Trần Văn Phi Hoàng', '0123456789', N'789 Đường Nguyễn Hữu Cảnh, Quận Bình Thạnh, TP. HCM', NULL),
-(N'Trần Thị Lê Huyền', '0987654321', N'101 Đường Lê Lợi, Quận Tân Phú, TP. HCM', N'VIP'),
-(N'Lê Văn Tuyết', '0123456789', N'456 Đường Lê Lai, Quận 7, TP. HCM', NULL),
+(N'Trần Thị Lê Huyền', '0987654321', N'101 Đường Lê Lợi, Quận Tân Phú, TP. HCM', N'Thường'),
 (N'Phạm Thị Hạnh', '0987654321', N'789 Đường Điện Biên Phủ, Quận Bình Thạnh, TP. HCM', N'VIP'),
-(N'Lê Văn Nam', '0123456789', N'123 Đường Võ Văn Ngân, Quận Thủ Đức, TP. HCM', N'VIP'),
-(N'Phạm Thị Lan', '0987654321', N'456 Đường Kha Vạn Cân, Quận Thủ Đức, TP. HCM', NULL),
-(N'Võ Văn Long', '0123456789', N'789 Đường Phạm Văn Chí, Quận 6, TP. HCM', NULL),
+(N'Lê Văn Nam', '0123456789', N'123 Đường Võ Văn Ngân, Quận Thủ Đức, TP. HCM', N'Thường'),
 (N'Đường Thị Hiền', '0987654321', N'101 Đường Nguyễn Đình Chiểu, Quận 3, TP. HCM', N'VIP'),
-(N'Trần Văn Đông', '0123456789', N'456 Đường Hai Bà Trưng, Quận 1, TP. HCM', NULL),
-(N'Nguyễn Thị Bích', '0987654321', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'VIP'),
-(N'Lê Văn Tường', '0123456789', N'123 Đường Cách Mạng Tháng Tám, Quận 3, TP. HCM', NULL),
+(N'Nguyễn Thị Bích', '0987654321', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'Thường'),
 (N'Phạm Thị Hồng', '0987654321', N'456 Đường Lý Thái Tổ, Quận 1, TP. HCM', N'VIP'),
-(N'Võ Văn Hồng', '0123456789', N'789 Đường Nguyễn Thị Minh Khai, Quận 1, TP. HCM', NULL),
-(N'Đường Thị Nga', '0987654321', N'101 Đường Pasteur, Quận 1, TP. HCM', N'VIP'),
-(N'Trần Văn Bình', '0123456789', N'456 Đường Tôn Đức Thắng, Quận 1, TP. HCM', NULL),
+(N'Đường Thị Nga', '0987654321', N'101 Đường Pasteur, Quận 1, TP. HCM', N'Thường'),
 (N'Nguyễn Thị Mai', '0987654321', N'789 Đường Võ Văn Tần, Quận 3, TP. HCM', N'VIP'),
-(N'Lê Văn Hùng', '0123456789', N'123 Đường Nguyễn Cửu Trinh, Quận 1, TP. HCM', NULL),
-(N'Phạm Thị Dung', '0987654321', N'456 Đường Nguyễn Du, Quận 1, TP. HCM', N'VIP'),
-(N'Võ Văn Phong', '0123456789', N'789 Đường Lê Thị Riêng, Quận 1, TP. HCM', NULL),
+(N'Phạm Thị Dung', '0987654321', N'456 Đường Nguyễn Du, Quận 1, TP. HCM', N'Thường'),
 (N'Đường Thị Thanh', '0987654321', N'101 Đường Phạm Ngũ Lão, Quận 1, TP. HCM', N'VIP'),
-(N'Trần Văn Kiên', '0123456789', N'456 Đường Bùi Viện, Quận 1, TP. HCM', NULL),
-(N'Nguyễn Thị Huyền', '0987654321', N'789 Đường Đề Thám, Quận 1, TP. HCM', N'VIP'),
-(N'Lê Văn Quân', '0123456789', N'123 Đường Nguyễn Đình Chiểu, Quận 3, TP. HCM', NULL),
+(N'Nguyễn Thị Huyền', '0987654321', N'789 Đường Đề Thám, Quận 1, TP. HCM', N'Thường'),
 (N'Phạm Thị Loan', '0987654321', N'456 Đường Trần Hưng Đạo, Quận 1, TP. HCM', N'VIP'),
-(N'Lê Thị Huệ', '0987654321', N'789 Đường Nguyễn Trãi, Quận 1, TP. HCM', N'VIP'),
-(N'Phạm Văn Tùng', '0123456789', N'123 Đường Lê Văn Quới, Quận Bình Tân, TP. HCM', NULL),
-(N'Võ Thị Lan', '0987654321', N'456 Đường Lê Trọng Tấn, Quận Tân Phú, TP. HCM', NULL),
+(N'Lê Thị Huệ', '0987654321', N'789 Đường Nguyễn Trãi, Quận 1, TP. HCM', N'Thường'),
 (N'Đường Văn Long', '0123456789', N'789 Đường Nguyễn Cửu Trinh, Quận 1, TP. HCM', N'VIP'),
-(N'Trần Thị Hồng', '0987654321', N'101 Đường Võ Văn Ngân, Quận Thủ Đức, TP. HCM', NULL),
-(N'Nguyễn Văn Đông', '0123456789', N'456 Đường Kha Vạn Cân, Quận Thủ Đức, TP. HCM', N'VIP'),
-(N'Lê Thị Bích', '0987654321', N'789 Đường Phạm Văn Chí, Quận 6, TP. HCM', NULL),
+(N'Nguyễn Văn Đông', '0123456789', N'456 Đường Kha Vạn Cân, Quận Thủ Đức, TP. HCM', N'Thường'),
 (N'Phạm Văn Hồng', '0123456789', N'123 Đường Nguyễn Đình Chiểu, Quận 3, TP. HCM', N'VIP'),
-(N'Võ Thị Nga', '0987654321', N'456 Đường Hai Bà Trưng, Quận 1, TP. HCM', NULL),
-(N'Đường Văn Bình', '0123456789', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'VIP'),
-(N'Trần Thị Mai', '0987654321', N'101 Đường Cách Mạng Tháng Tám, Quận 3, TP. HCM', NULL);
-UPDATE KhachHang
-SET loaiKhachHang = N'Thường'
-WHERE loaiKhachHang IS NULL;
+(N'Đường Văn Bình', '0123456789', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'VIP');
 -- Dữ liệu cho bảng NhanVien
 INSERT INTO NhanVien (ten, soDienThoai, gioiTinh, luong, loai)
 VALUES
@@ -162,90 +120,148 @@ VALUES
 (3000,'password1'),
 (3001,'password2'),
 (3002,'password3');
-
--- Dữ liệu cho bảng NhaCungCap
-INSERT INTO NhaCungCap (tenNhaCungCap, diaChi)
+-- dữ liệu bảng SanPham
+INSERT INTO SanPham (maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham)
 VALUES
-(N'Công ty ITeam', N'789 Đường Phan Văn Trị, Quận Gò Vấp, TP. HCM'),
-(N'Công ty TNHH Chánh Thắng', N'101 Đường Quang Trung, Quận Gò Vấp, TP. HCM'),
-(N'Công ty FPT Shop', N'202 Pasteur, Phường 6, Quận 3, TP. HCM'),
-(N'Công ty Điện máy xanh', N'123 Nguyễn Trãi, Phường Nguyễn Cư Trinh, Quận 1, TP. HCM'),
-(N'Công ty VinGroup', N'777 Đại lộ Thăng Long, Phường Tân Hưng, Quận 7, TP. HCM'),
-(N'Công ty TH True Milk', N'123 Nguyễn Duy Trinh, Phường Bình Trưng Tây, Quận 2, TP. HCM'),
-(N'Công ty Masan Consumer', N'345 Lê Thị Riêng, Phường Thới An, Quận 12, TP. HCM'),
-(N'Công ty Unilever Việt Nam', N'101 Võ Văn Ngân, Phường Linh Chiểu, Quận Thủ Đức, TP. HCM'),
-(N'Công ty Coca-Cola Việt Nam', N'789 Nguyễn Tất Thành, Phường 13, Quận 4, TP. HCM');
-
--- Dữ liệu cho bảng SanPham
-INSERT INTO SanPham (ten, giaSanPham, donVi, loaiSanPham)
+(1003, 4000, N'Bánh mì sandwich thịt gà', 25000, N'Cái', N'Đồ ăn'),
+(1004, 4001, N'Nước ngọt Coca-Cola 500ml', 15000, N'Cái', N'Thức uống'),
+(1005, 4000, N'Bánh quy sô cô la', 35000, N'Gói', N'Đồ ăn'),
+(1003, 4001, N'Nước trái cây ép ép táo', 25000, N'Cốc', N'Thức uống'),
+(1001, 4000, N'Mì gói hảo hạng vị gà', 8000, N'Bịch', N'Đồ ăn'),
+(1002, 4001, N'Nước suối Lavie 1.5L', 10000, N'Chai', N'Thức uống'),
+(1003, 4002, N'Ống hút cỏ hình động vật', 30000, N'Cái', N'Đồ gia dụng'),
+(1004, 4002, N'Ly thủy tinh cách nhiệt', 50000, N'Cái', N'Đồ gia dụng'),
+(1005, 4002, N'Bát đĩa sứ họa tiết hoa', 120000, N'Bộ', N'Đồ gia dụng'),
+(1000, 4002, N'Bộ dụng cụ nấu ăn inox', 250000, N'Bộ', N'Đồ gia dụng'),
+(1000, 4003, N'Bút mực nước cỡ lớn', 20000, N'Cái', N'Dụng cụ học tập'),
+(1001, 4003, N'Vở học sinh ô ly', 15000, N'Cái', N'Dụng cụ học tập'),
+(1002, 4004, N'Bật lửa mini', 5000, N'Cái', N'Thuốc lá'),
+(1004, 4004, N'Gói thuốc lá Marlboro', 35000, N'Gói', N'Thuốc lá'),
+(1003, 4005, N'Dây cáp sạc nhanh', 50000, N'Cái', N'Phụ kiện điện tử'),
+(1005, 4006, N'Kính râm cận mắt', 180000, N'Cặp', N'Phụ kiện thời trang'),
+(1000, 4007, N'Giấy photo in màu', 50000, N'Cái', N'Văn phòng phẩm'),
+(1003, 4007, N'Bút bi siêu mịn', 20000, N'Cái', N'Văn phòng phẩm');
+-- Dữ liệu cho bảng KhuVuc
+INSERT INTO KhuVuc (tenKhuVuc)
 VALUES
-(N'Bánh mì', 10000, N'Cái', N'Thực phẩm'),
-(N'Nước ngọt', 15000, N'Chai', N'Đồ uống'),
-(N'Sữa đậu nành', 20000, N'Lít', N'Thực phẩm'),
-(N'Mì gói', 8000, N'Gói', N'Thực phẩm'),
-(N'Chả lụa', 30000, N'Cái', N'Thực phẩm'),
-(N'Bia Heineken', 20000, N'Lon', N'Đồ uống'),
-(N'Bia Tiger', 18000, N'Lon', N'Đồ uống'),
-(N'Thịt gà', 120000, N'Kg', N'Thực phẩm'),
-(N'Rau cải', 25000, N'Kg', N'Thực phẩm'),
-(N'Chả cá', 35000, N'Cái', N'Thực phẩm'),
-(N'Sữa chua', 10000, N'Chai', N'Thực phẩm'),
-(N'Bột ngọt AJI-NO-MOTO', 10000, N'Gói', N'Thực phẩm'),
-(N'Nước mắm', 15000, N'Chai', N'Thực phẩm'),
-(N'Nước tương', 15000, N'Chai', N'Thực phẩm'),
-(N'Bia Sài Gòn', 17000, N'Lon', N'Đồ uống'),
-(N'Thịt bò', 220000, N'Kg', N'Thực phẩm'),
-(N'Chanh', 5000, N'Kg', N'Thực phẩm'),
-(N'Dầu ăn', 25000, N'Chai', N'Thực phẩm'),
-(N'Mì tôm', 5000, N'Gói', N'Thực phẩm');
+(N'Khu vực thực phẩm'), -- Bánh mì sandwich, Bánh quy sô cô la, Mì gói hảo hạng vị gà
+(N'Khu vực thức uống'), -- Nước ngọt Coca-Cola 500ml, Nước trái cây ép ép táo, Nước suối Lavie 1.5L
+(N'Khu vực đồ gia dụng'), -- Ống hút cỏ hình động vật, Ly thủy tinh cách nhiệt, Bát đĩa sứ họa tiết hoa, Bộ dụng cụ nấu ăn inox
+(N'Khu vực dụng cụ học tập'), -- Bút mực nước cỡ lớn, Vở học sinh ô ly
+(N'Khu vực thuốc lá'), -- Bật lửa mini, Gói thuốc lá Marlboro
+(N'Khu vực phụ kiện điện tử'), -- Dây cáp sạc nhanh
+(N'Khu vực phụ kiện thời trang'), -- Kính râm cận mắt
+(N'Khu vực văn phòng phẩm'); -- Giấy photo in màu, Bút bi siêu mịn
 
--- Dữ liệu cho bảng HoaDon
-INSERT INTO HoaDon (maKhachHang, maNhanVien, maKhuyenMai, ngayMua, tongTien)
+-- Dữ liệu cho bảng hóa đơn
+INSERT INTO HoaDon (maKhachHang, maNhanVien, ngayMua, tongTien)
 VALUES
-(2000, 3000, 1000, '2024-04-15', 200000),
-(2001, 3001, NULL, '2024-04-20', 300000),
-(2002, 3002, 1001, '2024-04-25', 400000),
-(2003, 3000, NULL, '2024-04-30', 500000),
-(2000, 3001, 1000, '2024-05-05', 350000),
-(2001, 3002, NULL, '2024-05-10', 250000),
-(2002, 3000, 1001, '2024-05-15', 450000),
-(2003, 3001, NULL, '2024-05-20', 150000),
-(2000, 3002, 1000, '2024-05-25', 200000);
--- Dữ liệu cho bảng ChiTietHoaDon
+(2000, 3000, '2024-05-18', 150000), -- Hóa đơn của khách hàng VIP, tổng tiền 150.000đ
+(2001, 3001, '2024-05-19', 300000), -- Hóa đơn của khách hàng thường, tổng tiền 300.000đ
+(2002, 3002, '2024-05-20', 550000), -- Hóa đơn của khách hàng VIP, tổng tiền 550.000đ
+(2004, 3000, '2024-05-21', 450000), -- Hóa đơn của khách hàng VIP, tổng tiền 450.000đ
+(2005, 3001, '2024-05-22', 180000), -- Hóa đơn của khách hàng thường, tổng tiền 180.000đ
+(2006, 3002, '2024-05-23', 320000), -- Hóa đơn của khách hàng VIP, tổng tiền 320.000đ
+(2008, 3000, '2024-05-24', 200000), -- Hóa đơn của khách hàng VIP, tổng tiền 200.000đ
+(2009, 3001, '2024-05-25', 370000), -- Hóa đơn của khách hàng thường, tổng tiền 370.000đ
+(2010, 3002, '2024-05-26', 480000), -- Hóa đơn của khách hàng VIP, tổng tiền 480.000đ
+(2012, 3000, '2024-05-27', 220000), -- Hóa đơn của khách hàng VIP, tổng tiền 220.000đ
+(2013, 3001, '2024-05-28', 290000), -- Hóa đơn của khách hàng thường, tổng tiền 290.000đ
+(2014, 3002, '2024-05-29', 510000), -- Hóa đơn của khách hàng VIP, tổng tiền 510.000đ
+(2016, 3000, '2024-05-30', 380000), -- Hóa đơn của khách hàng VIP, tổng tiền 380.000đ
+(2017, 3001, '2024-05-31', 420000), -- Hóa đơn của khách hàng thường, tổng tiền 420.000đ
+(2018, 3002, '2024-06-01', 600000), -- Hóa đơn của khách hàng VIP, tổng tiền 600.000đ
+(2019, 3000, '2024-06-02', 280000), -- Hóa đơn của khách hàng VIP, tổng tiền 280.000đ
+(2001, 3002, '2024-06-03', 350000), -- Hóa đơn của khách hàng thường, tổng tiền 350.000đ
+(2019, 3002, '2024-06-04', 470000), -- Hóa đơn của khách hàng VIP, tổng tiền 470.000đ
+(2018, 3000, '2024-06-05', 420000), -- Hóa đơn của khách hàng VIP, tổng tiền 420.000đ
+(2003, 3001, '2024-06-06', 330000); -- Hóa đơn của khách hàng thường, tổng tiền 330.000đ
+-- Dữ liệu cho bảng chi tiết hóa đơn với mã đơn từ 6076 đến 6095
 INSERT INTO ChiTietHoaDon (maDon, maSanPham, thanhTien, soLuong)
 VALUES
-(6001, 5000, 90000, 10),
-(6001, 5001, 110000, 5),
-(6002, 5001, 150000, 10),
-(6003, 5000, 180000, 20),
-(6003, 5002, 120000, 6),
-(6004, 5001, 150000, 10),
-(6004, 5003, 250000, 10),
-(6005, 5002, 108000, 6),
-(6005, 5003, 120000, 4),
-(6006, 5001, 150000, 10),
-(6007, 5000, 90000, 10),
-(6007, 5007, 18000, 12);
+(6076, 5005, 70000, 2), -- 2 sản phẩm Bánh quy sô cô la, mỗi sản phẩm giá 35.000đ
+(6076, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
+(6077, 5004, 140000, 2), -- 2 sản phẩm Nước ngọt Coca-Cola 500ml, mỗi sản phẩm giá 70.000đ
+(6077, 5008, 20000, 1), -- 1 sản phẩm Nước suối Lavie 1.5L, giá 10.000đ
+(6078, 5015, 70000, 1), -- 1 sản phẩm Gói thuốc lá Marlboro, giá 35.000đ
+(6078, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
+(6079, 5009, 120000, 3), -- 3 sản phẩm Ống hút cỏ hình động vật, mỗi sản phẩm giá 40.000đ
+(6079, 5010, 150000, 5), -- 5 sản phẩm Ly thủy tinh cách nhiệt, mỗi sản phẩm giá 30.000đ
+(6080, 5011, 120000, 1), -- 1 sản phẩm Bát đĩa sứ họa tiết hoa, giá 120.000đ
+(6080, 5012, 150000, 1), -- 1 sản phẩm Bộ dụng cụ nấu ăn inox, giá 150.000đ
+(6081, 5013, 30000, 10), -- 10 sản phẩm Bút mực nước cỡ lớn, mỗi sản phẩm giá 3.000đ
+(6081, 5014, 25000, 15); -- 15 sản phẩm Vở học sinh ô ly, mỗi sản phẩm giá 1.666đ
 
-
--- Dữ liệu cho bảng ChiTietCungCap
-INSERT INTO ChiTietCungCap (maSanPham, maNhaCungCap, ngayGiao, soLuong, gia, donVi)
+-- Dữ liệu cho bảng phiếu đặt
+INSERT INTO PhieuDat (maNhanVien, nhaCungCap, ngayDat, tongTien)
 VALUES
-(5000, 4000, '2024-04-05', 100, 9000, N'Cái'),
-(5001, 4001, '2024-04-10', 200, 12000, N'Chai'),
-(5002, 4002, '2024-04-12', 50, 18000, N'Lít'),
-(5003, 4003, '2024-04-15', 100, 28000, N'Gói'),
-(5004, 4004, '2024-04-18', 200, 4000, N'Cái'),
-(5005, 4005, '2024-04-20', 100, 30000, N'Lon'),
-(5006, 4006, '2024-04-22', 50, 13000, N'Lon'),
-(5007, 4007, '2024-04-25', 150, 18000, N'Kg'),
-(5008, 4008, '2024-04-27', 100, 25000, N'Kg'),
-(5009, 4000, '2024-04-05', 100, 9000, N'Cái'),
-(5010, 4001, '2024-04-10', 200, 12000, N'Chai'),
-(5011, 4002, '2024-04-12', 50, 18000, N'Gói'),
-(5012, 4003, '2024-04-15', 100, 28000, N'Chai'),
-(5013, 4004, '2024-04-18', 200, 4000, N'Chai'),
-(5014, 4005, '2024-04-20', 100, 30000, N'Lon'),
-(5015, 4006, '2024-04-22', 50, 13000, N'Kg'),
-(5016, 4007, '2024-04-25', 150, 18000, N'Kg'),
-(5017, 4008, '2024-04-27', 100, 25000, N'Chai');
+(3000, N'Công ty TNHH', '2024-05-18', 200000), -- Phiếu đặt từ công ty A, tổng tiền 200.000đ
+(3001, N'Công ty SX Nước', '2024-05-19', 300000), -- Phiếu đặt từ công ty B, tổng tiền 300.000đ
+(3002, N'Công ty C', '2024-05-20', 400000), -- Phiếu đặt từ công ty C, tổng tiền 400.000đ
+(3000, N'Công ty SX Nước', '2024-05-21', 250000), -- Phiếu đặt từ công ty D, tổng tiền 250.000đ
+(3001, N'Công ty VFOOD', '2024-05-22', 350000), -- Phiếu đặt từ công ty E, tổng tiền 350.000đ
+(3002, N'Công ty WinMart', '2024-05-23', 450000), -- Phiếu đặt từ công ty F, tổng tiền 450.000đ
+(3000, N'Công ty FarmFood', '2024-05-24', 180000), -- Phiếu đặt từ công ty G, tổng tiền 180.000đ
+(3001, N'Công ty Lavi', '2024-05-25', 270000), -- Phiếu đặt từ công ty H, tổng tiền 270.000đ
+(3002, N'Công ty Chánh Thắng', '2024-05-26', 320000), -- Phiếu đặt từ công ty I, tổng tiền 320.000đ
+(3000, N'Công ty VNCLC', '2024-05-27', 290000), -- Phiếu đặt từ công ty J, tổng tiền 290.000đ
+(3001, N'Công ty GoodFood', '2024-05-28', 210000), -- Phiếu đặt từ công ty K, tổng tiền 210.000đ
+(3002, N'Công ty Intel', '2024-05-29', 180000), -- Phiếu đặt từ công ty L, tổng tiền 180.000đ
+(3000, N'Công ty NVIDIA', '2024-05-30', 400000), -- Phiếu đặt từ công ty M, tổng tiền 400.000đ
+(3001, N'Công ty HDD', '2024-05-31', 350000), -- Phiếu đặt từ công ty N, tổng tiền 350.000đ
+(3002, N'Công ty OnLife', '2024-06-01', 550000), -- Phiếu đặt từ công ty O, tổng tiền 550.000đ
+(3000, N'Công ty BigC', '2024-06-02', 480000), -- Phiếu đặt từ công ty P, tổng tiền 480.000đ
+(3001, N'Công ty Copmart', '2024-06-03', 390000), -- Phiếu đặt từ công ty Q, tổng tiền 390.000đ
+(3002, N'Công ty MetroMarker', '2024-06-04', 420000), -- Phiếu đặt từ công ty R, tổng tiền 420.000đ
+(3000, N'Công ty NaVarious', '2024-06-05', 370000), -- Phiếu đặt từ công ty S, tổng tiền 370.000đ
+(3001, N'Công ty GoodItem', '2024-06-06', 280000); -- Phiếu đặt từ công ty T, tổng tiền 280.000đ
+
+-- Dữ liệu cho bảng chi tiết phiếu đặt
+-- Phiếu đặt thứ ba
+INSERT INTO ChiTietPhieuDat (maPhieu, maSanPham, thanhTien, soLuong)
+VALUES
+(7004, 5004, 140000, 2), -- 2 sản phẩm Nước ngọt Coca-Cola 500ml, mỗi sản phẩm giá 70.000đ
+(7004, 5015, 70000, 1), -- 1 sản phẩm Gói thuốc lá Marlboro, giá 35.000đ
+(7005, 5005, 70000, 2), -- 2 sản phẩm Bánh quy sô cô la, mỗi sản phẩm giá 35.000đ
+(7005, 5008, 10000, 1), -- 1 sản phẩm Nước suối Lavie 1.5L, giá 10.000đ
+(7006, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
+(7006, 5016, 35000, 1), -- 1 sản phẩm Gói thuốc lá Marlboro, giá 35.000đ
+(7005, 5009, 120000, 3), -- 3 sản phẩm Ống hút cỏ hình động vật, mỗi sản phẩm giá 40.000đ
+(7005, 5010, 150000, 5), -- 5 sản phẩm Ly thủy tinh cách nhiệt, mỗi sản phẩm giá 30.000đ
+(7006, 5011, 240000, 2), -- 2 sản phẩm Bát đĩa sứ họa tiết hoa, mỗi sản phẩm giá 120.000đ
+(7006, 5012, 450000, 3), -- 3 sản phẩm Bộ dụng cụ nấu ăn inox, mỗi sản phẩm giá 150.000đ
+(7007, 5013, 30000, 10), -- 10 sản phẩm Bút mực nước cỡ lớn, mỗi sản phẩm giá 3.000đ
+(7007, 5014, 25000, 15), -- 15 sản phẩm Vở học sinh ô ly, mỗi sản phẩm giá 1.666đ
+(7008, 5015, 175000, 5), -- 5 sản phẩm Gói thuốc lá Marlboro, mỗi sản phẩm giá 35.000đ
+(7008, 5016, 70000, 2); -- 2 sản phẩm Gói thuốc lá Marlboro, mỗi sản phẩm giá 35.000đ
+
+-- Dữ liệu cho bảng KhuyenMai
+INSERT INTO KhuyenMai (ngayBatDau, ngayKetThuc, giamGia, dieuKien)
+VALUES
+('2024-07-01', '2024-07-31', 0.1, N'Áp dụng cho đơn hàng từ 500.000đ trở lên'),
+('2024-08-05', '2024-08-20', 0.2, N'Áp dụng cho đơn hàng từ 1.000.000đ trở lên'),
+('2024-09-10', '2024-09-30', 0.15, N'Áp dụng cho đơn hàng từ 700.000đ trở lên'),
+('2024-10-01', '2024-10-15', 0.25, N'Áp dụng cho đơn hàng từ 800.000đ trở lên'),
+('2024-11-05', '2024-11-20', 0.3, N'Áp dụng cho đơn hàng từ 1.500.000đ trở lên'),
+('2024-12-01', '2024-12-31', 0.2, N'Áp dụng cho đơn hàng từ 600.000đ trở lên');
+
+-- procedure
+go
+create proc LocHoaDon
+@Datestart date = null,
+@DateEnd date = null,
+@PriceStart money = -1,
+@PriceEnd money = -1,
+@MaKH int = -1,
+@MaNV int = -1
+as
+begin
+	select * 
+	from [dbo].[HoaDon]
+	where (@Datestart is null or ngayMua >= @Datestart) and
+	(@DateEnd is null or ngayMua <= @DateEnd) and
+	(@PriceStart = -1 or tongTien >= @PriceStart) and
+	(@PriceEnd = -1 or tongTien < @PriceEnd) and
+	(@MaKH = -1 or maKhachHang = @MaKH) and
+	(@MaNV = -1 or maNhanVien = @MaNV)
+end
