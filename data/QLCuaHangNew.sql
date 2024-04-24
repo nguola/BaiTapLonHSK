@@ -246,3 +246,33 @@ VALUES
 (7008, 5015, 175000, 5), -- 5 sản phẩm Gói thuốc lá Marlboro, mỗi sản phẩm giá 35.000đ
 (7008, 5016, 70000, 2); -- 2 sản phẩm Gói thuốc lá Marlboro, mỗi sản phẩm giá 35.000đ
 
+-- Dữ liệu cho bảng KhuyenMai
+INSERT INTO KhuyenMai (ngayBatDau, ngayKetThuc, giamGia, dieuKien)
+VALUES
+('2024-07-01', '2024-07-31', 0.1, N'Áp dụng cho đơn hàng từ 500.000đ trở lên'),
+('2024-08-05', '2024-08-20', 0.2, N'Áp dụng cho đơn hàng từ 1.000.000đ trở lên'),
+('2024-09-10', '2024-09-30', 0.15, N'Áp dụng cho đơn hàng từ 700.000đ trở lên'),
+('2024-10-01', '2024-10-15', 0.25, N'Áp dụng cho đơn hàng từ 800.000đ trở lên'),
+('2024-11-05', '2024-11-20', 0.3, N'Áp dụng cho đơn hàng từ 1.500.000đ trở lên'),
+('2024-12-01', '2024-12-31', 0.2, N'Áp dụng cho đơn hàng từ 600.000đ trở lên');
+
+-- procedure
+go
+create proc LocHoaDon
+@Datestart date = null,
+@DateEnd date = null,
+@PriceStart money = -1,
+@PriceEnd money = -1,
+@MaKH int = -1,
+@MaNV int = -1
+as
+begin
+	select * 
+	from [dbo].[HoaDon]
+	where (@Datestart is null or ngayMua >= @Datestart) and
+	(@DateEnd is null or ngayMua <= @DateEnd) and
+	(@PriceStart = -1 or tongTien >= @PriceStart) and
+	(@PriceEnd = -1 or tongTien < @PriceEnd) and
+	(@MaKH = -1 or maKhachHang = @MaKH) and
+	(@MaNV = -1 or maNhanVien = @MaNV)
+end
