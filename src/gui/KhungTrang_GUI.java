@@ -105,8 +105,9 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		});
 		
 		mnuSanPham.add(itemBanHang);
-		mnuSanPham.add(new JMenuItem("SP"));
-		mnuSanPham.add(new JMenuItem("SP"));
+		mnuSanPham.add(new JMenuItem("Thông tin"));
+		mnuSanPham.add(new JMenuItem("Thống kê"));
+		mnuSanPham.add(new JMenuItem("Báo cáo"));
 		
 		
 

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import connectDB.ConnectDB;
 import entity.KhachHang;
+import entity.KhuVuc;
+import entity.KhuyenMai;
 import entity.SanPham;
 
 public class SanPham_DAO {
@@ -22,11 +24,15 @@ public class SanPham_DAO {
 			ResultSet rs = stm.executeQuery(sql);
 			while(rs.next()){
 				int maSanPham = rs.getInt(1);
-				String ten = rs.getString(2);
-				double giaSanPham = rs.getDouble(3);
-				String donVi = rs.getString(4);
-				String loaiSanPham = rs.getString(5);
-				SanPham sp = new SanPham(maSanPham, ten, giaSanPham, donVi, loaiSanPham);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSanPham = rs.getString(7);
+				
+				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				
 				dsSP.add(sp);
 			}
 		}catch (Exception e) {
@@ -50,11 +56,14 @@ public class SanPham_DAO {
 
 			while(rs.next()) {
 				int maSanPham = rs.getInt(1);
-				String ten = rs.getString(2);
-				double giaSanPham = rs.getDouble(3);
-				String donVi = rs.getString(4);
-				String loaiSanPham = rs.getString(5);
-				sp = new SanPham(maSanPham, ten, giaSanPham, donVi, loaiSanPham);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSanPham = rs.getString(7);
+				
+				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -68,6 +77,123 @@ public class SanPham_DAO {
 			}
 		}
 		return sp;
+	}
+	
+	public ArrayList<SanPham> getSanPhamTheoLoai(String loai){
+		SanPham sp = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		ArrayList<SanPham> list = new ArrayList<SanPham>();
+		try {
+			String sql = "select * from SanPham where loaiSanPham = ?";
+			stament = con.prepareStatement(sql);
+			stament.setString(1, loai);
+			
+			ResultSet rs = stament.executeQuery();
+
+			while(rs.next()) {
+				int maSanPham = rs.getInt(1);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSanPham = rs.getString(7);
+				
+				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				list.add(sp);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return list;
+	}
+	
+	public ArrayList<SanPham> getSanPhamTheoTen(String tensp){
+		SanPham sp = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		ArrayList<SanPham> list = new ArrayList<SanPham>();
+		try {
+			String sql = "select * from SanPham where ten like ?";
+			stament = con.prepareStatement(sql);
+			stament.setString(1, "%" + tensp + "%");
+			
+			ResultSet rs = stament.executeQuery();
+
+			while(rs.next()) {
+				int maSanPham = rs.getInt(1);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSanPham = rs.getString(7);
+				
+				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				list.add(sp);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return list;
+	}
+	
+	public ArrayList<SanPham> getSanPhamTheoDonViTinh(String donvi){
+		SanPham sp = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		ArrayList<SanPham> list = new ArrayList<SanPham>();
+		try {
+			String sql = "select * from SanPham where donVi = ?";
+			stament = con.prepareStatement(sql);
+			stament.setString(1, donvi);
+			
+			ResultSet rs = stament.executeQuery();
+
+			while(rs.next()) {
+				int maSanPham = rs.getInt(1);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSanPham = rs.getString(7);
+				
+				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				list.add(sp);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return list;
 	}
 	
 	public ArrayList<String> getAllLoaiSP(){
@@ -120,13 +246,15 @@ public class SanPham_DAO {
 		
 		int n = 0;
 		try {
-			String sql = "insert into SanPham values(?, ?, ?, ?, ?)";
+			String sql = "insert into SanPham values(?, ?, ?, ?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, sp.getMaSanPham());
-			stament.setString(2, sp.getTen());
-			stament.setDouble(3, sp.getGiaSanPham());
-			stament.setString(4, sp.getDonVi());
-			stament.setString(5, sp.getLoaiSanPham());
+			stament.setInt(2, sp.getMaKhuyenMai().getMaKhuyenMai());
+			stament.setInt(3, sp.getMaKhuVuc().getMaKhuVuc());
+			stament.setString(4, sp.getTen());
+			stament.setDouble(5, sp.getGiaSanPham());
+			stament.setString(6, sp.getDonVi());
+			stament.setString(7, sp.getLoaiSanPham());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

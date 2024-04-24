@@ -1,6 +1,5 @@
 ﻿use master
 go
-
 --drop database QLCuaHang
 go
 create database QLCuaHang
@@ -120,6 +119,29 @@ VALUES
 (3000,'password1'),
 (3001,'password2'),
 (3002,'password3');
+
+-- Dữ liệu cho bảng KhuyenMai
+INSERT INTO KhuyenMai (ngayBatDau, ngayKetThuc, giamGia, dieuKien)
+VALUES
+('2024-07-01', '2024-07-31', 0.1, N'Áp dụng cho đơn hàng từ 500.000đ trở lên'),
+('2024-08-05', '2024-08-20', 0.2, N'Áp dụng cho đơn hàng từ 1.000.000đ trở lên'),
+('2024-09-10', '2024-09-30', 0.15, N'Áp dụng cho đơn hàng từ 700.000đ trở lên'),
+('2024-10-01', '2024-10-15', 0.25, N'Áp dụng cho đơn hàng từ 800.000đ trở lên'),
+('2024-11-05', '2024-11-20', 0.3, N'Áp dụng cho đơn hàng từ 1.500.000đ trở lên'),
+('2024-12-01', '2024-12-31', 0.2, N'Áp dụng cho đơn hàng từ 600.000đ trở lên');
+
+-- Dữ liệu cho bảng KhuVuc
+INSERT INTO KhuVuc (tenKhuVuc)
+VALUES
+(N'Khu vực thực phẩm'), -- Bánh mì sandwich, Bánh quy sô cô la, Mì gói hảo hạng vị gà
+(N'Khu vực thức uống'), -- Nước ngọt Coca-Cola 500ml, Nước trái cây ép ép táo, Nước suối Lavie 1.5L
+(N'Khu vực đồ gia dụng'), -- Ống hút cỏ hình động vật, Ly thủy tinh cách nhiệt, Bát đĩa sứ họa tiết hoa, Bộ dụng cụ nấu ăn inox
+(N'Khu vực dụng cụ học tập'), -- Bút mực nước cỡ lớn, Vở học sinh ô ly
+(N'Khu vực thuốc lá'), -- Bật lửa mini, Gói thuốc lá Marlboro
+(N'Khu vực phụ kiện điện tử'), -- Dây cáp sạc nhanh
+(N'Khu vực phụ kiện thời trang'), -- Kính râm cận mắt
+(N'Khu vực văn phòng phẩm'); -- Giấy photo in màu, Bút bi siêu mịn
+
 -- dữ liệu bảng SanPham
 INSERT INTO SanPham (maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham)
 VALUES
@@ -141,18 +163,6 @@ VALUES
 (1005, 4006, N'Kính râm cận mắt', 180000, N'Cặp', N'Phụ kiện thời trang'),
 (1000, 4007, N'Giấy photo in màu', 50000, N'Cái', N'Văn phòng phẩm'),
 (1003, 4007, N'Bút bi siêu mịn', 20000, N'Cái', N'Văn phòng phẩm');
--- Dữ liệu cho bảng KhuVuc
-INSERT INTO KhuVuc (tenKhuVuc)
-VALUES
-(N'Khu vực thực phẩm'), -- Bánh mì sandwich, Bánh quy sô cô la, Mì gói hảo hạng vị gà
-(N'Khu vực thức uống'), -- Nước ngọt Coca-Cola 500ml, Nước trái cây ép ép táo, Nước suối Lavie 1.5L
-(N'Khu vực đồ gia dụng'), -- Ống hút cỏ hình động vật, Ly thủy tinh cách nhiệt, Bát đĩa sứ họa tiết hoa, Bộ dụng cụ nấu ăn inox
-(N'Khu vực dụng cụ học tập'), -- Bút mực nước cỡ lớn, Vở học sinh ô ly
-(N'Khu vực thuốc lá'), -- Bật lửa mini, Gói thuốc lá Marlboro
-(N'Khu vực phụ kiện điện tử'), -- Dây cáp sạc nhanh
-(N'Khu vực phụ kiện thời trang'), -- Kính râm cận mắt
-(N'Khu vực văn phòng phẩm'); -- Giấy photo in màu, Bút bi siêu mịn
-
 -- Dữ liệu cho bảng hóa đơn
 INSERT INTO HoaDon (maKhachHang, maNhanVien, ngayMua, tongTien)
 VALUES
@@ -176,21 +186,22 @@ VALUES
 (2019, 3002, '2024-06-04', 470000), -- Hóa đơn của khách hàng VIP, tổng tiền 470.000đ
 (2018, 3000, '2024-06-05', 420000), -- Hóa đơn của khách hàng VIP, tổng tiền 420.000đ
 (2003, 3001, '2024-06-06', 330000); -- Hóa đơn của khách hàng thường, tổng tiền 330.000đ
+
 -- Dữ liệu cho bảng chi tiết hóa đơn với mã đơn từ 6076 đến 6095
 INSERT INTO ChiTietHoaDon (maDon, maSanPham, thanhTien, soLuong)
 VALUES
-(6076, 5005, 70000, 2), -- 2 sản phẩm Bánh quy sô cô la, mỗi sản phẩm giá 35.000đ
-(6076, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
-(6077, 5004, 140000, 2), -- 2 sản phẩm Nước ngọt Coca-Cola 500ml, mỗi sản phẩm giá 70.000đ
-(6077, 5008, 20000, 1), -- 1 sản phẩm Nước suối Lavie 1.5L, giá 10.000đ
-(6078, 5015, 70000, 1), -- 1 sản phẩm Gói thuốc lá Marlboro, giá 35.000đ
-(6078, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
-(6079, 5009, 120000, 3), -- 3 sản phẩm Ống hút cỏ hình động vật, mỗi sản phẩm giá 40.000đ
-(6079, 5010, 150000, 5), -- 5 sản phẩm Ly thủy tinh cách nhiệt, mỗi sản phẩm giá 30.000đ
-(6080, 5011, 120000, 1), -- 1 sản phẩm Bát đĩa sứ họa tiết hoa, giá 120.000đ
-(6080, 5012, 150000, 1), -- 1 sản phẩm Bộ dụng cụ nấu ăn inox, giá 150.000đ
-(6081, 5013, 30000, 10), -- 10 sản phẩm Bút mực nước cỡ lớn, mỗi sản phẩm giá 3.000đ
-(6081, 5014, 25000, 15); -- 15 sản phẩm Vở học sinh ô ly, mỗi sản phẩm giá 1.666đ
+(6000, 5005, 70000, 2), -- 2 sản phẩm Bánh quy sô cô la, mỗi sản phẩm giá 35.000đ
+(6000, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
+(6001, 5004, 140000, 2), -- 2 sản phẩm Nước ngọt Coca-Cola 500ml, mỗi sản phẩm giá 70.000đ
+(6001, 5008, 20000, 1), -- 1 sản phẩm Nước suối Lavie 1.5L, giá 10.000đ
+(6001, 5015, 70000, 1), -- 1 sản phẩm Gói thuốc lá Marlboro, giá 35.000đ
+(6002, 5007, 160000, 2), -- 2 sản phẩm Mì gói hảo hạng vị gà, mỗi sản phẩm giá 80.000đ
+(6002, 5009, 120000, 3), -- 3 sản phẩm Ống hút cỏ hình động vật, mỗi sản phẩm giá 40.000đ
+(6003, 5010, 150000, 5), -- 5 sản phẩm Ly thủy tinh caách nhiệt, mỗi sản phẩm giá 30.000đ
+(6003, 5011, 120000, 1), -- 1 sản phẩm Bát đĩa sứ họa tiết hoa, giá 120.000đ
+(6003, 5012, 150000, 1), -- 1 sản phẩm Bộ dụng cụ nấu ăn inox, giá 150.000đ
+(6004, 5013, 30000, 10), -- 10 sản phẩm Bút mực nước cỡ lớn, mỗi sản phẩm giá 3.000đ
+(6004, 5014, 25000, 15); -- 15 sản phẩm Vở học sinh ô ly, mỗi sản phẩm giá 1.666đ
 
 -- Dữ liệu cho bảng phiếu đặt
 INSERT INTO PhieuDat (maNhanVien, nhaCungCap, ngayDat, tongTien)
@@ -234,14 +245,4 @@ VALUES
 (7007, 5014, 25000, 15), -- 15 sản phẩm Vở học sinh ô ly, mỗi sản phẩm giá 1.666đ
 (7008, 5015, 175000, 5), -- 5 sản phẩm Gói thuốc lá Marlboro, mỗi sản phẩm giá 35.000đ
 (7008, 5016, 70000, 2); -- 2 sản phẩm Gói thuốc lá Marlboro, mỗi sản phẩm giá 35.000đ
-
--- Dữ liệu cho bảng KhuyenMai
-INSERT INTO KhuyenMai (ngayBatDau, ngayKetThuc, giamGia, dieuKien)
-VALUES
-('2024-07-01', '2024-07-31', 0.1, N'Áp dụng cho đơn hàng từ 500.000đ trở lên'),
-('2024-08-05', '2024-08-20', 0.2, N'Áp dụng cho đơn hàng từ 1.000.000đ trở lên'),
-('2024-09-10', '2024-09-30', 0.15, N'Áp dụng cho đơn hàng từ 700.000đ trở lên'),
-('2024-10-01', '2024-10-15', 0.25, N'Áp dụng cho đơn hàng từ 800.000đ trở lên'),
-('2024-11-05', '2024-11-20', 0.3, N'Áp dụng cho đơn hàng từ 1.500.000đ trở lên'),
-('2024-12-01', '2024-12-31', 0.2, N'Áp dụng cho đơn hàng từ 600.000đ trở lên');
 
