@@ -276,3 +276,27 @@ begin
 	(@MaKH = -1 or maKhachHang = @MaKH) and
 	(@MaNV = -1 or maNhanVien = @MaNV)
 end
+
+-- Lọc sản phẩm ở trang bán hàng
+go
+create PROCEDURE loc_SanPham
+    @maSP int = NULL,
+    @tenSP nvarchar(50),
+    @loaiSP nvarchar(50) = NULL,
+    @donVi nvarchar(50) = NULL
+AS
+	if(@maSP = -1)
+		Set @maSP = null
+
+	if(@loaiSP = '')
+		Set @loaiSP = null
+
+	if(@donVi = '')
+		Set @donVi = null
+    SELECT *
+    FROM SanPham
+    WHERE (@maSP IS NULL OR maSanPham = @maSP)
+          AND (@tenSP IS NULL OR ten LIKE '%' + @tenSP + '%')
+          AND (@loaiSP IS NULL OR loaiSanPham = @loaiSP)
+          AND (@donVi IS NULL OR donVi = @donVi)
+GO
