@@ -49,6 +49,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 	private Pane_BanHang pane_BanHang;
 	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
 	private JMenuItem itemBanHang;
+	private JMenuItem itemThongTin;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -62,11 +63,11 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		// code menu
 		mnubar = new JMenuBar();
 
-		mnuSanPham = new JMenu("Sản Phẩm");
-		mnuSanPham.setFont(new Font("Arial", Font.BOLD, 15));
-
 		mnuNhanVien = new JMenu("Nhân Viên");
 		mnuNhanVien.setFont(new Font("Arial", Font.BOLD, 15));
+		
+		mnuSanPham = new JMenu("Sản Phẩm");
+		mnuSanPham.setFont(new Font("Arial", Font.BOLD, 15));
 
 		mnuHoaDon = new JMenu("Hóa đơn");
 		mnuHoaDon.setFont(new Font("Arial", Font.BOLD, 15));
@@ -104,15 +105,24 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		    }
 		});
 		
-		mnuSanPham.add(itemBanHang);
-		mnuSanPham.add(new JMenuItem("Thông tin"));
-		mnuSanPham.add(new JMenuItem("Thống kê"));
-		mnuSanPham.add(new JMenuItem("Báo cáo"));
+		mnuNhanVien.add(itemBanHang);
+		
+		itemThongTin = new JMenuItem("Thông tin");
+		itemThongTin.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Form_ThongTinNhanVien(tk);
+			}
+		});
+		mnuNhanVien.add(itemThongTin);
+		mnuNhanVien.add(new JMenuItem("Thống kê"));
+		mnuNhanVien.add(new JMenuItem("Báo cáo"));
 		
 		
 
-		mnubar.add(mnuSanPham);
 		mnubar.add(mnuNhanVien);
+		mnubar.add(mnuSanPham);
 		mnubar.add(mnuNhaCungCap);
 		mnubar.add(mnuHoaDon);
 		mnubar.add(mnuKhachHang);

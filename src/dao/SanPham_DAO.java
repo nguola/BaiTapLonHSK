@@ -79,17 +79,19 @@ public class SanPham_DAO {
 		return sp;
 	}
 	
-	public ArrayList<SanPham> getSanPhamTheoLoai(String loai){
-		SanPham sp = null;
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		PreparedStatement stament = null;
+	public ArrayList<SanPham> Loc_SanPham(int maSP, String tenSP, String loaiSP, String donViTinh){
 		ArrayList<SanPham> list = new ArrayList<SanPham>();
+		PreparedStatement stament = null;
 		try {
-			String sql = "select * from SanPham where loaiSanPham = ?";
-			stament = con.prepareStatement(sql);
-			stament.setString(1, loai);
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			String sql = "exec dbo.loc_SanPham ?, ?, ?, ?";
 			
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maSP);
+			stament.setString(2, tenSP);
+			stament.setString(3, loaiSP);
+			stament.setString(4, donViTinh);
 			ResultSet rs = stament.executeQuery();
 
 			while(rs.next()) {
@@ -101,97 +103,12 @@ public class SanPham_DAO {
 				String donVi = rs.getString(6);
 				String loaiSanPham = rs.getString(7);
 				
-				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
 				list.add(sp);
 			}
-		}catch (Exception e) {
-			// TODO: handle exception
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
-			try {
-				stament.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				// TODO: handle exception
-			}
-		}
-		return list;
-	}
-	
-	public ArrayList<SanPham> getSanPhamTheoTen(String tensp){
-		SanPham sp = null;
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		PreparedStatement stament = null;
-		ArrayList<SanPham> list = new ArrayList<SanPham>();
-		try {
-			String sql = "select * from SanPham where ten like ?";
-			stament = con.prepareStatement(sql);
-			stament.setString(1, "%" + tensp + "%");
-			
-			ResultSet rs = stament.executeQuery();
-
-			while(rs.next()) {
-				int maSanPham = rs.getInt(1);
-				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
-				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
-				String ten = rs.getString(4);
-				double giaSanPham = rs.getDouble(5);
-				String donVi = rs.getString(6);
-				String loaiSanPham = rs.getString(7);
-				
-				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
-				list.add(sp);
-			}
-		}catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();
-		}finally {
-			try {
-				stament.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				// TODO: handle exception
-			}
-		}
-		return list;
-	}
-	
-	public ArrayList<SanPham> getSanPhamTheoDonViTinh(String donvi){
-		SanPham sp = null;
-		ConnectDB.getInstance();
-		Connection con = ConnectDB.getConnection();
-		PreparedStatement stament = null;
-		ArrayList<SanPham> list = new ArrayList<SanPham>();
-		try {
-			String sql = "select * from SanPham where donVi = ?";
-			stament = con.prepareStatement(sql);
-			stament.setString(1, donvi);
-			
-			ResultSet rs = stament.executeQuery();
-
-			while(rs.next()) {
-				int maSanPham = rs.getInt(1);
-				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
-				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
-				String ten = rs.getString(4);
-				double giaSanPham = rs.getDouble(5);
-				String donVi = rs.getString(6);
-				String loaiSanPham = rs.getString(7);
-				
-				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
-				list.add(sp);
-			}
-		}catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-		}finally {
-			try {
-				stament.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				// TODO: handle exception
-			}
 		}
 		return list;
 	}
