@@ -18,7 +18,7 @@ public class ChiTietHoaDon_DAO {
 		Connection con = ConnectDB.getInstance().getConnection();
 		ArrayList<ChiTietHoaDon> dsChiTietHoaDon = new ArrayList<ChiTietHoaDon>();
 		try {
-			String query = "select * from ChiTietHoaDon where maHoaDon = ?";
+			String query = "select * from ChiTietHoaDon where maDon = ?";
 			PreparedStatement statement = con.prepareStatement(query);
 			statement.setInt(1, maHD);
 			ResultSet rs = statement.executeQuery();

@@ -127,4 +127,30 @@ public class HoaDon_DAO {
 		}
 		return list;
 	}
+	
+	public ArrayList<HoaDon> getAllHoaDonOrderBY(String value, String orderBY) {
+		ArrayList<HoaDon> dsHoaDon = new ArrayList<HoaDon>();
+		Connection con = ConnectDB.getInstance().getConnection();
+		String query = "select * from HoaDon ORDER BY " + value + " " + orderBY;
+		
+		try {
+			Statement statement = con.createStatement();
+			ResultSet rs = statement.executeQuery(query);
+			
+			while (rs.next()) {
+				int maHoaDon = rs.getInt(1);
+				KhachHang khachHang = new KhachHang(rs.getInt(2));
+				NhanVien nhanVien = new NhanVien(rs.getInt(3));
+				Date ngayMua = rs.getDate(4);
+				double tongTien = rs.getDouble(5);
+				
+				HoaDon hd = new HoaDon(maHoaDon, khachHang, nhanVien, ngayMua, tongTien);
+				
+				dsHoaDon.add(hd);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dsHoaDon;
+	}
 }

@@ -103,25 +103,22 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 	private JTextField txtCen1;
 	private JTextField txtCen2;
 	private JTextField txtCen21;
-	private JTextField txtCen3;
 	private JTextField txtCen4;
 	private JTextField txtCen41;
 	private JTableHeader headerTable;
-	private JButton fileButton;
-	private JPopupMenu filePopUp;
 	private JButton exportHD;
 	private JPopupMenu popupMenu;
 	private JMenuItem refresh;
 	private JMenuItem popupExportExcel;
 	private JMenuItem popupXoa;
-	private JPopupMenu popupMenuTable;
 	private JMenuItem popupXemChiTiet;
 	private ButtonGroup btGoupTime;
-	private TableRowSorter<TableModel> sort;
-	private NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
+	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
 	private JButton importHD;
 	private JMenuItem popupImportExcel;
-
+	private String[] sort = {"ASC", "ASC", "ASC", "ASC", "ASC"};
+	private String[] headerVal = {"maDon", "maKhachHang", "maNhanVien", "ngayMua", "tongTien"};
+	
 	public HoaDon_GUI() {
 		super();
 		setSize(1200, 800);
@@ -168,11 +165,15 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		
 		//Tạo chức năng
 		addHD = new JButton("Thêm mới");
+		addHD.setMnemonic('a');
 		removeHD = new JButton("Xóa");
+		removeHD.setMnemonic('d');
 		removeHD.addActionListener(this);
 		exportHD = new JButton("Xuất File Excel");
+		exportHD.setMnemonic('e');
 		exportHD.addActionListener(this);
 		importHD = new JButton("Import File Excel");
+		importHD.setMnemonic('i');
 		importHD.addActionListener(this);
 		
 		pnNorth.add(addHD);
@@ -247,8 +248,6 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		tbListHD.setRowHeight(25);
 		
 		//Khởi tạo biến sắp xếp
-		sort = new TableRowSorter<TableModel>(tbListHD.getModel());
-		tbListHD.setRowSorter(sort);
 		
 		headerTable = tbListHD.getTableHeader();
 		headerTable.addMouseListener(this);
@@ -343,10 +342,12 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		//button loc
 		btnFillter = new JButton("Lọc");
 		btnFillter.addActionListener(this);
+		btnFillter.setMnemonic('f');
 		fillter.add(Box.createHorizontalStrut(20));
 		fillter.add(btnFillter);
 		fillter.add(Box.createHorizontalStrut(20));
 		btnUndo = new JButton("Hoàn tác");
+		btnUndo.setMnemonic('R');
 		btnUndo.addActionListener(this);
 		fillter.add(btnUndo);
 		fillter.add(Box.createHorizontalStrut(20));
@@ -359,19 +360,7 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		add(pnSouth, BorderLayout.SOUTH);
 		
 		btnXemChiTiet = new JButton("Xem Chi Tiết Hóa Đơn");
-		btnXemChiTiet.addActionListener(e -> {
-            // Tạo một JDialog modal mới
-            JDialog dialog = new JDialog(this, "Modal Dialog", true); // Set modal là true
-            dialog.setSize(300, 200);
-            dialog.setLocationRelativeTo(null);
-            
-            // Thêm một label vào dialog
-            JLabel label = new JLabel("This is a modal dialog");
-            dialog.add(label);
-            
-            // Hiển thị dialog
-            dialog.setVisible(true);
-        });
+		btnXemChiTiet.addActionListener(this);
 		pnSouth.add(btnXemChiTiet);
 		
 		
@@ -388,6 +377,7 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		refresh = new JMenuItem("Refresh");
 		refresh.addActionListener(this);
 		popupXemChiTiet = new JMenuItem("Xem chi tiết");
+		popupXemChiTiet.addActionListener(this);
 		JMenu popupFile = new JMenu("File");
 		popupExportExcel = new JMenuItem("Export file excel");
 		popupExportExcel.addActionListener(this);
@@ -591,8 +581,8 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
             workbook.close();
             file.close();
             JOptionPane.showMessageDialog(this, "Import Thành công");
-        } catch (IOException e) {
-            
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Định dạng file không hợp lệ");
         }
         
         return data;
@@ -613,16 +603,10 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 			txtCen4.setText(hd.getNgayMua().toString());
 			txtCen41.setText(currencyFormat.format(hd.getTongTien()));
 		} else if (src.equals(headerTable)) {
-			//Chức năng sắp xếp khi nhấn vào table header
-			int colIndex = tbListHD.columnAtPoint(e.getPoint());
-			if(colIndex == -1) return; //Khi click không phải tiêu đề
-			else {
-				if(sort.getSortKeys().isEmpty() || sort.getSortKeys().get(0).getColumn() != colIndex) {
-					// Nếu chưa được sắp xếp hoặc đã được sắp xếp nhưng không theo thứ tự tăng dần,thì sắp xếp tăng dần
-					sort.setSortKeys(List.of(new RowSorter.SortKey(colIndex, SortOrder.ASCENDING)));
-                    sort.sort();
-				}
-			}
+			int index = headerTable.columnAtPoint(e.getPoint());
+			ArrayList<HoaDon> temp = hoaDon_DAO.getAllHoaDonOrderBY(headerVal[index], sort[index]);
+			sort[index] = sort[index].equals("ASC") ? "DESC" : "ASC";
+			updateTable(temp);
 		} 
 		
 		
@@ -702,6 +686,13 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 	            updateList();
 	            updateTable(list);
 	        }
+		} else if (src.equals(btnXemChiTiet) || src.equals(popupXemChiTiet)) {
+			int index = tbListHD.getSelectedRow();
+			if (index < 0) {
+				JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn");
+				return;
+			}
+			new ChiTietHoaDon_GUI(list.get(index)).setVisible(true);;;
 		}
 	}
 	
