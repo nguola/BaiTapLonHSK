@@ -30,8 +30,9 @@ public class SanPham_DAO {
 				double giaSanPham = rs.getDouble(5);
 				String donVi = rs.getString(6);
 				String loaiSanPham = rs.getString(7);
+				int soLuongTonKho = rs.getInt(8);
 				
-				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham, soLuongTonKho);
 				
 				dsSP.add(sp);
 			}
@@ -62,8 +63,9 @@ public class SanPham_DAO {
 				double giaSanPham = rs.getDouble(5);
 				String donVi = rs.getString(6);
 				String loaiSanPham = rs.getString(7);
+				int soLuongTonKho = rs.getInt(8);
 				
-				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham, soLuongTonKho);
 			}
 		}catch (Exception e) {
 			// TODO: handle exception
@@ -102,8 +104,9 @@ public class SanPham_DAO {
 				double giaSanPham = rs.getDouble(5);
 				String donVi = rs.getString(6);
 				String loaiSanPham = rs.getString(7);
+				int soLuongTonKho = rs.getInt(8);
 				
-				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham);
+				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham, soLuongTonKho);
 				list.add(sp);
 			}
 		} catch (Exception e) {
@@ -172,6 +175,7 @@ public class SanPham_DAO {
 			stament.setDouble(5, sp.getGiaSanPham());
 			stament.setString(6, sp.getDonVi());
 			stament.setString(7, sp.getLoaiSanPham());
+			stament.setInt(8, sp.getSoLuongTonKho());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -222,13 +226,14 @@ public class SanPham_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update SanPham set maSanPham = ?, ten = ?" + "giaSanPham = ?, donVi = ?, loaiSanPham = ?";
+			String sql = "update SanPham set maSanPham = ?, ten = ?" + "giaSanPham = ?, donVi = ?, loaiSanPham = ?, soLuongTonKho = ?";
 			stament = con.prepareStatement(sql);
 			stament.setInt(1, sp.getMaSanPham());
 			stament.setString(2, sp.getTen());
 			stament.setDouble(3, sp.getGiaSanPham());
 			stament.setString(4, sp.getDonVi());
 			stament.setString(5, sp.getLoaiSanPham());
+			stament.setInt(6,sp.getSoLuongTonKho());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			// TODO: handle exception
