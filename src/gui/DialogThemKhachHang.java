@@ -38,6 +38,7 @@ public class DialogThemKhachHang extends JDialog implements MouseListener {
 	public DialogThemKhachHang(String type) {
 		setModal(true);// chặn tất cả các sự kiện tương tác với các cửa sổ khác của ứng dụng cho đến
 						// khi nó được đóng
+		setSize(360, 500);
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 
@@ -108,7 +109,6 @@ public class DialogThemKhachHang extends JDialog implements MouseListener {
 		contentPanel.add(buttonPanel);
 
 		add(contentPanel);
-		setSize(360, 500);
 
 		if (type.equals("them")) {
 			btnThem.addMouseListener(new MouseAdapter() {

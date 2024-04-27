@@ -63,6 +63,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	public DialogSuaKhachHang(String type, int maKhachHang, Panel_QuanLiKhachHang panel) {
 		setModal(true);//chặn tất cả các sự kiện tương tác với các cửa sổ khác của ứng dụng cho đến khi nó được đóng
 		this.panelQuanLiKhachHang = panel;
+		setSize(360, 500);
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		
@@ -133,7 +134,6 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		contentPanel.add(buttonPanel);
 
 		add(contentPanel);
-		setSize(360, 500);
 		if(type.equals("sua")) {
 			btnSua.addMouseListener(new MouseAdapter() {
 				@Override

@@ -1,11 +1,12 @@
 ﻿use master
 go
---drop database QLCuaHang
+drop database QLCuaHang
 go
 create database QLCuaHang
 go
 use QLCuaHang
 
+go
 create table KhuyenMai(
 	maKhuyenMai INT IDENTITY(1000,1) primary key  NOT NULL,
 	ngayBatDau datetime NOT NULL,
@@ -13,6 +14,7 @@ create table KhuyenMai(
     giamGia float,
     dieuKien NVARCHAR(100) NOT NULL,
 );
+go
 create table KhachHang(
 	maKhachHang INT IDENTITY(2000,1) PRIMARY KEY NOT NULL,
     ten NVARCHAR(50) NOT NULL,
@@ -20,6 +22,7 @@ create table KhachHang(
     diaChi NVARCHAR(100) NOT NULL,
     loaiKhachHang NVARCHAR(50)
 );
+go
 create table NhanVien(
 	maNhanVien INT IDENTITY(3000,1) primary key NOT NULL,
 	ten nvarchar(50) NOT NULL,
@@ -28,15 +31,18 @@ create table NhanVien(
 	luong float  NOT NULL,
 	loai nvarchar(50)
 );
+go
 create table TaiKhoan(
 	maNhanVien int PRIMARY KEY NOT NULL,
     matKhau NVARCHAR(50) NOT NULL,
     FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
 );
+go
 create table KhuVuc(
 	maKhuVuc INT IDENTITY(4000,1) PRIMARY KEY NOT NULL,
     tenKhuVuc NVARCHAR(100) NOT NULL
 );
+go
 create table SanPham(
 	maSanPham INT IDENTITY(5000,1) PRIMARY KEY NOT NULL,
 	maKhuyenMai int NOT NULL,
@@ -45,9 +51,11 @@ create table SanPham(
     giaSanPham FLOAT NOT NULL,
     donVi NVARCHAR(50) NULL,
 	loaiSanPham NVARCHAR(50) NULL,
+	soLuongTonKho int not null,
 	 FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai),
     FOREIGN KEY (maKhuVuc) REFERENCES KhuVuc(maKhuVuc),
 )
+go
 create table HoaDon(
 	maDon INT IDENTITY(6000,1) PRIMARY KEY NOT NULL,
     maKhachHang int NOT NULL,
@@ -57,6 +65,7 @@ create table HoaDon(
     FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang),
     FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
 )
+go
 create table ChiTietHoaDon(
 	maDon int,
     maSanPham int,
@@ -66,6 +75,7 @@ create table ChiTietHoaDon(
     FOREIGN KEY (maDon) REFERENCES HoaDon(maDon),
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
+go
 create table PhieuDat(
 	maPhieu INT IDENTITY(7000,1) PRIMARY KEY NOT NULL,
 	maNhanVien int not null,
@@ -74,6 +84,7 @@ create table PhieuDat(
 	tongTien float not null
 	 FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
 );
+go
 create table ChiTietPhieuDat(
 	maPhieu int,
     maSanPham int,
@@ -83,6 +94,7 @@ create table ChiTietPhieuDat(
 	FOREIGN KEY (maPhieu) REFERENCES PhieuDat(maPhieu),
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
+go
 -- Dữ liệu cho bảng KhachHang
 INSERT INTO KhachHang (ten, soDienThoai, diaChi, loaiKhachHang)
 VALUES
@@ -143,26 +155,26 @@ VALUES
 (N'Khu vực văn phòng phẩm'); -- Giấy photo in màu, Bút bi siêu mịn
 
 -- dữ liệu bảng SanPham
-INSERT INTO SanPham (maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham)
+INSERT INTO SanPham (maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham, soLuongTonKho)
 VALUES
-(1003, 4000, N'Bánh mì sandwich thịt gà', 25000, N'Cái', N'Đồ ăn'),
-(1004, 4001, N'Nước ngọt Coca-Cola 500ml', 15000, N'Cái', N'Thức uống'),
-(1005, 4000, N'Bánh quy sô cô la', 35000, N'Gói', N'Đồ ăn'),
-(1003, 4001, N'Nước trái cây ép ép táo', 25000, N'Cốc', N'Thức uống'),
-(1001, 4000, N'Mì gói hảo hạng vị gà', 8000, N'Bịch', N'Đồ ăn'),
-(1002, 4001, N'Nước suối Lavie 1.5L', 10000, N'Chai', N'Thức uống'),
-(1003, 4002, N'Ống hút cỏ hình động vật', 30000, N'Cái', N'Đồ gia dụng'),
-(1004, 4002, N'Ly thủy tinh cách nhiệt', 50000, N'Cái', N'Đồ gia dụng'),
-(1005, 4002, N'Bát đĩa sứ họa tiết hoa', 120000, N'Bộ', N'Đồ gia dụng'),
-(1000, 4002, N'Bộ dụng cụ nấu ăn inox', 250000, N'Bộ', N'Đồ gia dụng'),
-(1000, 4003, N'Bút mực nước cỡ lớn', 20000, N'Cái', N'Dụng cụ học tập'),
-(1001, 4003, N'Vở học sinh ô ly', 15000, N'Cái', N'Dụng cụ học tập'),
-(1002, 4004, N'Bật lửa mini', 5000, N'Cái', N'Thuốc lá'),
-(1004, 4004, N'Gói thuốc lá Marlboro', 35000, N'Gói', N'Thuốc lá'),
-(1003, 4005, N'Dây cáp sạc nhanh', 50000, N'Cái', N'Phụ kiện điện tử'),
-(1005, 4006, N'Kính râm cận mắt', 180000, N'Cặp', N'Phụ kiện thời trang'),
-(1000, 4007, N'Giấy photo in màu', 50000, N'Cái', N'Văn phòng phẩm'),
-(1003, 4007, N'Bút bi siêu mịn', 20000, N'Cái', N'Văn phòng phẩm');
+(1003, 4000, N'Bánh mì sandwich thịt gà', 25000, N'Cái', N'Đồ ăn', 50),
+(1004, 4001, N'Nước ngọt Coca-Cola 500ml', 15000, N'Cái', N'Thức uống', 30),
+(1005, 4000, N'Bánh quy sô cô la', 35000, N'Gói', N'Đồ ăn', 10),
+(1003, 4001, N'Nước trái cây ép ép táo', 25000, N'Cốc', N'Thức uống', 15),
+(1001, 4000, N'Mì gói hảo hạng vị gà', 8000, N'Bịch', N'Đồ ăn', 25),
+(1002, 4001, N'Nước suối Lavie 1.5L', 10000, N'Chai', N'Thức uống', 10),
+(1003, 4002, N'Ống hút cỏ hình động vật', 30000, N'Cái', N'Đồ gia dụng', 50),
+(1004, 4002, N'Ly thủy tinh cách nhiệt', 50000, N'Cái', N'Đồ gia dụng', 4),
+(1005, 4002, N'Bát đĩa sứ họa tiết hoa', 120000, N'Bộ', N'Đồ gia dụng', 7),
+(1000, 4002, N'Bộ dụng cụ nấu ăn inox', 250000, N'Bộ', N'Đồ gia dụng', 8),
+(1000, 4003, N'Bút mực nước cỡ lớn', 20000, N'Cái', N'Dụng cụ học tập', 55),
+(1001, 4003, N'Vở học sinh ô ly', 15000, N'Cái', N'Dụng cụ học tập', 67),
+(1002, 4004, N'Bật lửa mini', 5000, N'Cái', N'Thuốc lá', 59),
+(1004, 4004, N'Gói thuốc lá Marlboro', 35000, N'Gói', N'Thuốc lá', 34),
+(1003, 4005, N'Dây cáp sạc nhanh', 50000, N'Cái', N'Phụ kiện điện tử', 4),
+(1005, 4006, N'Kính râm cận mắt', 180000, N'Cặp', N'Phụ kiện thời trang', 10),
+(1000, 4007, N'Giấy photo in màu', 50000, N'Cái', N'Văn phòng phẩm', 200),
+(1003, 4007, N'Bút bi siêu mịn', 20000, N'Cái', N'Văn phòng phẩm', 115);
 -- Dữ liệu cho bảng hóa đơn
 INSERT INTO HoaDon (maKhachHang, maNhanVien, ngayMua, tongTien)
 VALUES
