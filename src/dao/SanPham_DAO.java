@@ -168,14 +168,14 @@ public class SanPham_DAO {
 		try {
 			String sql = "insert into SanPham values(?, ?, ?, ?, ?, ?, ?)";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, sp.getMaSanPham());
-			stament.setInt(2, sp.getMaKhuyenMai().getMaKhuyenMai());
-			stament.setInt(3, sp.getMaKhuVuc().getMaKhuVuc());
-			stament.setString(4, sp.getTen());
-			stament.setDouble(5, sp.getGiaSanPham());
-			stament.setString(6, sp.getDonVi());
-			stament.setString(7, sp.getLoaiSanPham());
-			stament.setInt(8, sp.getSoLuongTonKho());
+			//stament.setInt(1, sp.getMaSanPham());
+			stament.setInt(1, sp.getMaKhuyenMai().getMaKhuyenMai());
+			stament.setInt(2, sp.getMaKhuVuc().getMaKhuVuc());
+			stament.setString(3, sp.getTen());
+			stament.setDouble(4, sp.getGiaSanPham());
+			stament.setString(5, sp.getDonVi());
+			stament.setString(6, sp.getLoaiSanPham());
+			stament.setInt(7, sp.getSoLuongTonKho());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			e.printStackTrace();

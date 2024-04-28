@@ -17,7 +17,8 @@ public class SanPham {
 		// TODO Auto-generated constructor stub
 		this.maSanPham = maSanPham;
 	}
-
+	public SanPham() {
+		this.maSanPham = 0;}
 	public SanPham(int maSanPham, KhuyenMai maKhuyenMai, KhuVuc maKhuVuc, String ten, double giaSanPham, String donVi,
 			String loaiSanPham, int soLuongTonKho) {
 		super();
@@ -38,7 +39,6 @@ public class SanPham {
 	public void setMaKhuyenMai(KhuyenMai maKhuyenMai) {
 		this.maKhuyenMai = maKhuyenMai;
 	}
-
 	public KhuVuc getMaKhuVuc() {
 		return maKhuVuc;
 	}

@@ -234,50 +234,27 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 			}
 		});
 		btnTim.addActionListener(this);
-//		btnTim.addMouseListener(new MouseAdapter() {
-//		    @Override
-//		    public void mouseClicked(MouseEvent e) {
-//		        String timKiemText = txtTimKiem.getText().trim();
-//		        if (timKiemText.isEmpty()) {
-//		            docDuLieuVaoTable();
-//		        } else {
-//		        	int maKhachHang = Integer.parseInt(timKiemText);
-//		            try {
-//		                khachHangs = new KhachHang_DAO().getDanhSachKhachHangTheoMa(maKhachHang);
-//		            } catch (NumberFormatException ex) {
-//		                JOptionPane.showMessageDialog(null, "Mã khách hàng phải là số");
-//		                return;
-//		            }
-//		            if (khachHangs == null) {
-//		                JOptionPane.showMessageDialog(null, "Tìm không thành công!");
-//		            } else {
-//		                khachHangModel.setRowCount(0);
-//		                ArrayList<KhachHang> temp = new KhachHang_DAO().getDanhSachKhachHangTheoMa(maKhachHang);
-//		                for (KhachHang khachHang : temp) {
-//							if (!khachHangs.contains(khachHang)) {
-//								khachHangs.add(khachHang);
-//							}
-//						}
-//		                for (KhachHang kh : khachHangs) {
-//		                    khachHangModel.addRow(new Object[]{
-//		                    		maKhachHang,
-//		                            kh.getTen(),
-//		                            kh.getSoDienThoai(),
-//		                            kh.getDiaChi(),
-//		                            kh.getLoaiKhachHang(),
-//		                            new KhachHang_DAO().getTotalPrice(maKhachHang)
-//		                    });
-//		                }
-//		            }
-//		        }
-//		    }
-//		});
 		txtTimKiem.getDocument().addDocumentListener(
 				new DocumentListener() {
 					@Override
 					public void removeUpdate(DocumentEvent e) {
-						// TODO Auto-generated method stub
-						
+						UpdateTable(); 
+						khachHangs.clear();
+						String keyWord = txtTimKiem.getText().trim();
+						ArrayList<KhachHang> temp = new KhachHang_DAO().getalltbKhachHang();
+						for(KhachHang kh : temp) {
+							if(Integer.toString(kh.getMaKhachHang()).contains(keyWord) || kh.getTen().contains(keyWord) ) {
+								khachHangs.add(kh);
+							}
+						}
+						khachHangModel.setRowCount(0);
+					    // Thêm lại các khách hàng từ danh sách khachHangs vào bảng
+					    for (KhachHang kh : khachHangs) {
+					        khachHangModel.addRow(new Object[] {
+					            kh.getMaKhachHang(), kh.getTen(), kh.getSoDienThoai(), kh.getDiaChi(), 
+					            kh.getLoaiKhachHang(), new KhachHang_DAO().getTotalPrice(kh.getMaKhachHang())
+					        });
+					    }
 					}
 					
 					@Override
