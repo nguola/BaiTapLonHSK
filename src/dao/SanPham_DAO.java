@@ -250,6 +250,34 @@ public class SanPham_DAO {
 		return n > 0;
 	}
 	
+	public boolean updateSLSP(SanPham sp) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		
+		int n = 0;
+		
+		try {
+			String sql = "update SanPham set soLuongTonKho = ? where maSanPham = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, sp.getSoLuongTonKho());
+			stament.setInt(2, sp.getMaSanPham());
+			n = stament.executeUpdate();
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return n > 0;
+	}
+	
 	
 
 }

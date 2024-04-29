@@ -289,6 +289,49 @@ begin
 	(@MaNV = -1 or maNhanVien = @MaNV)
 end
 
+--Lọc Phiếu đặt
+go
+create proc LocPhieuDat
+@Datestart date = null,
+@DateEnd date = null,
+@PriceStart money = 0,
+@PriceEnd money = 0,
+@NCC nvarchar(50) = '',
+@MaNV int = -1
+as
+begin
+	select * 
+	from [dbo].[PhieuDat]
+	where (@Datestart is null or [ngayDat] >= @Datestart) and
+	(@DateEnd is null or [ngayDat] <= @DateEnd) and
+	(@PriceStart = 0 or tongTien >= @PriceStart) and
+	(@PriceEnd = 0 or tongTien < @PriceEnd) and
+	(@NCC = '' or [nhaCungCap] = @NCC) and
+	(@MaNV = -1 or maNhanVien = @MaNV)
+end
+
+--Thêm Phiếu đặt
+go
+create proc addPhieuDat
+@maNV int,
+@NCC nvarchar(200),
+@ngayDat date,
+@tongTien money,
+@maPhieuDat int out
+as
+begin
+	insert into [dbo].[PhieuDat]
+	values (
+		@maNV,
+		@NCC,
+		@ngayDat,
+		@tongTien,
+	)
+
+	set @maPhieuDat = SCOPE_IDENTITY()
+end
+
+
 -- Lọc sản phẩm ở trang bán hàng
 go
 create PROCEDURE loc_SanPham
