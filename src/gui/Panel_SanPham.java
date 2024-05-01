@@ -271,7 +271,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 		JLabel lblLocGia = new JLabel("Giá tiền");
 		lblLocGia.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pBox3.add(lblLocGia);
-		String[] item3 = { "Tất cả", "0 - 100.000", "100.000 - 500.000", "500.000 - 1.000.000", "Trên 1.000.000" };
+		String[] item3 = { "Tất cả", "Dưới 100k", "100k - 500k", "500k - 1 triệu", "Trên 1 triệu" };
 		cboxLocGia = new JComboBox<String>(item3);
 		cboxLocGia.setPreferredSize(new Dimension(220, 25));
 		pBox3.add(Box.createVerticalStrut(5));
@@ -483,7 +483,8 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 				}
 				case "Tất cả": {
 					docDuLieuVaoTable();
-					break;
+					//break;
+					return;
 				}
 				default:
 					break;
@@ -520,7 +521,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 								//+ "*********************************************************\n"
 								+ "-Mã sản phẩm: %d\n"
 								+ "-Tên sản phẩm: %s\n"
-								+ "-Giá: %s\n"
+								+ "-Giá bán: %s\n"
 								+"-Loại sản phẩm: %s\n"
 								+ "*********************************************************\n",maSP,ten,gia,loaiSP);
 						Font font = new Font("Arial", Font.PLAIN, 20);
