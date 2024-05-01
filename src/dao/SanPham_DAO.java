@@ -359,8 +359,6 @@ public class SanPham_DAO {
 		}
 		return n > 0;
 	}
-<<<<<<< Updated upstream
-	
 	public boolean updateSLSP(SanPham sp) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -390,7 +388,5 @@ public class SanPham_DAO {
 	}
 	
 	
-=======
->>>>>>> Stashed changes
 
 }
