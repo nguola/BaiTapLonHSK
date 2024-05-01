@@ -7,7 +7,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -15,26 +19,32 @@ import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
-import javax.swing.table.TableRowSorter;
 
+import dao.ChiTietHoaDon_DAO;
+import dao.HoaDon_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
+import entity.TaiKhoan;
 
-public class Pane_BanHang extends JPanel implements ActionListener, TableModelListener {
+public class Pane_BanHang extends JPanel implements ActionListener, TableModelListener, DocumentListener {
 	private JPanel jp_tieuDeWest;
 	private Box jp_loc;
 	private JTextField tf_Msp;
@@ -57,8 +67,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	private Box jp_btnFunction;
 	private JPanel jp_LapHoaDon;
 	private JButton btn_LapHoaDon;
-	private JPanel jp_InHoaDon;
-	private JButton btn_InHoaDon;
 	private JPanel jp_thongtin;
 	private JPanel maKH;
 	private JLabel lb_maKH;
@@ -85,14 +93,30 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	private JTextField tf_giamgia;
 	private SanPham_DAO sanPham_dao = new SanPham_DAO();
 	private KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
+	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
+	private HoaDon_DAO hoaDon_dao = new HoaDon_DAO();
+	private ChiTietHoaDon_DAO chiTietHoaDon_dao = new ChiTietHoaDon_DAO();
 	private JButton btn_hienTatCa;
 	private JPanel pane_trangThaiKhachHang;
 	private JRadioButton radio_moi;
 	private JRadioButton radio_cu;
 	private ButtonGroup radio_group;
-
-	public Pane_BanHang() {
-
+	private JPopupMenu popupMenu_tableSanPham;
+	private JMenuItem menuItemThem;
+	private JMenuItem menuItemThongTin;
+	private JPopupMenu popupMenu_tableHoaDon;
+	private JMenuItem menuItemXoa;
+	private JPanel diaChiKH;
+	private JLabel lb_diaChiKH;
+	private JTextField tf_diaChiKH;
+	private JRadioButton radio_rong;
+	private NhanVien nv;
+	private double TongTien;
+	
+	public Pane_BanHang(TaiKhoan tk) {
+		// Lấy nhân viên đang làm việc từ tài khoản đang đăng nhập
+		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
+		
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
 		setSize(800, 600);
@@ -193,7 +217,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		// Code Table SanPham chứa danh sách các sản phẩm
 
 		// Tạo một mảng chứa các
-		String[] colnames_sanPham = { "Mã sản phầm", "Tên sản phầm", "Loại", "Giá", "Đơn vị", "Số lượng" };
+		String[] colnames_sanPham = { "Mã sản phầm", "Tên sản phầm", "Loại", "Giá", "Đơn vị", "Số lượng tồn kho" };
 
 		// Tạo một DefaultTableModel cho bảng sản phẩm
 		model_sanPham = new DefaultTableModel(colnames_sanPham, 0) {
@@ -210,6 +234,18 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 
 		// Tạo bảng bằng model vừa tạo
 		table_SanPham = new JTable(model_sanPham);
+
+		// Sử lý sự kiện hiển thị JPopUpMenu khi click chuột phải vào 1 field trong
+		// table sản phẩm
+		table_SanPham.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// Kiểm tra người dùng có nhấn vào 1 field trong table hay không
+				if (SwingUtilities.isRightMouseButton(e) && table_SanPham.getSelectedRow() != -1) {
+					popupMenu_tableSanPham.show(table_SanPham, e.getX(), e.getY());
+				}
+			}
+		});
 
 		// Đổ dữ liệu từ list sản phẩm vào bảng sản phẩm
 		update_TableSanPham(sanPham_dao.getalltbSanPham());
@@ -258,14 +294,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		jp_LapHoaDon.add(btn_LapHoaDon);
 		jp_btnFunction.add(jp_LapHoaDon);
 
-		// Code nút in hóa đơn
-		jp_InHoaDon = new JPanel();
-		btn_InHoaDon = new JButton("In hóa đơn");
-		btn_InHoaDon.setFont(new Font("Arial", Font.BOLD, 15));
-		btn_InHoaDon.setPreferredSize(new Dimension(140, 40));
-		jp_InHoaDon.add(btn_InHoaDon);
-		jp_btnFunction.add(jp_InHoaDon);
-
 		jp_btnFunction.add(Box.createVerticalStrut(300));
 
 		jp_btnFunction
@@ -282,6 +310,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		maKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_maKH = new JLabel("Mã khách hàng:");
 		tf_maKH = new JTextField(30);
+		tf_maKH.setEditable(false);
 		maKH.add(Box.createHorizontalStrut(100));
 		maKH.add(lb_maKH);
 		maKH.add(Box.createHorizontalStrut(20));
@@ -310,6 +339,17 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		dtKH.add(tf_dtKH);
 		NhapThongTin.add(dtKH);
 
+		// Điền địa chỉ khách hàng
+		diaChiKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		lb_diaChiKH = new JLabel("Địa chỉ:");
+		tf_diaChiKH = new JTextField(30);
+		tf_diaChiKH.setEditable(false);
+		diaChiKH.add(Box.createHorizontalStrut(100));
+		diaChiKH.add(lb_diaChiKH);
+		diaChiKH.add(Box.createHorizontalStrut(66));
+		diaChiKH.add(tf_diaChiKH);
+		NhapThongTin.add(diaChiKH);
+
 		// Điền loại khách hàng
 		loaiKH = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		lb_loaiKH = new JLabel("Loại khách hàng:");
@@ -320,20 +360,23 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		loaiKH.add(Box.createHorizontalStrut(13));
 		loaiKH.add(tf_loaiKH);
 		NhapThongTin.add(loaiKH);
-		
+
 		pane_trangThaiKhachHang = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		radio_moi = new JRadioButton("Khách hàng mới");
 		radio_cu = new JRadioButton("Khách hàng cũ");
-		radio_cu.setSelected(true);
-		
+		radio_rong = new JRadioButton("Rỗng");
+		radio_rong.setSelected(true);
+
 		radio_group = new ButtonGroup();
 		radio_group.add(radio_moi);
 		radio_group.add(radio_cu);
+		radio_group.add(radio_rong);
 		pane_trangThaiKhachHang.add(Box.createHorizontalStrut(100));
 		pane_trangThaiKhachHang.add(radio_moi);
 		pane_trangThaiKhachHang.add(radio_cu);
+		pane_trangThaiKhachHang.add(radio_rong);
 		NhapThongTin.add(pane_trangThaiKhachHang);
-		
+
 		// Set border cho panel nhập thông tin
 		NhapThongTin.setBorder(
 				BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Nhập thông tin"));
@@ -355,6 +398,18 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 
 		// Tạo table hóa đơn bằng model mới tạo
 		table_HoaDon = new JTable(model_HoaDon);
+
+		// Sử lý sự kiện hiển thị JPopUpMenu khi click chuột phải vào 1 field trong
+		// table hóa đơn
+		table_HoaDon.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// Kiểm tra người dùng có nhấn vào 1 field trong table hay không
+				if (SwingUtilities.isRightMouseButton(e) && table_HoaDon.getSelectedRow() != -1) {
+					popupMenu_tableHoaDon.show(table_HoaDon, e.getX(), e.getY());
+				}
+			}
+		});
 
 		// Tạo một scroll pane cho table hóa đơn
 		scroll_hoaDon = new JScrollPane(table_HoaDon);
@@ -394,26 +449,42 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 
 		this.add(jp_Center, BorderLayout.CENTER);
 
+		// Tạo JPopupMenu gồm 2 phần tử là thêm và thông tin sản phẩm cho table sản phẩm
+		popupMenu_tableSanPham = new JPopupMenu();
+		menuItemThem = new JMenuItem("Thêm");
+		menuItemThongTin = new JMenuItem("Thông tin");
+		popupMenu_tableSanPham.add(menuItemThem);
+		popupMenu_tableSanPham.add(menuItemThongTin);
+
+		// Tạo JPopupMenu gồm phần tử xóa cho table hóa đơn
+		popupMenu_tableHoaDon = new JPopupMenu();
+		menuItemXoa = new JMenuItem("Xóa");
+		popupMenu_tableHoaDon.add(menuItemXoa);
+
 		// add sự kiện
 		btn_them.addActionListener(this);
+		menuItemThem.addActionListener(this);
 		btn_xoa.addActionListener(this);
+		menuItemXoa.addActionListener(this);
 		model_HoaDon.addTableModelListener(this);
 		cb_loai.addActionListener(this);
 		cbo_donVi.addActionListener(this);
-		tf_tensp.addActionListener(this);
+		tf_tensp.getDocument().addDocumentListener(this);
 		tf_Msp.addActionListener(this);
 		btn_hienTatCa.addActionListener(this);
 		radio_cu.addActionListener(this);
 		radio_moi.addActionListener(this);
+		radio_rong.addActionListener(this);
 		tf_maKH.addActionListener(this);
 		tf_tenKH.addActionListener(this);
 		tf_dtKH.addActionListener(this);
+		btn_LapHoaDon.addActionListener(this);
 	}
 
 	public void update_TableSanPham(ArrayList<SanPham> list_sanPham) {
 		for (SanPham sp : list_sanPham) {
 			model_sanPham.addRow(new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getLoaiSanPham(), sp.getGiaSanPham(),
-					sp.getDonVi() });
+					sp.getDonVi(), sp.getSoLuongTonKho() });
 		}
 	}
 
@@ -421,23 +492,23 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		model_HoaDon.addRow(new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getDonVi(), sp.getGiaSanPham(), soLuong,
 				sp.getGiaSanPham() * soLuong });
 	}
-	
-	public ArrayList<SanPham> Loc_SanPham (String ma, String ten, String loai, String donVi){
+
+	public ArrayList<SanPham> Loc_SanPham(String ma, String ten, String loai, String donVi) {
 		ArrayList<SanPham> list = new ArrayList<SanPham>();
-		
+
 		int maSp = ((ma.trim().isEmpty()) ? -1 : Integer.parseInt(ma));
 		String loaiSP = ((loai.equalsIgnoreCase("Tất cả")) ? "" : loai);
 		String donViTinh = ((donVi.equalsIgnoreCase("Tất cả")) ? "" : donVi);
-		
+
 		list = sanPham_dao.Loc_SanPham(maSp, ten, loaiSP, donViTinh);
 		return list;
 	}
-	
+
 	public int kiemTraThem(int maSP) {
 		int rowIndex = -1;
-		for(int i = 0; i < table_HoaDon.getRowCount(); i++) {
+		for (int i = 0; i < table_HoaDon.getRowCount(); i++) {
 			int ma = Integer.parseInt(table_HoaDon.getValueAt(i, 0).toString());
-			if(ma == maSP) {
+			if (ma == maSP) {
 				rowIndex = i;
 				break;
 			}
@@ -445,87 +516,116 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		return rowIndex;
 	}
 
+	public void themHoaDonSQL() {
+		int maNhanVien = nv.getMaNhanVien();
+		int maKhachHang;
+		Calendar calendar = Calendar.getInstance();
+        java.util.Date currentDate = calendar.getTime();
+
+        // Chuyển đổi thành java.sql.Date
+        java.sql.Date sqlDate = new java.sql.Date(currentDate.getTime());
+		
+		if(radio_cu.isSelected()) {
+			maKhachHang = Integer.parseInt(tf_maKH.getText());
+		}
+		else if(radio_moi.isSelected()) {
+			khachHang_DAO.createKhachHangMoi(tf_tenKH.getText(), tf_dtKH.getText(), tf_diaChiKH.getText(), tf_loaiKH.getText());
+			maKhachHang = khachHang_DAO.getMaKHVuaTao();
+			
+		}else {
+			maKhachHang = -1;
+		}
+		
+		System.out.println(maKhachHang);
+		
+		hoaDon_dao.create(maKhachHang, maNhanVien, sqlDate, TongTien);
+		int maHD = hoaDon_dao.getMaHDVuaTao();
+		System.out.println(maHD);
+		
+		int soLuongMoi;
+		
+		for(int i = 0; i <  model_HoaDon.getRowCount(); i++) {
+			chiTietHoaDon_dao.create(maHD, (int)table_HoaDon.getValueAt(i, 0), (Double)table_HoaDon.getValueAt(i, 5), (int)table_HoaDon.getValueAt(i, 4));
+			sanPham_dao.updateSoLuong((int)table_HoaDon.getValueAt(i, 0), (int)table_HoaDon.getValueAt(i, 4));
+		}
+		
+		model_HoaDon.setRowCount(0);
+		model_sanPham.setRowCount(0);
+		update_TableSanPham(sanPham_dao.getalltbSanPham());
+		
+		JOptionPane.showMessageDialog(this, "Lập hóa đơn thành công");
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
-		
-		if (o.equals(btn_them)) {
+
+		if (o.equals(btn_them) || o.equals(menuItemThem)) {
 			int selected_row = table_SanPham.getSelectedRow();
 			if (selected_row == -1) {
 				JOptionPane.showMessageDialog(this, "Hãy chọn sản phẩm muốn thêm");
-			} else if (model_sanPham.getValueAt(selected_row, 5) == null) {
-				JOptionPane.showMessageDialog(this, "Hãy nhập số lượng sản phẩm");
 			} else {
 				try {
-					int soLuong = Integer.parseInt(model_sanPham.getValueAt(selected_row, 5).toString());
 					int maSP = Integer.parseInt(model_sanPham.getValueAt(selected_row, 0).toString());
-					SanPham sp = sanPham_dao.getSanPhamTheoMa(maSP);
-					int rowIndex = kiemTraThem(maSP);
-					if(rowIndex == -1) {
-						update_TableHoaDon(sp, soLuong);
+					int soLuong = Integer.parseInt(JOptionPane.showInputDialog("Nhập số lượng muốn đặt"));
+					if (soLuong > Integer.parseInt(table_SanPham.getValueAt(selected_row, 5).toString())) {
+						JOptionPane.showMessageDialog(this, "Số lượng đặt không được lớn hơn số lượng tồn kho!!");
 					} else {
-						int soLuongMoi = soLuong + Integer.parseInt(table_HoaDon.getValueAt(rowIndex, 4).toString());
-						Object newSoLuong = soLuongMoi;
-						double thanhTienMoi = sp.getGiaSanPham() * soLuongMoi;
-						Object newThanhTien = thanhTienMoi;
-						
-						model_HoaDon.setValueAt(newSoLuong, rowIndex, 4);
-						model_HoaDon.setValueAt(newThanhTien, rowIndex, 5);
+						SanPham sp = sanPham_dao.getSanPhamTheoMa(maSP);
+						int rowIndex = kiemTraThem(maSP);
+						if (rowIndex == -1) {
+							update_TableHoaDon(sp, soLuong);
+						} else {
+							int soLuongMoi = soLuong
+									+ Integer.parseInt(table_HoaDon.getValueAt(rowIndex, 4).toString());
+							if (soLuongMoi > Integer.parseInt(table_SanPham.getValueAt(selected_row, 5).toString())) {
+								JOptionPane.showMessageDialog(this,
+										"Số lượng đặt không được lớn hơn số lượng tồn kho!!");
+							} else {
+								Object newSoLuong = soLuongMoi;
+								double thanhTienMoi = sp.getGiaSanPham() * soLuongMoi;
+								Object newThanhTien = thanhTienMoi;
+
+								model_HoaDon.setValueAt(newSoLuong, rowIndex, 4);
+								model_HoaDon.setValueAt(newThanhTien, rowIndex, 5);
+							}
+						}
 					}
-					Object newValue = "";
-					model_sanPham.setValueAt(newValue, selected_row, 5);
 				} catch (Exception e2) {
 					JOptionPane.showMessageDialog(this, "Số lượng là số");
-					Object newValue = "";
-					model_sanPham.setValueAt(newValue, selected_row, 5);
 				}
 			}
-		} else if (o.equals(btn_xoa)) {
+		} else if (o.equals(btn_xoa) || o.equals(menuItemXoa)) {
 			int selected_row = table_HoaDon.getSelectedRow();
 			if (selected_row == -1) {
 				JOptionPane.showMessageDialog(this, "Hãy chọn dòng muốn xóa");
 			} else {
-				int chon = JOptionPane.showConfirmDialog(this, "Sure? You want to exit?", "Swing Tester",
+				int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn xóa!!", "Cảnh báo",
 						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if (chon == JOptionPane.YES_OPTION) {
 					model_HoaDon.removeRow(selected_row);
 				}
 			}
-		} else if (o.equals(btn_LapHoaDon)) {
-
-		} else if (o.equals(btn_InHoaDon)) {
-
-		}
-		else if(o.equals(cbo_donVi)) {
+		} else if (o.equals(cbo_donVi)) {
 			model_sanPham.setRowCount(0);
 			ArrayList<SanPham> list = new ArrayList<SanPham>();
-			list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(), cbo_donVi.getSelectedItem().toString());
+			list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(),
+					cbo_donVi.getSelectedItem().toString());
 			update_TableSanPham(list);
-		}
-		else if(o.equals(cb_loai)) {
+		} else if (o.equals(cb_loai)) {
 			model_sanPham.setRowCount(0);
 			ArrayList<SanPham> list = new ArrayList<SanPham>();
-			list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(), cbo_donVi.getSelectedItem().toString());
+			list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(),
+					cbo_donVi.getSelectedItem().toString());
 			update_TableSanPham(list);
-		} else if(o.equals(tf_tensp)) {
-			if(tf_tensp.getText().trim().isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Hãy nhập tên muốn tìm");
-			}
-			else {
-				ArrayList<SanPham> list = new ArrayList<SanPham>();
-					list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(), cbo_donVi.getSelectedItem().toString());
-					model_sanPham.setRowCount(0);
-					update_TableSanPham(list);
-			}
-		}
-		else if(o.equals(tf_Msp)) {
-			if(tf_Msp.getText().trim().isEmpty()) {
+		} else if (o.equals(tf_Msp)) {
+			if (tf_Msp.getText().trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Hãy nhập mã muốn tìm");
-			}
-			else {
+			} else {
 				ArrayList<SanPham> list = new ArrayList<SanPham>();
 				try {
-					list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(), cbo_donVi.getSelectedItem().toString());
+					list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(),
+							cbo_donVi.getSelectedItem().toString());
 					model_sanPham.setRowCount(0);
 					update_TableSanPham(list);
 				} catch (Exception e2) {
@@ -533,50 +633,58 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 					tf_Msp.setText("");
 				}
 			}
-		}
-		else if(o.equals(btn_hienTatCa)) {
+		} else if (o.equals(btn_hienTatCa)) {
 			model_sanPham.setRowCount(0);
 			update_TableSanPham(sanPham_dao.Loc_SanPham(-1, "", "", ""));
 			tf_Msp.setText("");
 			tf_tensp.setText("");
 			cb_loai.setSelectedIndex(0);
 			cbo_donVi.setSelectedIndex(0);
-		}
-		else if(o.equals(radio_cu)) {
+		} else if (o.equals(radio_cu)) {
 			tf_maKH.setEditable(true);
 			tf_loaiKH.setEditable(false);
 			tf_tenKH.setEditable(false);
 			tf_dtKH.setEditable(false);
-		}
-		else if(o.equals(radio_moi)) {
+			tf_diaChiKH.setEditable(false);
+			setRongTTKH();
+		} else if (o.equals(radio_moi)) {
 			tf_maKH.setEditable(false);
 			tf_loaiKH.setText("");
 			tf_tenKH.setEditable(true);
 			tf_dtKH.setEditable(true);
-		}
-		else if(o.equals(tf_maKH)){
+			tf_diaChiKH.setEditable(true);
+			setRongTTKH();
+			tf_loaiKH.setText("Thường");
+		} else if (o.equals(radio_rong)) {
+			tf_maKH.setEditable(false);
+			tf_loaiKH.setEditable(false);
+			tf_tenKH.setEditable(false);
+			tf_dtKH.setEditable(false);
+			tf_diaChiKH.setEditable(false);
+			setRongTTKH();
+		} else if (o.equals(tf_maKH)) {
 			String ma_text = tf_maKH.getText();
-			if(ma_text.trim().isEmpty()) {
+			if (ma_text.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Mã khách hàng không được rỗng");
 				tf_maKH.setText("");
 				tf_tenKH.setText("");
 				tf_dtKH.setText("");
 				tf_loaiKH.setText("");
-			}else {
+			} else {
 				try {
 					int ma = Integer.parseInt(ma_text);
-					
+
 					KhachHang kh = khachHang_DAO.getKhachHangTheoMa(ma);
-					if(kh == null) {
+					if (kh == null) {
 						JOptionPane.showMessageDialog(this, "Không có Khách hàng với mã " + ma_text);
 						tf_maKH.setText("");
 						tf_tenKH.setText("");
 						tf_dtKH.setText("");
 						tf_loaiKH.setText("");
-					}
-					else {
+					} else {
 						tf_tenKH.setText(kh.getTen());
 						tf_dtKH.setText(kh.getSoDienThoai());
+						tf_diaChiKH.setText(kh.getDiaChi());
 						tf_loaiKH.setText(kh.getLoaiKhachHang());
 					}
 				} catch (Exception e2) {
@@ -584,25 +692,33 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 					// TODO: handle exception
 				}
 			}
-		}
-		else if(o.equals(tf_tenKH)) {
+		} else if (o.equals(tf_tenKH)) {
 			String ten_text = tf_tenKH.getText();
-			if(ten_text.trim().isEmpty()) {
+			if (ten_text.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống");
 				tf_tenKH.setText("");
 			}
-		}
-		else if(o.equals(tf_dtKH)) {
+		} else if (o.equals(tf_dtKH)) {
 			String dt_text = tf_dtKH.getText();
-			if(dt_text.trim().isEmpty()) {
+			if (dt_text.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống");
 				tf_dtKH.setText("");
-			}
-			else if(!dt_text.matches("^(084||012)\\d{7}$")) {
+			} else if (!dt_text.matches("^(084||012)\\d{7}$")) {
 				JOptionPane.showMessageDialog(this, "Số điện thoại bắt đầu bằng 084 hoặc 0123 và phải có 10 số");
 				tf_dtKH.setText("");
 			}
 		}
+		else if(o.equals(btn_LapHoaDon)) {
+			themHoaDonSQL();
+		}
+	}
+	
+	public void setRongTTKH() {
+		tf_maKH.setText("");
+		tf_loaiKH.setText("");
+		tf_tenKH.setText("");
+		tf_dtKH.setText("");
+		tf_diaChiKH.setText("");
 	}
 
 	@Override
@@ -610,7 +726,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		// TODO Auto-generated method stub
 		int numRow = model_HoaDon.getRowCount();
 
-		double TongTien = 0;
+		TongTien = 0;
 
 		for (int i = 0; i < numRow; i++) {
 
@@ -618,5 +734,31 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		}
 
 		tf_Tongthanhtien.setText(String.valueOf(TongTien));
+	}
+
+	@Override
+	public void insertUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+		ArrayList<SanPham> list = new ArrayList<SanPham>();
+		list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(),
+				cbo_donVi.getSelectedItem().toString());
+		model_sanPham.setRowCount(0);
+		update_TableSanPham(list);
+	}
+
+	@Override
+	public void removeUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+		ArrayList<SanPham> list = new ArrayList<SanPham>();
+		list = Loc_SanPham(tf_Msp.getText(), tf_tensp.getText(), cb_loai.getSelectedItem().toString(),
+				cbo_donVi.getSelectedItem().toString());
+		model_sanPham.setRowCount(0);
+		update_TableSanPham(list);
+	}
+
+	@Override
+	public void changedUpdate(DocumentEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }

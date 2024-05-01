@@ -217,6 +217,36 @@ public class SanPham_DAO {
 		return n > 0;
 	}
 	
+	public boolean updateSoLuong(int maSP, int soLuong) {
+		SanPham sp = getSanPhamTheoMa(maSP);
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		
+		PreparedStatement stament = null;
+		int soLuongMoi = sp.getSoLuongTonKho() - soLuong;
+		int n = 0;
+		
+		try {
+			String sql = "update SanPham set soLuongTonKho = ? where maSanPham = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, soLuongMoi);
+			stament.setInt(2, maSP);
+			n = stament.executeUpdate();
+		} catch (SQLException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return n > 0;
+	}
+	
 	public boolean update(SanPham sp) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();

@@ -58,7 +58,7 @@ create table SanPham(
 go
 create table HoaDon(
 	maDon INT IDENTITY(6000,1) PRIMARY KEY NOT NULL,
-    maKhachHang int NOT NULL,
+    maKhachHang int,
     maNhanVien int NOT NULL,
     ngayMua DATETIME NOT NULL,
     tongTien FLOAT NOT NULL,

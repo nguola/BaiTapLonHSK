@@ -54,4 +54,23 @@ public class ChiTietHoaDon_DAO {
 		}
 		return status;
 	}
+	
+	public boolean create(int maHD, int maSP, double thanhtien, int soLuong) {
+		boolean status = false;
+		Connection con = ConnectDB.getInstance().getConnection();
+		try {
+			String query = "insert into ChiTietHoaDon values (?, ?, ?, ?)";
+
+			PreparedStatement statement = con.prepareStatement(query);
+			statement.setInt(1, maHD);
+			statement.setInt(2, maSP);
+			statement.setDouble(3, thanhtien);
+			statement.setInt(4, soLuong);
+			status = statement.execute();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+	}
 }

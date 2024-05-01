@@ -24,7 +24,6 @@ public class KhachHang {
 
 	public KhachHang() {
 		this.maKhachHang = 0;
-		
 	}
 
 	public String getTen() {

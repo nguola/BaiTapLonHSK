@@ -48,8 +48,10 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 	SanPham_DAO sanPham_dao = new SanPham_DAO();
 	private Pane_BanHang pane_BanHang;
 	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
+	private Panel_BaoCao panel_BaoCao;
 	private JMenuItem itemBanHang;
 	private JMenuItem itemThongTin;
+	private JMenuItem itemBaoCao;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -94,7 +96,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		});
 		
 		itemBanHang = new JMenuItem("Bán hàng");
-		pane_BanHang = new Pane_BanHang();
+		pane_BanHang = new Pane_BanHang(tk);
 
 		this.add(pane_BanHang, BorderLayout.CENTER);
 		itemBanHang.addActionListener(new ActionListener() {
@@ -117,7 +119,18 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		});
 		mnuNhanVien.add(itemThongTin);
 		mnuNhanVien.add(new JMenuItem("Thống kê"));
-		mnuNhanVien.add(new JMenuItem("Báo cáo"));
+		itemBaoCao = new JMenuItem("Báo cáo");
+		panel_BaoCao = new Panel_BaoCao(tk);
+		panel_BaoCao.setVisible(false);
+		itemBaoCao.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				add(panel_BaoCao, BorderLayout.CENTER);
+				pane_BanHang.setVisible(false);
+				panel_BaoCao.setVisible(true);
+			}
+		});
+		mnuNhanVien.add(itemBaoCao);
 		
 		
 

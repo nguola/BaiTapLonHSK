@@ -44,7 +44,7 @@ import dao.SanPham_DAO;
 import entity.ChiTietHoaDon;
 import entity.HoaDon;
 
-public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
+public class ThongTinSanPham_GUI extends JDialog implements ActionListener{
 	private HoaDon hoaDon;
 	private JTextField txt1;
 	private JTextField txt2;
@@ -62,7 +62,7 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
 	private KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
 	private SanPham_DAO sanPham_DAO = new SanPham_DAO();
 	
-	public ChiTietHoaDon_GUI(HoaDon hoaDon) {
+	public ThongTinSanPham_GUI(HoaDon hoaDon) {
 		this.hoaDon = hoaDon;
 		listCTHD = new ArrayList<ChiTietHoaDon>();
 		chiTietHoaDon_DAO = new ChiTietHoaDon_DAO();
@@ -223,7 +223,6 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
             e.printStackTrace();
         }
 	}
-	
 	public static void main(String[] args) {
 		new HoaDon_GUI();
 	}

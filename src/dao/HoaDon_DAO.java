@@ -37,6 +37,43 @@ public class HoaDon_DAO {
 		return status;
 	}
 	
+	public boolean create(int maKH, int maNV, Date ngayMua, double tongTien) {
+		boolean status = false;
+		Connection con = ConnectDB.getInstance().getConnection();
+		String query = "insert into HoaDon values (?, ?, ?, ?)";
+		
+		try {
+			PreparedStatement statement = con.prepareStatement(query);
+			statement.setObject(1, ((maKH == -1) ? null : maKH));
+			statement.setInt(2, maNV);
+			statement.setDate(3, ngayMua);
+			statement.setDouble(4, tongTien);
+			status = statement.execute();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return status;
+	}
+	
+	public int getMaHDVuaTao() {
+		int maHD = -1;
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+
+			String sql = "select Top 1 maDon from HoaDon order by maDon DESC";
+			Statement stm = con.createStatement();
+			ResultSet rs = stm.executeQuery(sql);
+
+			rs.next();
+			maHD = rs.getInt(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return maHD;
+	}
+	
 	public void xoaHoaDon(int maHD) {
 		Connection con = ConnectDB.getInstance().getConnection();
 		String query = "delete from HoaDon where maDon = ?";
@@ -152,5 +189,34 @@ public class HoaDon_DAO {
 			e.printStackTrace();
 		}
 		return dsHoaDon;
+	}
+	
+	public ArrayList<HoaDon> getAllHoaDonNhanVien(int maNhanVien){
+		ArrayList<HoaDon> list = new ArrayList<HoaDon>();
+		PreparedStatement stament = null;
+		try {
+			ConnectDB.getInstance();
+			Connection con = ConnectDB.getConnection();
+			
+			String sql = "select * from HoaDon where maNhanVien = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maNhanVien);
+			
+			ResultSet rs = stament.executeQuery();
+			while (rs.next()) {
+				int maHoaDon = rs.getInt(1);
+				KhachHang khachHang = new KhachHang(rs.getInt(2));
+				NhanVien nhanVien = new NhanVien(rs.getInt(3));
+				Date ngayMua = rs.getDate(4);
+				double tongTien = rs.getDouble(5);
+
+				HoaDon hd = new HoaDon(maHoaDon, khachHang, nhanVien, ngayMua, tongTien);
+				list.add(hd);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		return list;
 	}
 }
