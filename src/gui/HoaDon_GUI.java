@@ -148,8 +148,6 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		pnNorth.add(Box.createHorizontalStrut(50));
 		
 		//Tạo chức năng
-		addHD = new JButton("Thêm mới");
-		addHD.setMnemonic('a');
 		removeHD = new JButton("Xóa");
 		removeHD.setMnemonic('d');
 		removeHD.addActionListener(this);
@@ -160,7 +158,6 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		importHD.setMnemonic('i');
 		importHD.addActionListener(this);
 		
-		pnNorth.add(addHD);
 		pnNorth.add(removeHD);
 		pnNorth.add(exportHD);
 		pnNorth.add(importHD);
@@ -355,7 +352,6 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		popupMenu = new JPopupMenu();
 		popupMenu.setPopupSize(100, 140);
 		
-		JMenuItem popupThem = new JMenuItem("Thêm");
 		popupXoa = new JMenuItem("Xóa");
 		popupXoa.addActionListener(this);
 		refresh = new JMenuItem("Refresh");
@@ -368,7 +364,6 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 		popupImportExcel = new JMenuItem("Import file excel");
 		popupImportExcel.addActionListener(this);
 		
-		popupMenu.add(popupThem);
 		popupMenu.add(popupXoa);
 		popupMenu.add(popupXemChiTiet);
 		popupMenu.add(refresh);
@@ -676,7 +671,8 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 				JOptionPane.showMessageDialog(this, "Vui lòng chọn một hóa đơn");
 				return;
 			}
-			new ChiTietHoaDon_GUI(list.get(index)).setVisible(true);;;
+			HoaDon hoadon = new HoaDon(Integer.parseInt(tbListHD.getValueAt(index, 0).toString()));
+			new ChiTietHoaDon_GUI(list.get(list.indexOf(hoadon))).setVisible(true);
 		}
 	}
 	
