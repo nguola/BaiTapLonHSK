@@ -1,7 +1,7 @@
 ﻿use master
 go
-drop database QLCuaHang
-go
+--drop database QLCuaHang
+--go
 create database QLCuaHang
 go
 use QLCuaHang

@@ -6,8 +6,11 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -29,6 +32,8 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import connectDB.ConnectDB;
@@ -39,8 +44,9 @@ import entity.KhuVuc;
 import entity.KhuyenMai;
 import entity.SanPham;
 
-public class Panel_SanPham extends JFrame {
-	private JTextField txtMaSanPham, txtMaKhuyenMai, txtMaKhuVuc, txtTen, txtDonVi, txtGiaBan, txtsoLuong, txtTimKiem, txtLocGia;
+public class Panel_SanPham extends JFrame implements ActionListener, MouseListener {
+	private JTextField txtMaSanPham, txtMaKhuyenMai, txtMaKhuVuc, txtTen, txtDonVi, txtGiaBan, txtsoLuong, txtTimKiem,
+			txtLocGia;
 	private JComboBox<String> cboxSanPham, cboxLocSanPham, cboxLocGia;
 	private JButton btnThem, btnSua, btnXoa, btnLamMoi, btnXuatFile;
 	private JTextArea textArea;
@@ -48,8 +54,11 @@ public class Panel_SanPham extends JFrame {
 	private DefaultTableModel sanPhamModel;
 	private ArrayList<SanPham> sanPhams = new ArrayList<SanPham>();
 	private SanPham_DAO sanPhamDao;
-	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
+	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
+	/**
+	 * 
+	 */
 	public Panel_SanPham() {
 		try {
 			ConnectDB.getInstance().connect();
@@ -108,7 +117,7 @@ public class Panel_SanPham extends JFrame {
 		panel2.add(txtMaKhuyenMai);
 		pCenter_1.add(panel2);
 		pCenter_1.add(Box.createVerticalStrut(20));
-		
+
 		JPanel panel2_2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lblMaKV = new JLabel("Mã khu vực: ");
 		panel2_2.add(lblMaKV);
@@ -118,7 +127,7 @@ public class Panel_SanPham extends JFrame {
 		panel2_2.add(txtMaKhuVuc);
 		pCenter_1.add(panel2_2);
 		pCenter_1.add(Box.createVerticalStrut(20));
-		
+
 		JPanel panel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lblTenSP = new JLabel("Tên sản phẩm:  ");
 		panel3.add(lblTenSP);
@@ -262,15 +271,9 @@ public class Panel_SanPham extends JFrame {
 		JLabel lblLocGia = new JLabel("Giá tiền");
 		lblLocGia.setAlignmentX(Component.CENTER_ALIGNMENT);
 		pBox3.add(lblLocGia);
-		cboxLocGia = new JComboBox<String>();
+		String[] item3 = { "Tất cả", "0 - 100.000", "100.000 - 500.000", "500.000 - 1.000.000", "Trên 1.000.000" };
+		cboxLocGia = new JComboBox<String>(item3);
 		cboxLocGia.setPreferredSize(new Dimension(220, 25));
-		cboxLocGia.addItem("Tất cả");
-		// Tạo 1 Arayllist để lưu các loại sản phẩm được trả về từ hàm getAllLoaiSP
-		ArrayList<String> list_giaSP = sanPhamDao.getAllLoaiSP();
-		// truyền list loại vào trong combobox
-		for (String gia : list_giaSP) {
-			cboxSanPham.addItem(gia);
-		}
 		pBox3.add(Box.createVerticalStrut(5));
 		pBox3.add(cboxLocGia);
 		pBox3.add(Box.createVerticalStrut(5));
@@ -278,7 +281,8 @@ public class Panel_SanPham extends JFrame {
 		pCenterLoc.add(Box.createHorizontalStrut(100));
 		pCenterAll.add(pCenterLoc, BorderLayout.NORTH);
 		// table
-		String[] col = { "Mã sản phẩm", "Mã khuyến mãi" ,"Mã khu vực", "Tên sản phẩm", "Giá bán", "Đơn vị", "Loại sản phẩm", "Số lượng tồn" };
+		String[] col = { "Mã sản phẩm", "Mã khuyến mãi", "Mã khu vực", "Tên sản phẩm", "Giá bán", "Đơn vị",
+				"Loại sản phẩm", "Số lượng tồn" };
 		sanPhamModel = new DefaultTableModel(col, 0);
 		tableSanPham = new JTable(sanPhamModel);
 		JScrollPane scroll = new JScrollPane(tableSanPham);
@@ -291,6 +295,7 @@ public class Panel_SanPham extends JFrame {
 		// Đọc dữ liệu từ cơ sở dữ liệu vào bảng
 		docDuLieuVaoTable();
 
+		tableSanPham.addMouseListener(this);
 		// xử lí sự kiện
 		txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -308,8 +313,9 @@ public class Panel_SanPham extends JFrame {
 				sanPhamModel.setRowCount(0);
 				// Thêm lại các khách hàng từ danh sách khachHangs vào bảng
 				for (SanPham sp : sanPhams) {
-					sanPhamModel.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(), sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), sp.getGiaSanPham(),
-							sp.getDonVi(), sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
+					sanPhamModel.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(),
+							sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), sp.getGiaSanPham(), sp.getDonVi(),
+							sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
 				}
 			}
 
@@ -326,20 +332,22 @@ public class Panel_SanPham extends JFrame {
 					}
 				}
 				sanPhamModel.setRowCount(0);
-				// Thêm lại các khách hàng từ danh sách khachHangs vào bảng
+				// Thêm lại các khách hàng từ danh sách sanphams vào bảng
 				for (SanPham sp : sanPhams) {
-					sanPhamModel.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(), sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), sp.getGiaSanPham(),
-							sp.getDonVi(), sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
+					sanPhamModel.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(),
+							sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), sp.getGiaSanPham(), sp.getDonVi(),
+							sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
 				}
 			}
+
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 		});
-		
-		//sự kiện thêm
+
+		// sự kiện thêm
 		btnThem.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -355,19 +363,185 @@ public class Panel_SanPham extends JFrame {
 					JOptionPane.showMessageDialog(null, "Thêm không thành công!");
 				} else {
 					JOptionPane.showMessageDialog(null, "Thêm thành công.");
-					UpdateTable();
 					docDuLieuVaoTable();
 				}
 			}
 		});
+		// sự kiện sửa
+		btnSua.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// Đổ dữ liệu textFiled
+				int row = tableSanPham.getSelectedRow();
+				if (row < 0) {
+					JOptionPane.showMessageDialog(null, "Chọn sản phẩm cần sửa");
+					return;
+				} else {
+					int maSP = Integer.parseInt(sanPhamModel.getValueAt(row, 0).toString());
+					SanPham sanpham = new SanPham(maSP, new KhuyenMai(Integer.parseInt(txtMaKhuyenMai.getText())),
+							new KhuVuc(Integer.parseInt(txtMaKhuVuc.getText())), txtTen.getText(),
+							Double.parseDouble(txtGiaBan.getText()), txtDonVi.getText(),
+							cboxSanPham.getSelectedItem().toString(), Integer.parseInt(txtsoLuong.getText()));
+					if (!sanPhamDao.update(sanpham)) {
+						JOptionPane.showMessageDialog(null, "Sửa không thành công!");
+					} else {
+						JOptionPane.showMessageDialog(null, "Sửa thành công.");
+						sanPhamModel.setValueAt(sanpham.getMaKhuyenMai().getMaKhuyenMai(), row, 1);
+						sanPhamModel.setValueAt(sanpham.getMaKhuVuc().getMaKhuVuc(), row, 2);
+						sanPhamModel.setValueAt(sanpham.getTen(), row, 3);
+						sanPhamModel.setValueAt(currencyFormat.format(sanpham.getGiaSanPham()), row, 4);
+						sanPhamModel.setValueAt(sanpham.getDonVi(), row, 5);
+						sanPhamModel.setValueAt(sanpham.getLoaiSanPham(), row, 6);
+						sanPhamModel.setValueAt(sanpham.getSoLuongTonKho(), row, 7);
+					}
+				}
+			}
+		});
+		// sự kiện xóa
+		btnXoa.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int index = tableSanPham.getSelectedRow();
+				if (index == -1) {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn sản phẩm cần xóa");
+					return;
+				}
+				int masp = Integer.parseInt(tableSanPham.getValueAt(index, 0).toString());
+				try {
+					sanPhamDao.remove(masp);
+					sanPhamModel.removeRow(index);
+					JOptionPane.showMessageDialog(null, "Xóa thành công");
+				} catch (Exception err) {
+					JOptionPane.showMessageDialog(null, "Lỗi khi xóa" + err.getMessage());
+				}
+			}
+		});
+		// sự kiện làm mới
+		btnLamMoi.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				docDuLieuVaoTable();
+				txtTimKiem.setText("");
+				txtMaKhuyenMai.setText("");
+				txtMaKhuVuc.setText("");
+				txtTen.setText("");
+				txtGiaBan.setText("");
+				txtDonVi.setText("");
+				txtsoLuong.setText("");
+			}
+		});
+		// sự kiện lọc theo loại sản phẩm
+		cboxLocSanPham.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String loai = cboxLocSanPham.getSelectedItem().toString();
+				ArrayList<SanPham> list = sanPhamDao.getSanPhamTheoLoai(loai);
+				sanPhams.clear();
+				tableSanPham.clearSelection();
+				sanPhamModel.setRowCount(0);
+				if (loai.equalsIgnoreCase("Tất cả")) {
+					docDuLieuVaoTable();
+				} else {
+					for (SanPham sp : list) {
+						if (sp.getLoaiSanPham().equalsIgnoreCase(loai)) {
+							sanPhams.add(sp);
+						}
+					}
+					for (SanPham sp : sanPhams) {
+						sanPhamModel.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(),
+								sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), currencyFormat.format(sp.getGiaSanPham()),
+								sp.getDonVi(), sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
+					}
+				}
+			}
+		});
+		// sự kiện lọc theo giá sản phẩm
+		cboxLocGia.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String gia = cboxLocGia.getSelectedItem().toString();
+				double priceStart = 0;
+				double priceEnd = Double.MAX_VALUE;
+				switch (gia) {
+				case "Dưới 100k": {
+					priceEnd = 100000;
+					break;
+				}
+				case "100k - 500k": {
+					priceStart = 100000;
+					priceEnd = 500000;
+					break;
+				}
+				case "500k - 1 triệu": {
+					priceStart = 500000;
+					priceEnd = 1000000;
+					break;
+				}
+				case "Trên 1 triệu": {
+					priceStart = 1000000;
+					break;
+				}
+				case "Tất cả": {
+					docDuLieuVaoTable();
+					break;
+				}
+				default:
+					break;
+				}
+				ArrayList<SanPham> temp = sanPhamDao.locSanPhamTheoGia(priceStart, priceEnd);
+				tableSanPham.clearSelection();
+				sanPhamModel.setRowCount(0);
+				for (SanPham sp : temp) {
+					sanPhamModel.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(),
+							sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), currencyFormat.format(sp.getGiaSanPham()),
+							sp.getDonVi(), sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
+				}
+			}
+		});
+		//sự kiện hiển thị trong textArea
+		tableSanPham.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+				if (!e.getValueIsAdjusting()) {
+					int selectedRow = tableSanPham.getSelectedRow();
+					if (selectedRow != -1) { // Kiểm tra xem có dòng nào được chọn không
+						int maSP = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 0).toString());
+						int maKM = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 1).toString());
+						int maKV = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 2).toString());
+						String ten = tableSanPham.getValueAt(selectedRow, 3).toString();
+						String gia = tableSanPham.getValueAt(selectedRow, 4).toString();
+						String donVi = tableSanPham.getValueAt(selectedRow, 5).toString();
+						String loaiSP = tableSanPham.getValueAt(selectedRow, 6).toString();
+						int soLuong = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 7).toString());
 
+						//Tạo chuỗi định dạng cho nội dung trong TextArea
+						String textContent = String.format(
+								"------------------Chi Tiết Sản Phẩm--------------------\n"
+								//+ "*********************************************************\n"
+								+ "-Mã sản phẩm: %d\n"
+								+ "-Tên sản phẩm: %s\n"
+								+ "-Giá: %s\n"
+								+"-Loại sản phẩm: %s\n"
+								+ "*********************************************************\n",maSP,ten,gia,loaiSP);
+						Font font = new Font("Arial", Font.PLAIN, 20);
+						textArea.setFont(font);
+						textArea.setText(textContent);
+				
+					}
+				}
+			}
+		});
+		
 	}
 
 	// Phương thức đọc dữ liệu từ cơ sở dữ liệu vào bảng
 	public void docDuLieuVaoTable() {
+		DefaultTableModel model = (DefaultTableModel) tableSanPham.getModel();
+		model.setRowCount(0); // Xóa dữ liệu cũ
 		ArrayList<SanPham> list = sanPhamDao.getalltbSanPham();
 		for (SanPham sp : list) {
-			((DefaultTableModel) sanPhamModel).addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(), sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), currencyFormat.format(sp.getGiaSanPham()),
+			model.addRow(new Object[] { sp.getMaSanPham(), sp.getMaKhuyenMai().getMaKhuyenMai(),
+					sp.getMaKhuVuc().getMaKhuVuc(), sp.getTen(), currencyFormat.format(sp.getGiaSanPham()),
 					sp.getDonVi(), sp.getLoaiSanPham(), sp.getSoLuongTonKho() });
 		}
 	}
@@ -379,5 +553,47 @@ public class Panel_SanPham extends JFrame {
 
 	public static void main(String[] args) {
 		new Panel_SanPham();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		int row = tableSanPham.getSelectedRow();
+		txtMaKhuyenMai.setText(sanPhamModel.getValueAt(row, 1).toString());
+		txtMaKhuVuc.setText(sanPhamModel.getValueAt(row, 2).toString());
+		txtTen.setText(sanPhamModel.getValueAt(row, 3).toString());
+		txtGiaBan.setText(sanPhamModel.getValueAt(row, 4).toString());
+		txtDonVi.setText(sanPhamModel.getValueAt(row, 5).toString());
+		cboxSanPham.setSelectedItem(sanPhamModel.getValueAt(row, 6).toString());
+		txtsoLuong.setText(sanPhamModel.getValueAt(row, 7).toString());
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+
 	}
 }

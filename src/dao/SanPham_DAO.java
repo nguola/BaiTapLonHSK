@@ -116,6 +116,53 @@ public class SanPham_DAO {
 		return list;
 	}
 	
+	//lọc sản phẩm theo loại
+	public ArrayList<SanPham> getSanPhamTheoLoai(String loaiSanPham){
+		ArrayList<SanPham> dssp = new ArrayList<SanPham>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			String sql = "Select * from SanPham where loaiSanPham=?";
+			stmt = con.prepareStatement(sql);
+			stmt.setString(1, loaiSanPham);
+			rs = stmt.executeQuery();
+			while(rs.next()) {
+				int maSanPham = rs.getInt(1);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSP = rs.getString(7);
+				int soLuongTonKho = rs.getInt(8);
+				
+				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSP, soLuongTonKho);
+				dssp.add(sp);
+				
+				
+			}
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}finally {
+			try{
+				// Đóng ResultSet
+		        if(rs != null) {
+		            rs.close();
+		        }
+		        // Đóng PreparedStatement
+		        if(stmt != null) {
+		            stmt.close();
+		        }
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return dssp;
+	}
+	//=====================================================
+	
 	public ArrayList<String> getAllLoaiSP(){
 		ArrayList<String> list_loai = new ArrayList<String>();
 		try {
@@ -135,7 +182,38 @@ public class SanPham_DAO {
 		}
 		return list_loai;
 	}
-	
+
+	public ArrayList<SanPham> locSanPhamTheoGia(double giaMin, double giaMax) {
+        ArrayList<SanPham> danhSachLoc = new ArrayList<>();
+        Connection con = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            con = ConnectDB.getConnection();
+            String sql = "SELECT * FROM SanPham WHERE giaSanPham BETWEEN ? AND ?";
+            stmt = con.prepareStatement(sql);
+            stmt.setDouble(1, giaMin);
+            stmt.setDouble(2, giaMax);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+            	int maSanPham = rs.getInt(1);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSP = rs.getString(7);
+				int soLuongTonKho = rs.getInt(8);
+				SanPham sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSP, soLuongTonKho);
+                danhSachLoc.add(sp);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+        return danhSachLoc;
+    }
 	public ArrayList<String> getAllDonViSP(){
 		ArrayList<String> list_donVi = new ArrayList<String>();
 		try {
@@ -256,14 +334,16 @@ public class SanPham_DAO {
 		int n = 0;
 		
 		try {
-			String sql = "update SanPham set maSanPham = ?, ten = ?" + "giaSanPham = ?, donVi = ?, loaiSanPham = ?, soLuongTonKho = ?";
+			String sql = "update SanPham set maKhuyenMai = ?, maKhuVuc = ?, ten = ?, giaSanPham = ?, donVi = ?, loaiSanPham = ?, soLuongTonKho = ? Where maSanPham = ?";
 			stament = con.prepareStatement(sql);
-			stament.setInt(1, sp.getMaSanPham());
-			stament.setString(2, sp.getTen());
-			stament.setDouble(3, sp.getGiaSanPham());
-			stament.setString(4, sp.getDonVi());
-			stament.setString(5, sp.getLoaiSanPham());
-			stament.setInt(6,sp.getSoLuongTonKho());
+			stament.setInt(1, sp.getMaKhuyenMai().getMaKhuyenMai());
+			stament.setInt(2, sp.getMaKhuVuc().getMaKhuVuc());
+			stament.setString(3, sp.getTen());
+			stament.setDouble(4, sp.getGiaSanPham());
+			stament.setString(5, sp.getDonVi());
+			stament.setString(6, sp.getLoaiSanPham());
+			stament.setInt(7,sp.getSoLuongTonKho());
+			stament.setInt(8, sp.getMaSanPham());
 			n = stament.executeUpdate();
 		} catch (SQLException e) {
 			// TODO: handle exception
@@ -279,6 +359,7 @@ public class SanPham_DAO {
 		}
 		return n > 0;
 	}
+<<<<<<< Updated upstream
 	
 	public boolean updateSLSP(SanPham sp) {
 		ConnectDB.getInstance();
@@ -309,5 +390,7 @@ public class SanPham_DAO {
 	}
 	
 	
+=======
+>>>>>>> Stashed changes
 
 }
