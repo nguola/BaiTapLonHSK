@@ -82,7 +82,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 
 		// Code North
 		JPanel jNorth = new JPanel();
-		JLabel tieuDe = new JLabel("Báo cáo");
+		JLabel tieuDe = new JLabel("Báo cáo doanh thu");
 		tieuDe.setFont(new Font("Time new roman", Font.BOLD, 30));
 		jNorth.add(tieuDe);
 		add(jNorth, BorderLayout.NORTH);

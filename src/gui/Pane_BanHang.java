@@ -2,6 +2,7 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -9,6 +10,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +22,7 @@ import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
@@ -34,11 +39,21 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+
+import com.aspose.words.Document;
+
 import dao.ChiTietHoaDon_DAO;
 import dao.HoaDon_DAO;
 import dao.KhachHang_DAO;
 import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
+import entity.ChiTietHoaDon;
+import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
 import entity.SanPham;
@@ -536,11 +551,8 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 			maKhachHang = -1;
 		}
 
-		System.out.println(maKhachHang);
-
 		hoaDon_dao.create(maKhachHang, maNhanVien, sqlDate, TongTien);
 		int maHD = hoaDon_dao.getMaHDVuaTao();
-		System.out.println(maHD);
 
 		for (int i = 0; i < model_HoaDon.getRowCount(); i++) {
 			chiTietHoaDon_dao.create(maHD, (int) table_HoaDon.getValueAt(i, 0), (Double) table_HoaDon.getValueAt(i, 5),
@@ -552,7 +564,70 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		model_sanPham.setRowCount(0);
 		update_TableSanPham(sanPham_dao.getalltbSanPham());
 
-		JOptionPane.showMessageDialog(this, "Lập hóa đơn thành công");
+		JFileChooser fileChooser = new JFileChooser();
+		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+		
+        int result = fileChooser.showOpenDialog(null);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+            createHoaDon(selectedFilePath, hoaDon_dao.getHoaDonTheoMa(maHD));
+            JOptionPane.showMessageDialog(this, "Lập hóa đơn thành công");
+        }
+	}
+	
+	public void createHoaDon(String filePath, HoaDon hoaDon) {
+		String inputFilePath = "data\\HoaDon\\HoaDon_Mau.docx";
+		String outputFilePathWord = "data\\HoaDon\\HoaDon_" + hoaDon.getMaDon() + ".docx";
+        String outputFilePathPDF = filePath + "HoaDonBanHang_" + hoaDon.getMaDon() +".pdf";
+        
+        String[] searchTokens = {"%MAHOADON%", "%MANHANVIEN%", "%TENNHANVIEN%", "%MAKHACHHANG%", "%TENKHACHHANG%", "%NGAYMUA%", "%TONGTIEN%"};
+        String[] replacementTokens = {
+	        		Integer.toString(hoaDon.getMaDon()), 
+	        		Integer.toString(hoaDon.getNhanVien().getMaNhanVien()),
+	        		nhanVien_dao.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen(), 
+	        		Integer.toString(hoaDon.getKhachHang().getMaKhachHang()), 
+	        		khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen(), 
+	        		hoaDon.getNgayMua().toString(), 
+	        		Double.toString(hoaDon.getTongTien())
+        		};
+
+        try (FileInputStream fis = new FileInputStream(inputFilePath);
+             XWPFDocument document = new XWPFDocument(fis)) {
+        	
+            for (XWPFParagraph paragraph : document.getParagraphs()) {
+                for (XWPFRun run : paragraph.getRuns()) {
+                    String text = run.getText(0);
+                    if (text != null) {
+                        for (int i = 0; i < searchTokens.length; i++) {
+                            if (text.contains(searchTokens[i])) {
+                                text = text.replace(searchTokens[i], replacementTokens[i]);
+                            }
+                        }
+                        run.setText(text, 0);
+                    }
+                }
+            }
+            
+            XWPFTable table = document.getTables().get(0);
+            ArrayList<ChiTietHoaDon> listCTHD = chiTietHoaDon_dao.getAllChiTietHoaDonTheoMaHoaDon(hoaDon.getMaDon());
+            for (int i = 0; i < listCTHD.size(); i++ ) {
+            	XWPFTableRow newRow = table.createRow();
+                newRow.getCell(0).setText(Integer.toString(listCTHD.get(i).getSanPham().getMaSanPham()));
+                newRow.getCell(1).setText(sanPham_dao.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getTen());
+                newRow.getCell(2).setText(Integer.toString(listCTHD.get(i).getSoLuong()));
+                newRow.getCell(3).setText(Double.toString(sanPham_dao.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getGiaSanPham()));
+                newRow.getCell(4).setText(Double.toString(listCTHD.get(i).getThanhTien()));
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
+                document.write(fos);
+            }
+            
+            Document doc = new Document(outputFilePathWord);
+            doc.save(outputFilePathPDF);            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 	}
 
 	@Override

@@ -115,7 +115,7 @@ public class HoaDon_DAO {
 
 	public HoaDon getHoaDonTheoMa(int maHD) {
 		Connection con = ConnectDB.getInstance().getConnection();
-		String query = "select * from HoaDon where maHoaDon = ?";
+		String query = "select * from HoaDon where maDon = ?";
 		try {
 			PreparedStatement statement = con.prepareStatement(query);
 			statement.setInt(1, maHD);
