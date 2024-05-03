@@ -325,7 +325,7 @@ begin
 		@maNV,
 		@NCC,
 		@ngayDat,
-		@tongTien,
+		@tongTien
 	)
 
 	set @maPhieuDat = SCOPE_IDENTITY()
@@ -355,3 +355,47 @@ AS
           AND (@loaiSP IS NULL OR loaiSanPham = @loaiSP)
           AND (@donVi IS NULL OR donVi = @donVi)
 GO
+
+--Thống kê sản doanh thu theo từng loại sản phẩm mà nhân viên X bán được
+create proc doanhThuTheoLoaiSanPham
+	@maNV int,
+	@Datestart date = null,
+	@DateEnd date = null
+as
+	select loaiSanPham, sum(thanhTien) as doanhThu
+	from HoaDon hd join ChiTietHoaDon ct on hd.maDon = ct.maDon 
+	join SanPham sp on ct.maSanPham = sp.maSanPham 
+	where maNhanVien = @maNV and (@Datestart is null or ngayMua >= @Datestart) and
+	(@DateEnd is null or ngayMua <= @DateEnd)
+	group by loaiSanPham
+go
+
+-- Tìm sản phẩm có doanh thu cao nhất mà nhân viên X bán được
+create proc sanPhamDoanhThuCaoNhat
+	@maNV int,
+	@Datestart date = null,
+	@DateEnd date = null
+as
+	select Top 1 loaiSanPham
+	from HoaDon hd join ChiTietHoaDon ct on hd.maDon = ct.maDon 
+	join SanPham sp on ct.maSanPham = sp.maSanPham 
+	where maNhanVien = @maNV and (@Datestart is null or ngayMua >= @Datestart) and
+	(@DateEnd is null or ngayMua <= @DateEnd)
+	group by loaiSanPham
+	order by sum(thanhTien) desc
+go
+
+-- Tìm sản phẩm có doanh thu thấp nhất mà nhân viên X bán được
+create proc sanPhamDoanhThuThapNhat
+	@maNV int,
+	@Datestart date = null,
+	@DateEnd date = null
+as
+	select Top 1 loaiSanPham
+	from HoaDon hd join ChiTietHoaDon ct on hd.maDon = ct.maDon 
+	join SanPham sp on ct.maSanPham = sp.maSanPham 
+	where maNhanVien = @maNV and (@Datestart is null or ngayMua >= @Datestart) and
+	(@DateEnd is null or ngayMua <= @DateEnd)
+	group by loaiSanPham
+	order by sum(thanhTien)
+go

@@ -1,10 +1,8 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -46,12 +44,12 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 	private JLabel lb_TenNhaVien;
 	private Box jp_SouthThongTin;
 	SanPham_DAO sanPham_dao = new SanPham_DAO();
-	private Pane_BanHang pane_BanHang;
-	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
-	private Panel_BaoCao panel_BaoCao;
 	private JMenuItem itemBanHang;
 	private JMenuItem itemThongTin;
 	private JMenuItem itemBaoCao;
+	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
+	private Panel_BaoCao panel_BaoCao;
+	private Pane_BanHang panel_BanHang;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -79,31 +77,30 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 
 		mnuKhachHang = new JMenu("Khách Hàng");
 		mnuKhachHang.setFont(new Font("Arial", Font.BOLD, 15));
-		panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
+		panelQuanLiKhachHang  = new Panel_QuanLiKhachHang();
 		this.add(panelQuanLiKhachHang, BorderLayout.CENTER);
 
 		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
 		mnuKhachHang.addMouseListener((MouseListener) new MouseAdapter() {
+
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				// Hiển thị Panel_QuanLiKhachHang và ẩn các panel khác
 				panelQuanLiKhachHang.setVisible(true);
 				// Ẩn các panel khác
-				pane_BanHang.setVisible(false);
+				panel_BanHang.setVisible(false);
 //				CardLayout cardLayout = (CardLayout) pane_BanHang.getLayout();
 //				cardLayout.show(pane_BanHang, "Panel_QuanLiKhachHang");
 			}
 		});
 		
 		itemBanHang = new JMenuItem("Bán hàng");
-		pane_BanHang = new Pane_BanHang(tk);
-
-		this.add(pane_BanHang, BorderLayout.CENTER);
+		panel_BanHang = new Pane_BanHang(tk);
+		this.add(panel_BanHang, BorderLayout.CENTER);
 		itemBanHang.addActionListener(new ActionListener() {
 		    @Override
 		    public void actionPerformed(ActionEvent e) {
-		        pane_BanHang.setVisible(true);
-		        panelQuanLiKhachHang.setVisible(false);
+		    	panel_BanHang.setVisible(true);
 		    }
 		});
 		
@@ -126,7 +123,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				add(panel_BaoCao, BorderLayout.CENTER);
-				pane_BanHang.setVisible(false);
+				panel_BanHang.setVisible(false);
 				panel_BaoCao.setVisible(true);
 			}
 		});

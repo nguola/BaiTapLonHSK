@@ -112,11 +112,11 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	private JRadioButton radio_rong;
 	private NhanVien nv;
 	private double TongTien;
-	
+
 	public Pane_BanHang(TaiKhoan tk) {
 		// Lấy nhân viên đang làm việc từ tài khoản đang đăng nhập
 		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
-		
+
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
 		setSize(800, 600);
@@ -484,7 +484,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	public void update_TableSanPham(ArrayList<SanPham> list_sanPham) {
 		for (SanPham sp : list_sanPham) {
 			model_sanPham.addRow(new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getLoaiSanPham(), sp.getGiaSanPham(),
-					sp.getDonVi(), sp.getSoLuongTonKho() });
+					sp.getDonVi(), (sp.getSoLuongTonKho() == 0) ? "Hết hàng" : sp.getSoLuongTonKho()});
 		}
 	}
 
@@ -520,39 +520,38 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		int maNhanVien = nv.getMaNhanVien();
 		int maKhachHang;
 		Calendar calendar = Calendar.getInstance();
-        java.util.Date currentDate = calendar.getTime();
+		java.util.Date currentDate = calendar.getTime();
 
-        // Chuyển đổi thành java.sql.Date
-        java.sql.Date sqlDate = new java.sql.Date(currentDate.getTime());
-		
-		if(radio_cu.isSelected()) {
+		// Chuyển đổi thành java.sql.Date
+		java.sql.Date sqlDate = new java.sql.Date(currentDate.getTime());
+
+		if (radio_cu.isSelected()) {
 			maKhachHang = Integer.parseInt(tf_maKH.getText());
-		}
-		else if(radio_moi.isSelected()) {
-			khachHang_DAO.createKhachHangMoi(tf_tenKH.getText(), tf_dtKH.getText(), tf_diaChiKH.getText(), tf_loaiKH.getText());
+		} else if (radio_moi.isSelected()) {
+			khachHang_DAO.createKhachHangMoi(tf_tenKH.getText(), tf_dtKH.getText(), tf_diaChiKH.getText(),
+					tf_loaiKH.getText());
 			maKhachHang = khachHang_DAO.getMaKHVuaTao();
-			
-		}else {
+
+		} else {
 			maKhachHang = -1;
 		}
-		
+
 		System.out.println(maKhachHang);
-		
+
 		hoaDon_dao.create(maKhachHang, maNhanVien, sqlDate, TongTien);
 		int maHD = hoaDon_dao.getMaHDVuaTao();
 		System.out.println(maHD);
-		
-		int soLuongMoi;
-		
-		for(int i = 0; i <  model_HoaDon.getRowCount(); i++) {
-			chiTietHoaDon_dao.create(maHD, (int)table_HoaDon.getValueAt(i, 0), (Double)table_HoaDon.getValueAt(i, 5), (int)table_HoaDon.getValueAt(i, 4));
-			sanPham_dao.updateSoLuong((int)table_HoaDon.getValueAt(i, 0), (int)table_HoaDon.getValueAt(i, 4));
+
+		for (int i = 0; i < model_HoaDon.getRowCount(); i++) {
+			chiTietHoaDon_dao.create(maHD, (int) table_HoaDon.getValueAt(i, 0), (Double) table_HoaDon.getValueAt(i, 5),
+					(int) table_HoaDon.getValueAt(i, 4));
+			sanPham_dao.updateSoLuong((int) table_HoaDon.getValueAt(i, 0), (int) table_HoaDon.getValueAt(i, 4));
 		}
-		
+
 		model_HoaDon.setRowCount(0);
 		model_sanPham.setRowCount(0);
 		update_TableSanPham(sanPham_dao.getalltbSanPham());
-		
+
 		JOptionPane.showMessageDialog(this, "Lập hóa đơn thành công");
 	}
 
@@ -564,6 +563,8 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 			int selected_row = table_SanPham.getSelectedRow();
 			if (selected_row == -1) {
 				JOptionPane.showMessageDialog(this, "Hãy chọn sản phẩm muốn thêm");
+			} else if (table_SanPham.getValueAt(selected_row, 5).toString().equalsIgnoreCase("Hết hàng")) {
+				JOptionPane.showMessageDialog(this, "Sản phẩm đã hết hàng");
 			} else {
 				try {
 					int maSP = Integer.parseInt(model_sanPham.getValueAt(selected_row, 0).toString());
@@ -707,12 +708,11 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 				JOptionPane.showMessageDialog(this, "Số điện thoại bắt đầu bằng 084 hoặc 0123 và phải có 10 số");
 				tf_dtKH.setText("");
 			}
-		}
-		else if(o.equals(btn_LapHoaDon)) {
+		} else if (o.equals(btn_LapHoaDon)) {
 			themHoaDonSQL();
 		}
 	}
-	
+
 	public void setRongTTKH() {
 		tf_maKH.setText("");
 		tf_loaiKH.setText("");

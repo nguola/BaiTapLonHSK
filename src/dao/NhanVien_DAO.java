@@ -45,11 +45,9 @@ public class NhanVien_DAO {
 		NhanVien nv = null;
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
-		 	
-		PreparedStatement stament = null;
 		try {
 			String sql = "select * from NhanVien where maNhanVien = ?";
-			stament = con.prepareStatement(sql);
+			PreparedStatement stament = con.prepareStatement(sql);
 			stament.setInt(1, id);
 			
 			ResultSet rs = stament.executeQuery();
@@ -67,14 +65,6 @@ public class NhanVien_DAO {
 		} catch (SQLException e) {
 			// TODO: handle exception
 			e.printStackTrace();
-		}
-		finally {
-			try {
-				stament.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-				// TODO: handle exception
-			}
 		}
 		return nv;
 	}

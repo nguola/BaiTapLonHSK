@@ -47,6 +47,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import connectDB.ConnectDB;
 import dao.HoaDon_DAO;
 import dao.NhanVien_DAO;
+import dao.SanPham_DAO;
 import entity.HoaDon;
 import entity.NhanVien;
 import entity.TaiKhoan;
@@ -54,6 +55,7 @@ import entity.TaiKhoan;
 public class Panel_BaoCao extends JPanel implements ActionListener, MouseListener, TableModelListener {
 	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
 	private HoaDon_DAO hoaDon_DAO = new HoaDon_DAO();
+	private SanPham_DAO sanPham_dao = new SanPham_DAO();
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
 	private JTextField tf_ma;
 	private JTextField tf_ten;
@@ -180,7 +182,8 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		sanPhamCaoNhat.add(Box.createHorizontalStrut(20));
 		sanPhamCaoNhat.add(lb_sanPhamCaoNhat);
 		sanPhamCaoNhat.add(tf_sanPhamCaoNhat);
-
+		tf_sanPhamCaoNhat.setText(sanPham_dao.SanPhamDoanhThuCaoNhat(nv.getMaNhanVien(), null, null));
+		
 		JPanel sanPhamThapNhat = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lb_sanPhamThapNhat = new JLabel("Sản phẩm bán thấp nhất:");
 		tf_sanPhamThapNhat = new JTextField(15);
@@ -189,6 +192,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		sanPhamThapNhat.add(lb_sanPhamThapNhat);
 		sanPhamThapNhat.add(Box.createHorizontalStrut(3));
 		sanPhamThapNhat.add(tf_sanPhamThapNhat);
+		tf_sanPhamThapNhat.setText(sanPham_dao.SanPhamDoanhThuThapNhat(nv.getMaNhanVien(), null, null));
 
 		thongTin.add(tongDoanhThu);
 		thongTin.add(sanPhamCaoNhat);
@@ -292,6 +296,30 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		} else if (o.equals(cbbTime)) {
 			list = FillterHoaDon();
 			updateTable(list);
+			Date timeStart = null;
+			Date timeEnd = null;
+			String item = (String) cbbTime.getSelectedItem();
+			LocalDate now = LocalDate.now();
+			switch (item) {
+			case "Ngày này": {
+				timeStart = Date.valueOf(now);
+                timeEnd = Date.valueOf(now);
+                break;
+			}
+			case "Tháng này": {
+				LocalDate firstDate = LocalDate.of(now.getYear(), now.getMonthValue(), 1);
+				timeStart = Date.valueOf(firstDate);
+				timeEnd = Date.valueOf(firstDate.plusMonths(1).minusDays(1));
+				break;
+			}
+			case "Tuần này": {
+				timeStart = Date.valueOf(now.with(DayOfWeek.MONDAY));
+				timeEnd = Date.valueOf(now.with(DayOfWeek.SUNDAY));
+				break;
+			}
+		}
+			tf_sanPhamCaoNhat.setText(sanPham_dao.SanPhamDoanhThuCaoNhat(nv.getMaNhanVien(), timeStart, timeEnd));
+			tf_sanPhamThapNhat.setText(sanPham_dao.SanPhamDoanhThuThapNhat(nv.getMaNhanVien(), timeStart, timeEnd));
 		} else if (o.equals(btn_baoCao)) {
 			//Định dạng là chọn thư mục để lưu file
 			JFileChooser fileChooser = new JFileChooser();
@@ -346,9 +374,11 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
         XSSFRow row =null;
         Cell cell=null;
         
+        String item = (String) cbbTime.getSelectedItem();
+        String tieuDe = "Báo cáo bán hàng " + (item.equalsIgnoreCase("Tất cả") ? "" : item);
         row=sheet.createRow(1);
         cell=row.createCell(1,CellType.STRING);
-        cell.setCellValue("Báo cáo bán hàng");
+        cell.setCellValue(tieuDe);
         
         row=sheet.createRow(3);
         cell=row.createCell(0,CellType.STRING);
@@ -369,7 +399,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
             cell=row.createCell(2,CellType.STRING);
             cell.setCellValue(list.get(i).getNgayMua().toString());
             cell=row.createCell(3,CellType.STRING);
-            cell.setCellValue(list.get(i).getTongTien());
+            cell.setCellValue(currencyFormat.format(list.get(i).getTongTien()) );
         }
         
         row=sheet.createRow(3 + list.size() + 2);
@@ -377,6 +407,18 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
         cell.setCellValue("Tổng doanh thu");
         cell=row.createCell(2,CellType.STRING);
         cell.setCellValue(tf_tongDoanhThu.getText());
+        
+        row=sheet.createRow(3 + list.size() + 4);
+        cell=row.createCell(0,CellType.STRING);
+        cell.setCellValue("Doanh thu cao nhất:");
+        cell=row.createCell(2,CellType.STRING);
+        cell.setCellValue(tf_sanPhamCaoNhat.getText());      
+        
+        row=sheet.createRow(3 + list.size() + 5);
+        cell=row.createCell(0,CellType.STRING);
+        cell.setCellValue("Doanh thu thấp nhất:");
+        cell=row.createCell(2,CellType.STRING);
+        cell.setCellValue(tf_sanPhamThapNhat.getText());
         
         try {
         	File f = new File(filePath + "//BaoCaoBanHang.xlsx");

@@ -1,11 +1,14 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import connectDB.ConnectDB;
 import entity.KhachHang;
@@ -214,6 +217,7 @@ public class SanPham_DAO {
         } 
         return danhSachLoc;
     }
+	
 	public ArrayList<String> getAllDonViSP(){
 		ArrayList<String> list_donVi = new ArrayList<String>();
 		try {
@@ -359,6 +363,7 @@ public class SanPham_DAO {
 		}
 		return n > 0;
 	}
+	
 	public boolean updateSLSP(SanPham sp) {
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
@@ -387,6 +392,96 @@ public class SanPham_DAO {
 		return n > 0;
 	}
 	
-	
+	public Map<String , Double> thongKeDoanhThuTheoLoai(int maNV, Date dateStart, Date dateEnd){
+		Map<String , Double> data = new HashMap<String, Double>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec doanhThuTheoLoaiSanPham ?, ?, ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maNV);
+			stament.setDate(2, dateStart);
+			stament.setDate(3, dateEnd);
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				data.put(rs.getString(1), rs.getDouble(2)); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return data;
+	}
 
+	public String SanPhamDoanhThuCaoNhat(int maNV, Date dateStart, Date dateEnd){
+		String loaiSP = "";
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec sanPhamDoanhThuCaoNhat ?, ?, ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maNV);
+			stament.setDate(2, dateStart);
+			stament.setDate(3, dateEnd);
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				loaiSP = rs.getString(1); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return loaiSP;
+	}
+	
+	public String SanPhamDoanhThuThapNhat(int maNV, Date dateStart, Date dateEnd){
+		String loaiSP = "";
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec sanPhamDoanhThuThapNhat ?, ?, ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maNV);
+			stament.setDate(2, dateStart);
+			stament.setDate(3, dateEnd);
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				loaiSP = rs.getString(1); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return loaiSP;
+	}
 }
