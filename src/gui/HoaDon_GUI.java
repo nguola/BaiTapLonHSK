@@ -666,10 +666,6 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			new ChiTietHoaDon_GUI(list.get(list.indexOf(hoadon))).setVisible(true);
 		}
 	}
-	
-	public static void main(String[] args) {
-		new HoaDon_GUI();
-	}
 
 	@Override
 	public void insertUpdate(DocumentEvent e) {
