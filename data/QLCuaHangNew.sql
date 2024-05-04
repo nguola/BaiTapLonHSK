@@ -421,4 +421,24 @@ as
 	group by month(ngayMua)
 go
 
+--Thống kê Chi Phí cửa hàng đặt theo ngày
+create proc ChiPhiTheoNgay
+	@month int,
+	@year int
+as
+	select day(ngayDat), sum(tongTien) as doanhThu
+	from PhieuDat pd join ChiTietPhieuDat ct on pd.maPhieu = ct.maPhieu 
+	where month(ngayDat) = @month and year(ngayDat) = @year
+	group by day(ngayDat)
+go
+
+--Thống kê doanh thu cửa hàng bán được theo Tháng
+create proc ChiPhiTheoThang
+	@year int
+as
+	select month(ngayDat), sum(tongTien) as doanhThu
+	from PhieuDat pd join ChiTietPhieuDat ct on pd.maPhieu = ct.maPhieu 
+	where year(ngayDat) = @year
+	group by month(ngayDat)
+go
 
