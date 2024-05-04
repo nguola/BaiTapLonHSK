@@ -202,8 +202,11 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		btn_Dangxuat.addActionListener(this);
 	}
 
-	public void switchPage(String name) {
-		cardLayout.show(pnCen, name);
+	public void switchPage(JPanel panel) {
+		pnCen.removeAll();
+		pnCen.add(panel);
+		pnCen.revalidate();
+		pnCen.repaint();
 	}
 
 	private Image scaleImage(Image image, int w, int h) {
@@ -259,26 +262,26 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		Object src = e.getSource();
 		if (src.equals(itemBanHang)) {
 			panel_BanHang = new Pane_BanHang(tk);
-			switchPage("PnBanHang");
+			switchPage(panel_BanHang);
 		} else if (src.equals(itemThongKe)) {
 			panel_thongKe = new Panel_ThongKe(tk);
-//			switchPage(panel_thongKe);
+			switchPage(panel_thongKe);
 		} else if (src.equals(itemBaoCao)) {
 			panel_BaoCao = new Panel_BaoCao(tk);
-//			switchPage(panel_BaoCao);
+			switchPage(panel_BaoCao);
 		} else if (src.equals(itemThongTin)) {
 			new Form_ThongTinNhanVien(tk);
 		} else if (src.equals(itemNhapHang)) {
 			panel_nhapHang = new NhapHang_GUI(tk);
-			switchPage("PnNhapHang");
+			switchPage(panel_nhapHang);
 		} else if (src.equals(itemQuanLiPhieuNhap)) {
 			panel_quanLiPhieuNhap = new PhieuNhap_GUI(tk);
-//			switchPage(panel_quanLiPhieuNhap);
+			switchPage(panel_quanLiPhieuNhap);
 		} else if (src.equals(itemThongKePhieuNhap)) {
 
 		} else if (src.equals(mnuKhachHang)) {
 			panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
-//			switchPage(panelQuanLiKhachHang);
+			switchPage(panelQuanLiKhachHang);
 		}
 		else if(src.equals(btn_Dangxuat)) {
 			this.dispose();
