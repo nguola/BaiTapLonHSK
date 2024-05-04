@@ -62,7 +62,7 @@ import entity.KhachHang;
 import entity.NhanVien;
 import entity.TaiKhoan;
 
-public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener, DocumentListener {
+public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener, DocumentListener {
 	
 	private TaiKhoan tk;
 	private JLabel title;
@@ -105,9 +105,7 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 	
 	public HoaDon_GUI() {
 		super();
-		setSize(1200, 800);
-		setLocationRelativeTo(null);
-		this.setTitle("Cửa hàng tiện lợi Goods Store");
+		setLayout(new BorderLayout());
 		
 		//kết nối DB
 		try {
@@ -116,13 +114,6 @@ public class HoaDon_GUI extends JFrame implements ActionListener, MouseListener,
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		};
-		
-		//Tạo menu
-		JMenuBar menu = new JMenuBar();
-		setJMenuBar(menu);
-		
-		JMenu trangChu = new JMenu("Trang Chủ");
-		menu.add(trangChu);
 		
 		//Phần North
 		JPanel pnNorth = new JPanel();

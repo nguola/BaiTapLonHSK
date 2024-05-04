@@ -61,6 +61,9 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private JMenuItem itemQuanLiPhieuNhap;
 	private JMenuItem itemThongKePhieuNhap;
 	private CardLayout cardLayout;
+	private JMenuItem itemQuanLyHD;
+	private JMenuItem itemThongKeHD;
+	private HoaDon_GUI panel_QuanLyHoaDon;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -71,6 +74,11 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 		this.add(pnCen, BorderLayout.CENTER);
 
@@ -108,12 +116,18 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		// Code menu Hóa đơn
 		mnuHoaDon = new JMenu("Hóa đơn");
 		mnuHoaDon.setFont(new Font("Arial", Font.BOLD, 15));
+		
+		itemQuanLyHD = new JMenuItem("Quản lý");
+		mnuHoaDon.add(itemQuanLyHD);
+		
+		itemThongKeHD = new JMenuItem("Thống Kê");
+		mnuHoaDon.add(itemThongKeHD);
 
 		// Code menu phiếu đặt
 		mnuPhieuNhap = new JMenu("Phiếu nhập");
 		mnuPhieuNhap.setFont(new Font("Arial", Font.BOLD, 15));
 
-		// Code các menu item của menu nhân viên
+		// Code các menu item của menu Phiếu nhập
 		itemNhapHang = new JMenuItem("Nhập hàng");
 		mnuPhieuNhap.add(itemNhapHang);
 
@@ -198,6 +212,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		itemNhapHang.addActionListener(this);
 		itemQuanLiPhieuNhap.addActionListener(this);
 		itemThongKePhieuNhap.addActionListener(this);
+		itemQuanLyHD.addActionListener(this);
 		mnuKhachHang.addActionListener(this);
 		btn_Dangxuat.addActionListener(this);
 	}
@@ -282,8 +297,10 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		} else if (src.equals(mnuKhachHang)) {
 			panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
 			switchPage(panelQuanLiKhachHang);
-		}
-		else if(src.equals(btn_Dangxuat)) {
+		} else if (src.equals(itemQuanLyHD)) {
+			panel_QuanLyHoaDon = new HoaDon_GUI();
+			switchPage(panel_QuanLyHoaDon);
+		} else if(src.equals(btn_Dangxuat)) {
 			this.dispose();
 			new TrangChu_GUI();
 		}
