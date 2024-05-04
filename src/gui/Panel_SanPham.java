@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -11,8 +12,12 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.sql.SQLException;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -21,6 +26,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -35,6 +41,16 @@ import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+
+import org.apache.poi.hpsf.Date;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.xwpf.usermodel.XWPFTable;
+import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+
+import com.aspose.words.Document;
+import com.aspose.words.DocumentBuilder;
 
 import connectDB.ConnectDB;
 import dao.KhachHang_DAO;
@@ -55,6 +71,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 	private ArrayList<SanPham> sanPhams = new ArrayList<SanPham>();
 	private SanPham_DAO sanPhamDao;
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+	private SanPham sanpham;
 
 	/**
 	 * 
@@ -483,7 +500,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 				}
 				case "Tất cả": {
 					docDuLieuVaoTable();
-					//break;
+					// break;
 					return;
 				}
 				default:
@@ -499,7 +516,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 				}
 			}
 		});
-		//sự kiện hiển thị trong textArea
+		// sự kiện hiển thị trong textArea
 		tableSanPham.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
@@ -514,25 +531,112 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 						String donVi = tableSanPham.getValueAt(selectedRow, 5).toString();
 						String loaiSP = tableSanPham.getValueAt(selectedRow, 6).toString();
 						int soLuong = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 7).toString());
+						String tenKhuVuc = sanPhamDao.getTenKhuVuc(maKV);
 
-						//Tạo chuỗi định dạng cho nội dung trong TextArea
-						String textContent = String.format(
-								"------------------Chi Tiết Sản Phẩm--------------------\n"
-								//+ "*********************************************************\n"
-								+ "-Mã sản phẩm: %d\n"
-								+ "-Tên sản phẩm: %s\n"
+						// Tạo chuỗi định dạng cho nội dung trong TextArea
+						String textContent = String.format("------------------Chi Tiết Sản Phẩm--------------------\n"
+								// + "*********************************************************\n"
+								+ "-Mã sản phẩm: %d\n" 
+								+ "-Tên sản phẩm: %s\n" 
 								+ "-Giá bán: %s\n"
-								+"-Loại sản phẩm: %s\n"
-								+ "*********************************************************\n",maSP,ten,gia,loaiSP);
+								+ "-Loại sản phẩm: %s\n"
+								+"-Khu Vực: %s\n", maSP, ten, gia,loaiSP,tenKhuVuc);
 						Font font = new Font("Arial", Font.PLAIN, 20);
 						textArea.setFont(font);
 						textArea.setText(textContent);
-				
+
 					}
 				}
 			}
 		});
+		// sự kiện xuất fille
+		btnXuatFile.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selectedRow = tableSanPham.getSelectedRow();
+				if (selectedRow == -1) {
+					JOptionPane.showMessageDialog(null, "Vui lòng chọn một dòng để xuất PDF");
+					return;
+				}
+				JFileChooser fileChooser = new JFileChooser();
+				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+				int result = fileChooser.showOpenDialog(null);
+		        if (result == JFileChooser.APPROVE_OPTION) {
+		        	
+		        	int maSP = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 0).toString());
+					
+					sanpham = sanPhamDao.getSanPhamTheoMa(maSP);
+		            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+		            exportPDF(selectedFilePath,sanpham);
+		        }
+			}
+		});
+
+	}
+	
+	public void exportPDF(String filePath, SanPham sanpham) {
 		
+				String inputFilePath = "data\\SanPham\\SanPham_Mau.docx";
+				String outputFilePathWord = "data\\SanPham\\SanPham_" + sanpham.getMaSanPham() + ".docx";
+				String outputFilePathPDF = filePath + "chitiet_" + sanpham.getMaSanPham() + ".pdf";
+
+				String[] search = { "%SOLUONGTON1%", "%TENKHACHHANG%", "%MANHANVIEN%", "%TENNHANVIEN%", "%NGAYMUA%",
+						"%MAKHACHHANG%", "%SOLUONGTON%" };
+				String[] replace = { 
+						Integer.toString(sanpham.getMaSanPham()),
+						Integer.toString(sanpham.getMaKhuyenMai().getMaKhuyenMai()),
+						Integer.toString(sanpham.getMaKhuVuc().getMaKhuVuc()), 
+						sanpham.getTen().toString(),
+						Double.toString(sanpham.getGiaSanPham()), 
+						sanpham.getLoaiSanPham().toString(),
+						Integer.toString(sanpham.getSoLuongTonKho())};
+
+				try (FileInputStream fis = new FileInputStream(inputFilePath);
+						XWPFDocument document = new XWPFDocument(fis)) {
+
+					// Thay thế các token trong tệp mẫu Word
+					for (XWPFParagraph paragraph : document.getParagraphs()) {
+						for (XWPFRun run : paragraph.getRuns()) {
+							String text = run.getText(0);
+							if (text != null) {
+								for (int i = 0; i < search.length; i++) {
+									if (text.contains(search[i])) {
+										text = text.replace(search[i], replace[i]);
+									}
+								}
+								run.setText(text, 0);
+							}
+						}
+					}
+					try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
+						document.write(fos);
+					}
+					Document doc = new Document(outputFilePathWord);
+					// Lưu tài liệu PDF
+					doc.save(outputFilePathPDF);
+					// Mở tài liệu
+					openFile(outputFilePathPDF);
+					JOptionPane.showMessageDialog(this, "Xuất PDF thành công!");
+				} catch (Exception e) {
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xử lý tệp Word!");
+				}
+			}
+
+	public void openFile(String filePath) {
+		try {
+			File pdfFile = new File(filePath);
+			if (!pdfFile.exists()) {
+				return;
+			}
+			Desktop destop = Desktop.getDesktop();
+			if (destop.isSupported(Desktop.Action.OPEN)) {
+				destop.open(pdfFile);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Không thể mở tập tin PDF!");
+		}
 	}
 
 	// Phương thức đọc dữ liệu từ cơ sở dữ liệu vào bảng
@@ -595,6 +699,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-
 	}
+
+	
 }

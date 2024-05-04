@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import connectDB.ConnectDB;
+import entity.ChiTietHoaDon;
 import entity.KhachHang;
 import entity.KhuVuc;
 import entity.KhuyenMai;
@@ -82,6 +83,45 @@ public class SanPham_DAO {
 			}
 		}
 		return sp;
+	}
+	
+	public ArrayList<SanPham> getAllSanPhamTheoMa(int id){
+		SanPham sp = null;
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		ArrayList<SanPham> dssp = new ArrayList<SanPham>();
+		PreparedStatement stament = null;
+		try {
+			String sql = "select * from SanPham where maSanPham = ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, id);
+			
+			ResultSet rs = stament.executeQuery();
+
+			while(rs.next()) {
+				int maSanPham = rs.getInt(1);
+				KhuyenMai maKhuyenMai = new KhuyenMai(rs.getInt(2));
+				KhuVuc maKhuVuc = new KhuVuc(rs.getInt(3));
+				String ten = rs.getString(4);
+				double giaSanPham = rs.getDouble(5);
+				String donVi = rs.getString(6);
+				String loaiSanPham = rs.getString(7);
+				int soLuongTonKho = rs.getInt(8);
+				
+				sp = new SanPham(maSanPham, maKhuyenMai, maKhuVuc, ten, giaSanPham, donVi, loaiSanPham, soLuongTonKho);
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		return dssp;
 	}
 	
 	public ArrayList<SanPham> Loc_SanPham(int maSP, String tenSP, String loaiSP, String donViTinh){
@@ -483,5 +523,25 @@ public class SanPham_DAO {
 		}
 		
 		return loaiSP;
+	}
+	
+	public String getTenKhuVuc(int maKhuVuc) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		String sql = "select tenKhuVuc from SanPham sp join KhuVuc kv on sp.maKhuVuc = kv.maKhuVuc" 
+					+" where kv.maKhuVuc = ?";
+		try {
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, maKhuVuc);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("tenKhuVuc");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
 	}
 }
