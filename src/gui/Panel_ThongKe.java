@@ -45,6 +45,7 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 
 	public Panel_ThongKe(TaiKhoan tk) {
 		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
+		
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
 

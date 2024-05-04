@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -10,10 +9,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -134,7 +131,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
-		setSize(800, 600);
 
 		// Code tiêu đề cho phần west
 		JPanel jp_West = new JPanel(new BorderLayout());

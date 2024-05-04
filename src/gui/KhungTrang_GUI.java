@@ -3,8 +3,11 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -28,14 +31,14 @@ import connectDB.ConnectDB;
 import dao.SanPham_DAO;
 import entity.TaiKhoan;
 
-public class KhungTrang_GUI extends JFrame implements WindowListener, ActionListener{
+public class KhungTrang_GUI extends JFrame implements WindowListener, ActionListener {
 
 	private TaiKhoan tk;
 	private JLabel lb_TieuDe;
 	private JMenuBar mnubar;
 	private JMenu mnuSanPham;
 	private JMenu mnuNhanVien;
-	private JMenu mnuNhaCungCap;
+	private JMenu mnuPhieuNhap;
 	private JMenu mnuHoaDon;
 	private JMenu mnuKhachHang;
 	private Box jp_South;
@@ -49,72 +52,94 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private JMenuItem itemBanHang;
 	private JMenuItem itemThongTin;
 	private JMenuItem itemBaoCao;
-	private Panel_QuanLiKhachHang panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
+	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
 	private Panel_BaoCao panel_BaoCao;
 	private Pane_BanHang panel_BanHang;
 	private Panel_ThongKe panel_thongKe;
+	private NhapHang_GUI panel_nhapHang;
 	private JMenuItem itemThongKe;
-	private JPanel pnCen = new JPanel();
+	private JPanel pnCen;
+	private JMenuItem itemNhapHang;
+	private JMenuItem itemQuanLiPhieuNhap;
+	private JMenuItem itemThongKePhieuNhap;
+	private PhieuNhap_GUI panel_quanLiPhieuNhap;
+	private CardLayout cardLayout;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
 		this.tk = tk;
+		cardLayout = new CardLayout();
+		pnCen = new JPanel(cardLayout);
+		Toolkit toolkit = Toolkit.getDefaultToolkit();
 
-		setSize(1500, 800);
+        // Lấy kích thước màn hình chính
+        Dimension screenSize = toolkit.getScreenSize();
+		setSize(screenSize.width, screenSize.height);
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
 
-		panel_BanHang = new Pane_BanHang(tk);
-		
 		this.add(pnCen, BorderLayout.CENTER);
-		pnCen.setLayout(new CardLayout());
-		pnCen.add(panel_BanHang);
-		
-		
-		// code menu
+
+		panel_BanHang = new Pane_BanHang(tk);
+		pnCen.add(panel_BanHang, "PnBanHang");
+
+		panel_nhapHang = new NhapHang_GUI(tk);
+		pnCen.add(panel_nhapHang, "PnNhapHang");
+//		pnCen.add(panel_BanHang);
+
+		// code menu bar
 		mnubar = new JMenuBar();
 
+		// Code menu nhân viên
 		mnuNhanVien = new JMenu("Nhân Viên");
 		mnuNhanVien.setFont(new Font("Arial", Font.BOLD, 15));
-		
+
+		// Code các menu item của menu nhân viên
+		itemBanHang = new JMenuItem("Bán hàng");
+		mnuNhanVien.add(itemBanHang);
+
+		itemThongTin = new JMenuItem("Thông tin");
+		mnuNhanVien.add(itemThongTin);
+
+		itemThongKe = new JMenuItem("Thống kê");
+		mnuNhanVien.add(itemThongKe);
+
+		itemBaoCao = new JMenuItem("Báo cáo");
+		mnuNhanVien.add(itemBaoCao);
+
+		// Code menu sản phẩm
 		mnuSanPham = new JMenu("Sản Phẩm");
 		mnuSanPham.setFont(new Font("Arial", Font.BOLD, 15));
 
+		// Code menu Hóa đơn
 		mnuHoaDon = new JMenu("Hóa đơn");
 		mnuHoaDon.setFont(new Font("Arial", Font.BOLD, 15));
 
-		mnuNhaCungCap = new JMenu("Nhà Cung Cấp");
-		mnuNhaCungCap.setFont(new Font("Arial", Font.BOLD, 15));
+		// Code menu phiếu đặt
+		mnuPhieuNhap = new JMenu("Phiếu nhập");
+		mnuPhieuNhap.setFont(new Font("Arial", Font.BOLD, 15));
 
+		// Code các menu item của menu nhân viên
+		itemNhapHang = new JMenuItem("Nhập hàng");
+		mnuPhieuNhap.add(itemNhapHang);
+
+		itemQuanLiPhieuNhap = new JMenuItem("Quản lí");
+		mnuPhieuNhap.add(itemQuanLiPhieuNhap);
+
+		itemThongKePhieuNhap = new JMenuItem("Thống kê");
+		mnuPhieuNhap.add(itemThongKePhieuNhap);
+
+		// Code menu khách hàng
 		mnuKhachHang = new JMenu("Khách Hàng");
 		mnuKhachHang.setFont(new Font("Arial", Font.BOLD, 15));
-		
-		itemBanHang = new JMenuItem("Bán hàng");
 
-		mnuNhanVien.add(itemBanHang);
-		
-		itemThongTin = new JMenuItem("Thông tin");
-
-		mnuNhanVien.add(itemThongTin);
-		
-		itemThongKe = new JMenuItem("Thống kê");
-		
-		mnuNhanVien.add(itemThongKe);
-		
-		itemBaoCao = new JMenuItem("Báo cáo");
-		mnuNhanVien.add(itemBaoCao);
-		
+		// Add các menu vào menu bar
 		mnubar.add(mnuNhanVien);
 		mnubar.add(mnuSanPham);
-		mnubar.add(mnuNhaCungCap);
+		mnubar.add(mnuPhieuNhap);
 		mnubar.add(mnuHoaDon);
 		mnubar.add(mnuKhachHang);
-		
-		itemBanHang.addActionListener(this);
-		itemBaoCao.addActionListener(this);
-		itemThongKe.addActionListener(this);
-		mnuKhachHang.addActionListener(this);
 
 		setJMenuBar(mnubar);
 
@@ -128,8 +153,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 
 		jp_North.add(lb_TieuDe);
 		this.add(jp_North, BorderLayout.NORTH);
-		
-		
+
 		// code South
 		// Code btn_DangXuat
 		jp_South = Box.createVerticalBox();
@@ -171,14 +195,21 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		this.add(jp_South, BorderLayout.SOUTH);
 
 		this.setVisible(true);
+
+		// Add các actionListener
 		this.addWindowListener(this);
+		itemBanHang.addActionListener(this);
+		itemThongTin.addActionListener(this);
+		itemBaoCao.addActionListener(this);
+		itemThongKe.addActionListener(this);
+		itemNhapHang.addActionListener(this);
+		itemQuanLiPhieuNhap.addActionListener(this);
+		itemThongKePhieuNhap.addActionListener(this);
+		mnuKhachHang.addActionListener(this);
 	}
-	
-	public void switchPage(JPanel panel) {
-		pnCen.removeAll();
-        pnCen.add(panel);
-        pnCen.revalidate();
-        pnCen.repaint();
+
+	public void switchPage(String name) {
+		cardLayout.show(pnCen, name);
 	}
 
 	private Image scaleImage(Image image, int w, int h) {
@@ -189,7 +220,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	@Override
 	public void windowOpened(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -201,49 +232,60 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	@Override
 	public void windowClosed(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowIconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowDeiconified(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowActivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void windowDeactivated(WindowEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object src = e.getSource();
 		if (src.equals(itemBanHang)) {
-			panel_BanHang = new Pane_BanHang(tk); 
-			switchPage(panel_BanHang);
+			panel_BanHang = new Pane_BanHang(tk);
+			switchPage("PnBanHang");
 		} else if (src.equals(itemThongKe)) {
 			panel_thongKe = new Panel_ThongKe(tk);
-			switchPage(panel_thongKe);
+//			switchPage(panel_thongKe);
 		} else if (src.equals(itemBaoCao)) {
 			panel_BaoCao = new Panel_BaoCao(tk);
-			switchPage(panel_BaoCao);
+//			switchPage(panel_BaoCao);
+		} else if (src.equals(itemThongTin)) {
+			new Form_ThongTinNhanVien(tk);
+		} else if (src.equals(itemNhapHang)) {
+			panel_nhapHang = new NhapHang_GUI(tk);
+			switchPage("PnNhapHang");
+		} else if (src.equals(itemQuanLiPhieuNhap)) {
+			panel_quanLiPhieuNhap = new PhieuNhap_GUI(tk);
+//			switchPage(panel_quanLiPhieuNhap);
+		} else if (src.equals(itemThongKePhieuNhap)) {
+
 		} else if (src.equals(mnuKhachHang)) {
 			panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
-			switchPage(panelQuanLiKhachHang);
+//			switchPage(panelQuanLiKhachHang);
 		}
 	}
-	
+
 }

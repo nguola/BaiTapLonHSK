@@ -18,19 +18,14 @@ import java.util.Locale;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -44,7 +39,6 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-import connectDB.ConnectDB;
 import dao.HoaDon_DAO;
 import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
@@ -78,7 +72,6 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
-		setSize(800, 600);
 
 		// Code North
 		JPanel jNorth = new JPanel();
@@ -88,7 +81,9 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		add(jNorth, BorderLayout.NORTH);
 
 		// Code Center
-		JPanel jCenter = new JPanel(new BorderLayout());
+		Box jCenter = Box.createHorizontalBox();
+		
+		JPanel jBaoCao = new JPanel(new BorderLayout());
 
 		Box thongTinNhanVien = Box.createVerticalBox();
 
@@ -126,7 +121,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		thongTinNhanVien.add(tenNV);
 		thongTinNhanVien.add(soDT);
 
-		jCenter.add(thongTinNhanVien, BorderLayout.NORTH);
+		jBaoCao.add(thongTinNhanVien, BorderLayout.NORTH);
 
 		// Code hóa đơn
 		JPanel hoaDonTitle = new JPanel();
@@ -152,9 +147,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 
 		// Đưa bảng vào GUI
 		JScrollPane scroll_hoaDon = new JScrollPane(tbListHD);
-		jCenter.add(scroll_hoaDon, BorderLayout.CENTER);
-
-		add(jCenter, BorderLayout.CENTER);
+		jBaoCao.add(scroll_hoaDon, BorderLayout.CENTER);
 
 		// Code thông tin báo cáo
 		Box thongTin = Box.createVerticalBox();
@@ -198,25 +191,37 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		thongTin.add(sanPhamCaoNhat);
 		thongTin.add(sanPhamThapNhat);
 
-		jCenter.add(thongTin, BorderLayout.SOUTH);
+		jBaoCao.add(thongTin, BorderLayout.SOUTH);
 
+		jCenter.add(Box.createHorizontalStrut(30));
+		jCenter.add(jBaoCao);
+		jCenter.add(Box.createHorizontalStrut(50));
+		
+		add(jCenter, BorderLayout.CENTER);
+		
 		// Code West
 
 		// Tạo comboBox chọn theo ngày, theo tuần, theo tháng
-		JPanel jWest = new JPanel();
+		JPanel jChonTacVu = new JPanel();
 
 		String[] time = { "Tất cả", "Ngày này", "Tuần này", "Tháng này" };
 		cbbTime = new JComboBox<String>(time);
 		cbbTime.setFont(new Font("Arial", Font.BOLD, 15));
 
-		jWest.add(cbbTime);
-		jWest.setBorder(BorderFactory.createTitledBorder("Chọn thời gian"));
+		jChonTacVu.add(cbbTime);
+		jChonTacVu.setBorder(BorderFactory.createTitledBorder("Chọn thời gian"));
+		JPanel jWest = new JPanel();
+		
+		jWest.add(Box.createHorizontalStrut(30));
+		jWest.add(jChonTacVu);
+		jWest.add(Box.createHorizontalStrut(30));
+		
 		add(jWest, BorderLayout.WEST);
 
 		// Code South
 		JPanel jSouth = new JPanel();
 
-		btn_baoCao = new JButton("Báo cáo");
+		btn_baoCao = new JButton("Xuất báo cáo");
 		btn_baoCao.setFont(new Font("Arial", Font.BOLD, 25));
 
 		jSouth.add(btn_baoCao);
@@ -241,7 +246,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		modelListHD.setRowCount(0);
 		try {
 			for (HoaDon hoaDon : list) {
-				modelListHD.addRow(new Object[] { hoaDon.getMaDon(), hoaDon.getKhachHang().getMaKhachHang(),
+				modelListHD.addRow(new Object[] { hoaDon.getMaDon(), (hoaDon.getKhachHang().getMaKhachHang() == 0) ? "Khách hàng tự do" : hoaDon.getKhachHang().getMaKhachHang(),
 						hoaDon.getNgayMua(), currencyFormat.format(hoaDon.getTongTien()) });
 			}
 		} catch (Exception e) {
@@ -395,7 +400,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
         	cell=row.createCell(0,CellType.STRING);
             cell.setCellValue(list.get(i).getMaDon());
             cell=row.createCell(1,CellType.STRING);
-            cell.setCellValue(list.get(i).getKhachHang().getMaKhachHang() != -1 ? Integer.toString( list.get(i).getKhachHang().getMaKhachHang()) : "Không có");
+            cell.setCellValue(list.get(i).getKhachHang().getMaKhachHang() != 0 ? Integer.toString( list.get(i).getKhachHang().getMaKhachHang()) : "Khách hàng tự do");
             cell=row.createCell(2,CellType.STRING);
             cell.setCellValue(list.get(i).getNgayMua().toString());
             cell=row.createCell(3,CellType.STRING);
@@ -411,13 +416,13 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
         row=sheet.createRow(3 + list.size() + 4);
         cell=row.createCell(0,CellType.STRING);
         cell.setCellValue("Doanh thu cao nhất:");
-        cell=row.createCell(2,CellType.STRING);
+        cell=row.createCell(1,CellType.STRING);
         cell.setCellValue(tf_sanPhamCaoNhat.getText());      
         
         row=sheet.createRow(3 + list.size() + 5);
         cell=row.createCell(0,CellType.STRING);
         cell.setCellValue("Doanh thu thấp nhất:");
-        cell=row.createCell(2,CellType.STRING);
+        cell=row.createCell(1,CellType.STRING);
         cell.setCellValue(tf_sanPhamThapNhat.getText());
         
         try {

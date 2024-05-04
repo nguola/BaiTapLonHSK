@@ -34,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 
 import connectDB.ConnectDB;
 import dao.ChiTietPhieuDat_DAO;
+import dao.NhanVien_DAO;
 import dao.PhieuDat_DAO;
 import dao.SanPham_DAO;
 import entity.ChiTietPhieuDat;
@@ -42,7 +43,7 @@ import entity.PhieuDat;
 import entity.SanPham;
 import entity.TaiKhoan;
 
-public class NhapHang_GUI extends JFrame implements ActionListener, MouseListener, DocumentListener{
+public class NhapHang_GUI extends JPanel implements ActionListener, MouseListener, DocumentListener{
 	private JTextField txtSearch;
 	private DefaultTableModel dtmDSSP;
 	private JTable tbDSSP;
@@ -67,26 +68,12 @@ public class NhapHang_GUI extends JFrame implements ActionListener, MouseListene
 	private JComboBox<String> cbbNCC;
 	private JTextField txtNVNhap;
 	private JTextField txtMaPN;
-	private TaiKhoan tk;
+	private NhanVien nv;
+	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
 	
 	public NhapHang_GUI(TaiKhoan tk) {
-		this();
-		this.tk = tk;
-		txtNVNhap.setText(Integer.toString(tk.getNhanvien().getMaNhanVien()));
-	}
-	
-	public NhapHang_GUI() {
-		super();
-		setSize(1200, 800);
-		setLocationRelativeTo(null);
-		this.setTitle("Cửa hàng tiện lợi Goods Store");
-		
-		//kết nối DB
-		try {
-			ConnectDB.getInstance().connect();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		};
+		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
+		setLayout(new BorderLayout());
 		
 		listSP = sanPham_DAO.getalltbSanPham();
 		//pnEast
@@ -102,6 +89,7 @@ public class NhapHang_GUI extends JFrame implements ActionListener, MouseListene
 		txtMaPN.setText(Integer.toString(listPD.get(listPD.size() - 1).getMaPhieu() + 1));
 		JLabel lbNVNhap = new JLabel("Nhân Viên Nhập");
 		txtNVNhap = new JTextField(25);
+		txtNVNhap.setText(nv.getTen());
 		txtNVNhap.setEditable(false);
 		JLabel lbNCC = new JLabel("Nhà Cung Cấp");
 		cbbNCC = new JComboBox<String>();
@@ -130,7 +118,7 @@ public class NhapHang_GUI extends JFrame implements ActionListener, MouseListene
 		pnEast.add(cbbNCC);
 		pnEast.add(Box.createVerticalStrut(20));
 		
-		pnEast.add(Box.createVerticalStrut(400));
+		pnEast.add(Box.createVerticalStrut(250));
 		
 		JLabel lbTongTien = new JLabel("Tổng Tiền");
 		txtTongTien = new JTextField();
@@ -331,10 +319,6 @@ public class NhapHang_GUI extends JFrame implements ActionListener, MouseListene
 			}
 		}
 		return temp;
-	}
-	
-	public static void main(String[] args) {
-		new NhapHang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
 	}
 
 	@Override

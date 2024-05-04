@@ -114,7 +114,4 @@ public class ChiTietPhieuNhap_GUI extends JDialog{
 			});
 		}
 	}
-	public static void main(String[] args) {
-		new PhieuNhap_GUI();
-	}
 }

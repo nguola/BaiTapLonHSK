@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -9,18 +8,14 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Date;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.Set;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
@@ -43,21 +38,17 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.toedter.calendar.JDateChooser;
 
-import connectDB.ConnectDB;
 import dao.PhieuDat_DAO;
-import entity.HoaDon;
 import entity.NhanVien;
 import entity.PhieuDat;
 import entity.TaiKhoan;
 
-public class PhieuNhap_GUI extends JFrame implements ActionListener, DocumentListener{
+public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentListener{
 	private JButton btnThem;
 	private JButton btnChiTiet;
 	private JButton btnXuatExcel;
 	private JTextField txtSearch;
 	private JButton btnLamMoi;
-	private JTextField txtNCC;
-	private JTextField txtMaNV;
 	private JDateChooser dateTuNgay;
 	private JDateChooser dateDenNgay;
 	private JTextField txtTuSoTien;
@@ -66,24 +57,13 @@ public class PhieuNhap_GUI extends JFrame implements ActionListener, DocumentLis
 	private JTable tb;
 	private PhieuDat_DAO phieuDat_DAO = new PhieuDat_DAO();
 	private ArrayList<PhieuDat> listPD = new ArrayList<PhieuDat>();
-	private ComboBoxModel<String> dtmCBBNCC;
 	private JComboBox<String> cbbNCC;
 	private JComboBox<String> cbbMaNV;
 	private JButton btnLoc;
 	private JButton btnXoa;
 
-	public PhieuNhap_GUI() {
-		super();
-		setSize(1200, 800);
-		setLocationRelativeTo(null);
-		this.setTitle("Cửa hàng tiện lợi Goods Store");
-		//kết nối DB
-		try {
-			ConnectDB.getInstance().connect();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		};
+	public PhieuNhap_GUI(TaiKhoan tk) {
+		setLayout(new BorderLayout());
 		listPD = phieuDat_DAO.getAllPhieuDat();
 		
 		//PnNorth
@@ -318,10 +298,6 @@ public class PhieuNhap_GUI extends JFrame implements ActionListener, DocumentLis
             ex.printStackTrace();
         }
 	}
-	
-	public static void main(String[] args) {
-		new PhieuNhap_GUI();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -399,8 +375,8 @@ public class PhieuNhap_GUI extends JFrame implements ActionListener, DocumentLis
 				updateTable(listPD);
 			}
 		} else if (src.equals(btnThem)) {
-			this.dispose();
-			new NhapHang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
+//			this.dispose();
+//			new NhapHang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
 		}
  	}
 

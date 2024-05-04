@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
@@ -27,6 +29,7 @@ public class Form_ThongTinNhanVien extends JFrame{
 	private JTextField tf_luong;
 	private JTextField tf_loai;
 	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
+	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
 
 	public Form_ThongTinNhanVien(TaiKhoan tk) {
 		super();
@@ -108,7 +111,7 @@ public class Form_ThongTinNhanVien extends JFrame{
 		JLabel luongNV = new JLabel("Lương:");
 		tf_luong = new JTextField(30);
 		tf_luong.setEditable(false);
-		tf_luong.setText(String.valueOf(nv.getLuong()));
+		tf_luong.setText(currencyFormat.format(nv.getLuong()));
 		Luong.add(luongNV);
 		Luong.add(Box.createHorizontalStrut(48));
 		Luong.add(tf_luong);
