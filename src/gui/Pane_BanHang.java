@@ -241,8 +241,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 			// chỉnh sửa bất cứ cột nào
 			@Override
 			public boolean isCellEditable(int row, int column) {
-				if (column == 5)
-					return true;
 				return false;
 			}
 		};
@@ -499,7 +497,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	public void update_TableSanPham(ArrayList<SanPham> list_sanPham) {
 		for (SanPham sp : list_sanPham) {
 			model_sanPham.addRow(new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getLoaiSanPham(), sp.getGiaSanPham(),
-					sp.getDonVi(), (sp.getSoLuongTonKho() == 0) ? "Hết hàng" : sp.getSoLuongTonKho()});
+					sp.getDonVi(), (sp.getSoLuongTonKho() == 0) ? "Hết hàng" : sp.getSoLuongTonKho() });
 		}
 	}
 
@@ -566,68 +564,69 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 
 		JFileChooser fileChooser = new JFileChooser();
 		fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-		
-        int result = fileChooser.showOpenDialog(null);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-            createHoaDon(selectedFilePath, hoaDon_dao.getHoaDonTheoMa(maHD));
-            JOptionPane.showMessageDialog(this, "Lập hóa đơn thành công");
-        }
+
+		int result = fileChooser.showOpenDialog(null);
+		if (result == JFileChooser.APPROVE_OPTION) {
+			String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+			createHoaDon(selectedFilePath, hoaDon_dao.getHoaDonTheoMa(maHD));
+			JOptionPane.showMessageDialog(this, "Lập hóa đơn thành công");
+		}
 	}
-	
+
 	public void createHoaDon(String filePath, HoaDon hoaDon) {
 		String inputFilePath = "data\\HoaDon\\HoaDon_Mau.docx";
 		String outputFilePathWord = "data\\HoaDon\\HoaDon_" + hoaDon.getMaDon() + ".docx";
-        String outputFilePathPDF = filePath + "HoaDonBanHang_" + hoaDon.getMaDon() +".pdf";
-        
-        String[] searchTokens = {"%MAHOADON%", "%MANHANVIEN%", "%TENNHANVIEN%", "%MAKHACHHANG%", "%TENKHACHHANG%", "%NGAYMUA%", "%TONGTIEN%"};
-        String[] replacementTokens = {
-	        		Integer.toString(hoaDon.getMaDon()), 
-	        		Integer.toString(hoaDon.getNhanVien().getMaNhanVien()),
-	        		nhanVien_dao.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen(), 
-	        		Integer.toString(hoaDon.getKhachHang().getMaKhachHang()), 
-	        		khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen(), 
-	        		hoaDon.getNgayMua().toString(), 
-	        		Double.toString(hoaDon.getTongTien())
-        		};
+		String outputFilePathPDF = filePath + "HoaDonBanHang_" + hoaDon.getMaDon() + ".pdf";
 
-        try (FileInputStream fis = new FileInputStream(inputFilePath);
-             XWPFDocument document = new XWPFDocument(fis)) {
-        	
-            for (XWPFParagraph paragraph : document.getParagraphs()) {
-                for (XWPFRun run : paragraph.getRuns()) {
-                    String text = run.getText(0);
-                    if (text != null) {
-                        for (int i = 0; i < searchTokens.length; i++) {
-                            if (text.contains(searchTokens[i])) {
-                                text = text.replace(searchTokens[i], replacementTokens[i]);
-                            }
-                        }
-                        run.setText(text, 0);
-                    }
-                }
-            }
-            
-            XWPFTable table = document.getTables().get(0);
-            ArrayList<ChiTietHoaDon> listCTHD = chiTietHoaDon_dao.getAllChiTietHoaDonTheoMaHoaDon(hoaDon.getMaDon());
-            for (int i = 0; i < listCTHD.size(); i++ ) {
-            	XWPFTableRow newRow = table.createRow();
-                newRow.getCell(0).setText(Integer.toString(listCTHD.get(i).getSanPham().getMaSanPham()));
-                newRow.getCell(1).setText(sanPham_dao.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getTen());
-                newRow.getCell(2).setText(Integer.toString(listCTHD.get(i).getSoLuong()));
-                newRow.getCell(3).setText(Double.toString(sanPham_dao.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getGiaSanPham()));
-                newRow.getCell(4).setText(Double.toString(listCTHD.get(i).getThanhTien()));
-            }
+		String[] searchTokens = { "%MAHOADON%", "%MANHANVIEN%", "%TENNHANVIEN%", "%MAKHACHHANG%", "%TENKHACHHANG%",
+				"%NGAYMUA%", "%TONGTIEN%" };
+		String[] replacementTokens = { Integer.toString(hoaDon.getMaDon()),
+				Integer.toString(hoaDon.getNhanVien().getMaNhanVien()),
+				nhanVien_dao.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen(),
+				Integer.toString(hoaDon.getKhachHang().getMaKhachHang()),
+				(!radio_rong.isSelected())
+						? khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen()
+						: "Khách hàng tự do",
+				hoaDon.getNgayMua().toString(), Double.toString(hoaDon.getTongTien()) };
 
-            try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
-                document.write(fos);
-            }
-            
-            Document doc = new Document(outputFilePathWord);
-            doc.save(outputFilePathPDF);            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+		try (FileInputStream fis = new FileInputStream(inputFilePath); XWPFDocument document = new XWPFDocument(fis)) {
+
+			for (XWPFParagraph paragraph : document.getParagraphs()) {
+				for (XWPFRun run : paragraph.getRuns()) {
+					String text = run.getText(0);
+					if (text != null) {
+						for (int i = 0; i < searchTokens.length; i++) {
+							if (text.contains(searchTokens[i])) {
+								text = text.replace(searchTokens[i], replacementTokens[i]);
+							}
+						}
+						run.setText(text, 0);
+					}
+				}
+			}
+
+			XWPFTable table = document.getTables().get(0);
+			ArrayList<ChiTietHoaDon> listCTHD = chiTietHoaDon_dao.getAllChiTietHoaDonTheoMaHoaDon(hoaDon.getMaDon());
+			for (int i = 0; i < listCTHD.size(); i++) {
+				XWPFTableRow newRow = table.createRow();
+				newRow.getCell(0).setText(Integer.toString(listCTHD.get(i).getSanPham().getMaSanPham()));
+				newRow.getCell(1)
+						.setText(sanPham_dao.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getTen());
+				newRow.getCell(2).setText(Integer.toString(listCTHD.get(i).getSoLuong()));
+				newRow.getCell(3).setText(Double.toString(
+						sanPham_dao.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getGiaSanPham()));
+				newRow.getCell(4).setText(Double.toString(listCTHD.get(i).getThanhTien()));
+			}
+
+			try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
+				document.write(fos);
+			}
+
+			Document doc = new Document(outputFilePathWord);
+			doc.save(outputFilePathPDF);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
