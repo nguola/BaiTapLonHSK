@@ -422,6 +422,36 @@ public class SanPham_DAO {
 		
 		return data;
 	}
+	
+	public Map<Date , Double> thongKeDoanhThuCuaHang(Date dateStart, Date dateEnd){
+		Map<Date , Double> data = new HashMap<Date, Double>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec doanhThuCuaHang ?, ?";
+			stament = con.prepareStatement(sql);
+			stament.setDate(1, dateStart);
+			stament.setDate(2, dateEnd);
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				data.put(rs.getDate(1), rs.getDouble(2)); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return data;
+	}
 
 	public String SanPhamDoanhThuCaoNhat(int maNV, Date dateStart, Date dateEnd){
 		String loaiSP = "";

@@ -2,7 +2,6 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -18,7 +17,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,7 +33,7 @@ import dao.SanPham_DAO;
 import entity.NhanVien;
 import entity.TaiKhoan;
 
-public class Panel_ThongKe extends JPanel implements ActionListener {
+public class ThongKeDoanhThu_GUI extends JFrame implements ActionListener {
 	private JRadioButton radio_doanhThuTheoLoai;
 	private JComboBox<String> cbbTime;
 	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
@@ -43,10 +41,19 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 	private NhanVien nv;
 	DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
-	public Panel_ThongKe(TaiKhoan tk) {
+	public ThongKeDoanhThu_GUI(TaiKhoan tk) {
+		super();
+		try {
+			ConnectDB.getInstance().connect();
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		
 		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
+		setSize(800, 600);
 
 		// Code tiêu đề
 		JPanel jp_North = new JPanel(new BorderLayout());
@@ -115,11 +122,11 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 	}
 
 	public void updateDataSet(Date dateStart, Date dateEnd) {
-		Map<String, Double> data = sanPham_dao.thongKeDoanhThuTheoLoai(nv.getMaNhanVien(), dateStart, dateEnd);
+		Map<Date, Double> data = sanPham_dao.thongKeDoanhThuCuaHang(dateStart, dateEnd);
 		
 		dataset.clear();
 		
-		for (Entry<String, Double> entry : data.entrySet()) {
+		for (Entry<Date, Double> entry : data.entrySet()) {
 			dataset.setValue(entry.getValue(), entry.getKey(), entry.getKey());
 		}
 

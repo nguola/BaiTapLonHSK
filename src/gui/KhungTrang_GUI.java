@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
@@ -13,6 +14,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -26,7 +28,7 @@ import connectDB.ConnectDB;
 import dao.SanPham_DAO;
 import entity.TaiKhoan;
 
-public class KhungTrang_GUI extends JFrame implements WindowListener{
+public class KhungTrang_GUI extends JFrame implements WindowListener, ActionListener{
 
 	private TaiKhoan tk;
 	private JLabel lb_TieuDe;
@@ -47,11 +49,12 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 	private JMenuItem itemBanHang;
 	private JMenuItem itemThongTin;
 	private JMenuItem itemBaoCao;
-	private Panel_QuanLiKhachHang panelQuanLiKhachHang;
+	private Panel_QuanLiKhachHang panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
 	private Panel_BaoCao panel_BaoCao;
 	private Pane_BanHang panel_BanHang;
 	private Panel_ThongKe panel_thongKe;
 	private JMenuItem itemThongKe;
+	private JPanel pnCen = new JPanel();
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -62,6 +65,13 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
 
+		panel_BanHang = new Pane_BanHang(tk);
+		
+		this.add(pnCen, BorderLayout.CENTER);
+		pnCen.setLayout(new CardLayout());
+		pnCen.add(panel_BanHang);
+		
+		
 		// code menu
 		mnubar = new JMenuBar();
 
@@ -79,78 +89,32 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 
 		mnuKhachHang = new JMenu("Khách Hàng");
 		mnuKhachHang.setFont(new Font("Arial", Font.BOLD, 15));
-		panelQuanLiKhachHang  = new Panel_QuanLiKhachHang();
-		this.add(panelQuanLiKhachHang, BorderLayout.CENTER);
-
-		panelQuanLiKhachHang.setVisible(false); // Ẩn Panel_QuanLiKhachHang ban đầu
-		mnuKhachHang.addMouseListener((MouseListener) new MouseAdapter() {
-
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				// Hiển thị Panel_QuanLiKhachHang và ẩn các panel khác
-				panelQuanLiKhachHang.setVisible(true);
-				// Ẩn các panel khác
-				panel_BanHang.setVisible(false);
-//				CardLayout cardLayout = (CardLayout) pane_BanHang.getLayout();
-//				cardLayout.show(pane_BanHang, "Panel_QuanLiKhachHang");
-			}
-		});
 		
 		itemBanHang = new JMenuItem("Bán hàng");
-		panel_BanHang = new Pane_BanHang(tk);
-		this.add(panel_BanHang, BorderLayout.CENTER);
-		itemBanHang.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent e) {
-		    	panel_BanHang.setVisible(true);
-		    }
-		});
-		
+
 		mnuNhanVien.add(itemBanHang);
 		
 		itemThongTin = new JMenuItem("Thông tin");
-		itemThongTin.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				new Form_ThongTinNhanVien(tk);
-			}
-		});
+
 		mnuNhanVien.add(itemThongTin);
 		
 		itemThongKe = new JMenuItem("Thống kê");
-		panel_thongKe = new Panel_ThongKe(tk);
-		panel_thongKe.setVisible(false);
-		itemThongKe.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				add(panel_thongKe, BorderLayout.CENTER);
-				panel_BanHang.setVisible(false);
-				panel_thongKe.setVisible(true);
-			}
-		});
+		
 		mnuNhanVien.add(itemThongKe);
 		
 		itemBaoCao = new JMenuItem("Báo cáo");
-		panel_BaoCao = new Panel_BaoCao(tk);
-		panel_BaoCao.setVisible(false);
-		itemBaoCao.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				add(panel_BaoCao, BorderLayout.CENTER);
-				panel_BanHang.setVisible(false);
-				panel_BaoCao.setVisible(true);
-			}
-		});
 		mnuNhanVien.add(itemBaoCao);
 		
-		
-
 		mnubar.add(mnuNhanVien);
 		mnubar.add(mnuSanPham);
 		mnubar.add(mnuNhaCungCap);
 		mnubar.add(mnuHoaDon);
 		mnubar.add(mnuKhachHang);
+		
+		itemBanHang.addActionListener(this);
+		itemBaoCao.addActionListener(this);
+		itemThongKe.addActionListener(this);
+		mnuKhachHang.addActionListener(this);
 
 		setJMenuBar(mnubar);
 
@@ -209,6 +173,13 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		this.setVisible(true);
 		this.addWindowListener(this);
 	}
+	
+	public void switchPage(JPanel panel) {
+		pnCen.removeAll();
+        pnCen.add(panel);
+        pnCen.revalidate();
+        pnCen.repaint();
+	}
 
 	private Image scaleImage(Image image, int w, int h) {
 		Image scaled = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
@@ -256,4 +227,23 @@ public class KhungTrang_GUI extends JFrame implements WindowListener{
 		// TODO Auto-generated method stub
 		
 	}
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		Object src = e.getSource();
+		if (src.equals(itemBanHang)) {
+			panel_BanHang = new Pane_BanHang(tk); 
+			switchPage(panel_BanHang);
+		} else if (src.equals(itemThongKe)) {
+			panel_thongKe = new Panel_ThongKe(tk);
+			switchPage(panel_thongKe);
+		} else if (src.equals(itemBaoCao)) {
+			panel_BaoCao = new Panel_BaoCao(tk);
+			switchPage(panel_BaoCao);
+		} else if (src.equals(mnuKhachHang)) {
+			panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
+			switchPage(panelQuanLiKhachHang);
+		}
+	}
+	
 }
