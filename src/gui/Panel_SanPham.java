@@ -19,6 +19,7 @@ import java.sql.SQLException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
@@ -35,12 +36,17 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
+import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import org.apache.poi.hpsf.Date;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -72,10 +78,8 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 	private SanPham_DAO sanPhamDao;
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 	private SanPham sanpham;
+	private TableRowSorter<TableModel> sort;
 
-	/**
-	 * 
-	 */
 	public Panel_SanPham() {
 		try {
 			ConnectDB.getInstance().connect();
@@ -233,6 +237,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 		// pCenter 3
 		JPanel pCenter_3 = new JPanel();
 		pCenter_3.setLayout(new BoxLayout(pCenter_3, BoxLayout.Y_AXIS));
+		pCenter_3.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
 		JLabel lblThongTin = new JLabel("Thông Tin Chi Tiết");
 		lblThongTin.setFont(new Font("Arial", Font.BOLD, 24));
 		lblThongTin.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -311,8 +316,29 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 		setVisible(true);
 		// Đọc dữ liệu từ cơ sở dữ liệu vào bảng
 		docDuLieuVaoTable();
-
+		//sự kiện click vào table đõ lên textFiled
 		tableSanPham.addMouseListener(this);
+		
+		// Xử lí sự kiện khi click vào tiêu đề cột
+		// khởi tạo TableSorter
+		sort = new TableRowSorter<TableModel>(sanPhamModel);
+		tableSanPham.setRowSorter(sort);
+		tableSanPham.getTableHeader().addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int colIndex = tableSanPham.columnAtPoint(e.getPoint());
+				if (colIndex == -1)
+					return; // Khi click không phải tiêu đề
+				else {
+					if (sort.getSortKeys().isEmpty() || sort.getSortKeys().get(0).getColumn() != colIndex) {
+						// Nếu chưa được sắp xếphoặc đã được sắp xếp nhưng không theo thứ tự tăng
+						// dần,thì sắp xếp tăng dần
+						sort.setSortKeys(List.of(new RowSorter.SortKey(colIndex, SortOrder.ASCENDING)));
+						sort.sort();
+					}
+				}
+			}
+		}); 
 		// xử lí sự kiện
 		txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -532,15 +558,19 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 						String loaiSP = tableSanPham.getValueAt(selectedRow, 6).toString();
 						int soLuong = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 7).toString());
 						String tenKhuVuc = sanPhamDao.getTenKhuVuc(maKV);
+						String dieuKien = sanPhamDao.getDieuKienKhuyenMai(maKM);
 
 						// Tạo chuỗi định dạng cho nội dung trong TextArea
-						String textContent = String.format("------------------Chi Tiết Sản Phẩm--------------------\n"
-								// + "*********************************************************\n"
-								+ "-Mã sản phẩm: %d\n" 
-								+ "-Tên sản phẩm: %s\n" 
-								+ "-Giá bán: %s\n"
-								+ "-Loại sản phẩm: %s\n"
-								+"-Khu Vực: %s\n", maSP, ten, gia,loaiSP,tenKhuVuc);
+						String textContent = String.format("\n	Chi Tiết Sản Phẩm	\n\n"
+								+ "==================================================\n"
+								+ " -Mã sản phẩm: %d\n" 
+								+ " -Tên sản phẩm: %s\n" 
+								+ " -Giá bán: %s\n"
+								+ " -Loại sản phẩm: %s\n" 
+								+ " -Khu Vực: %s\n" 
+								+ " -Điều Kiện Khuyến mãi:\n %s\n"
+								+ "==================================================\n", maSP,
+								ten, gia, loaiSP, tenKhuVuc, dieuKien);
 						Font font = new Font("Arial", Font.PLAIN, 20);
 						textArea.setFont(font);
 						textArea.setText(textContent);
@@ -561,67 +591,63 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 				JFileChooser fileChooser = new JFileChooser();
 				fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 				int result = fileChooser.showOpenDialog(null);
-		        if (result == JFileChooser.APPROVE_OPTION) {
-		        	
-		        	int maSP = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 0).toString());
-					
+				if (result == JFileChooser.APPROVE_OPTION) {
+
+					int maSP = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 0).toString());
+
 					sanpham = sanPhamDao.getSanPhamTheoMa(maSP);
-		            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-		            exportPDF(selectedFilePath,sanpham);
-		        }
+					String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+					exportPDF(selectedFilePath, sanpham);
+				}
 			}
 		});
 
 	}
-	
+
 	public void exportPDF(String filePath, SanPham sanpham) {
-		
-				String inputFilePath = "data\\SanPham\\SanPham_Mau.docx";
-				String outputFilePathWord = "data\\SanPham\\SanPham_" + sanpham.getMaSanPham() + ".docx";
-				String outputFilePathPDF = filePath + "chitiet_" + sanpham.getMaSanPham() + ".pdf";
 
-				String[] search = { "%SOLUONGTON1%", "%TENKHACHHANG%", "%MANHANVIEN%", "%TENNHANVIEN%", "%NGAYMUA%",
-						"%MAKHACHHANG%", "%SOLUONGTON%" };
-				String[] replace = { 
-						Integer.toString(sanpham.getMaSanPham()),
-						Integer.toString(sanpham.getMaKhuyenMai().getMaKhuyenMai()),
-						Integer.toString(sanpham.getMaKhuVuc().getMaKhuVuc()), 
-						sanpham.getTen().toString(),
-						Double.toString(sanpham.getGiaSanPham()), 
-						sanpham.getLoaiSanPham().toString(),
-						Integer.toString(sanpham.getSoLuongTonKho())};
+		String inputFilePath = "data\\SanPham\\SanPham_Mau.docx";
+		String outputFilePathWord = "data\\SanPham\\SanPham_" + sanpham.getMaSanPham() + ".docx";
+		String outputFilePathPDF = filePath + "chitiet_" + sanpham.getMaSanPham() + ".pdf";
 
-				try (FileInputStream fis = new FileInputStream(inputFilePath);
-						XWPFDocument document = new XWPFDocument(fis)) {
+		String[] search = { "%SOLUONGTON1%", "%TENKHACHHANG%", "%MANHANVIEN%", "%TENNHANVIEN%", "%NGAYMUA%",
+				"%MAKHACHHANG%", "%SOLUONGTON%" };
+		String[] replace = { Integer.toString(sanpham.getMaSanPham()),
+				Integer.toString(sanpham.getMaKhuyenMai().getMaKhuyenMai()),
+				Integer.toString(sanpham.getMaKhuVuc().getMaKhuVuc()), sanpham.getTen().toString(),
+				Double.toString(sanpham.getGiaSanPham()), sanpham.getLoaiSanPham().toString(),
+				Integer.toString(sanpham.getSoLuongTonKho()) };
 
-					// Thay thế các token trong tệp mẫu Word
-					for (XWPFParagraph paragraph : document.getParagraphs()) {
-						for (XWPFRun run : paragraph.getRuns()) {
-							String text = run.getText(0);
-							if (text != null) {
-								for (int i = 0; i < search.length; i++) {
-									if (text.contains(search[i])) {
-										text = text.replace(search[i], replace[i]);
-									}
-								}
-								run.setText(text, 0);
+		try (FileInputStream fis = new FileInputStream(inputFilePath); XWPFDocument document = new XWPFDocument(fis)) {
+
+			// Thay thế các token trong tệp mẫu Word
+			for (XWPFParagraph paragraph : document.getParagraphs()) {
+				for (XWPFRun run : paragraph.getRuns()) {
+					String text = run.getText(0);
+					if (text != null) {
+						for (int i = 0; i < search.length; i++) {
+							if (text.contains(search[i])) {
+								text = text.replace(search[i], replace[i]);
 							}
 						}
+						run.setText(text, 0);
 					}
-					try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
-						document.write(fos);
-					}
-					Document doc = new Document(outputFilePathWord);
-					// Lưu tài liệu PDF
-					doc.save(outputFilePathPDF);
-					// Mở tài liệu
-					openFile(outputFilePathPDF);
-					JOptionPane.showMessageDialog(this, "Xuất PDF thành công!");
-				} catch (Exception e) {
-					e.printStackTrace();
-					JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xử lý tệp Word!");
 				}
 			}
+			try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
+				document.write(fos);
+			}
+			Document doc = new Document(outputFilePathWord);
+			// Lưu tài liệu PDF
+			doc.save(outputFilePathPDF);
+			// Mở tài liệu
+			openFile(outputFilePathPDF);
+			JOptionPane.showMessageDialog(this, "Xuất PDF thành công!");
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi xử lý tệp Word!");
+		}
+	}
 
 	public void openFile(String filePath) {
 		try {
@@ -701,5 +727,4 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 		// TODO Auto-generated method stub
 	}
 
-	
 }

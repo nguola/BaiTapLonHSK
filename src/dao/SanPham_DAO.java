@@ -544,4 +544,23 @@ public class SanPham_DAO {
 		return null;
 		
 	}
+	public String getDieuKienKhuyenMai(int maKhuyenMai) {
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		String sql = "select dieuKien from SanPham sp join KhuyenMai km on sp.maKhuyenMai = km.maKhuyenMai" 
+					+" where km.maKhuyenMai = ?";
+		try {
+			PreparedStatement ps = con.prepareStatement(sql);
+			ps.setInt(1, maKhuyenMai);
+			ResultSet rs = ps.executeQuery();
+			if (rs.next()) {
+				return rs.getString("dieuKien");
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+		
+	}
 }
