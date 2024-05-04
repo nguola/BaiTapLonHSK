@@ -126,7 +126,6 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 				}
 				else {
 					JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
-					tk_dao.setStatus_on(Integer.parseInt(tenDangNhap));
 					new KhungTrang_GUI(tk);
 					dispose();
 				}

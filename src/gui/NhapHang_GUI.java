@@ -89,7 +89,7 @@ public class NhapHang_GUI extends JPanel implements ActionListener, MouseListene
 		txtMaPN.setText(Integer.toString(listPD.get(listPD.size() - 1).getMaPhieu() + 1));
 		JLabel lbNVNhap = new JLabel("Nhân Viên Nhập");
 		txtNVNhap = new JTextField(25);
-		txtNVNhap.setText(nv.getTen());
+		txtNVNhap.setText(Integer.toString(nv.getMaNhanVien()));
 		txtNVNhap.setEditable(false);
 		JLabel lbNCC = new JLabel("Nhà Cung Cấp");
 		cbbNCC = new JComboBox<String>();
@@ -137,7 +137,7 @@ public class NhapHang_GUI extends JPanel implements ActionListener, MouseListene
 		
 		//pnCen
 		JPanel pnCen = new JPanel();
-		pnCen.setLayout(new BorderLayout());
+		pnCen.setLayout(new BoxLayout(pnCen, BoxLayout.Y_AXIS));
 		add(pnCen, BorderLayout.CENTER);
 		
 		//pnCenLeft
@@ -232,8 +232,10 @@ public class NhapHang_GUI extends JPanel implements ActionListener, MouseListene
 		splCen.setDividerSize(0);
 		splCen.setResizeWeight(0.5);
 		
-		pnCen.add(splCen, BorderLayout.CENTER);
 		
+		Box jCenTop = Box.createHorizontalBox();
+		jCenTop.add(splCen);
+		pnCen.add(jCenTop);
 		//pnCenBot
 		JPanel pnCenBot = new JPanel();
 		pnCenBot.setLayout(new BoxLayout(pnCenBot, BoxLayout.Y_AXIS));
@@ -255,7 +257,7 @@ public class NhapHang_GUI extends JPanel implements ActionListener, MouseListene
 		pnCenBot.add(pnChucNangBot);
 		
 		
-		pnCen.add(pnCenBot, BorderLayout.SOUTH);
+		pnCen.add(pnCenBot);
 		
 		setVisible(true);
 	}

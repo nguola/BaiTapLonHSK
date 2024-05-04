@@ -3,11 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
-import java.awt.Toolkit;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -56,13 +53,13 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private Panel_BaoCao panel_BaoCao;
 	private Pane_BanHang panel_BanHang;
 	private Panel_ThongKe panel_thongKe;
+	private PhieuNhap_GUI panel_quanLiPhieuNhap;
 	private NhapHang_GUI panel_nhapHang;
 	private JMenuItem itemThongKe;
 	private JPanel pnCen;
 	private JMenuItem itemNhapHang;
 	private JMenuItem itemQuanLiPhieuNhap;
 	private JMenuItem itemThongKePhieuNhap;
-	private PhieuNhap_GUI panel_quanLiPhieuNhap;
 	private CardLayout cardLayout;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
@@ -70,11 +67,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		this.tk = tk;
 		cardLayout = new CardLayout();
 		pnCen = new JPanel(cardLayout);
-		Toolkit toolkit = Toolkit.getDefaultToolkit();
-
-        // Lấy kích thước màn hình chính
-        Dimension screenSize = toolkit.getScreenSize();
-		setSize(screenSize.width, screenSize.height);
+		setSize(1500, 800);
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
@@ -206,6 +199,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		itemQuanLiPhieuNhap.addActionListener(this);
 		itemThongKePhieuNhap.addActionListener(this);
 		mnuKhachHang.addActionListener(this);
+		btn_Dangxuat.addActionListener(this);
 	}
 
 	public void switchPage(String name) {
@@ -285,6 +279,10 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		} else if (src.equals(mnuKhachHang)) {
 			panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
 //			switchPage(panelQuanLiKhachHang);
+		}
+		else if(src.equals(btn_Dangxuat)) {
+			this.dispose();
+			new TrangChu_GUI();
 		}
 	}
 
