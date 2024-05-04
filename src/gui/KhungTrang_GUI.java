@@ -64,6 +64,8 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private JMenuItem itemQuanLyHD;
 	private JMenuItem itemThongKeHD;
 	private HoaDon_GUI panel_QuanLyHoaDon;
+	private Panel_ThongKeHoaDon Panel_ThongKeHoaDon;
+	private gui.Panel_ThongKeHoaDon panel_ThongKeHoaDon;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -213,6 +215,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		itemQuanLiPhieuNhap.addActionListener(this);
 		itemThongKePhieuNhap.addActionListener(this);
 		itemQuanLyHD.addActionListener(this);
+		itemThongKeHD.addActionListener(this);
 		mnuKhachHang.addActionListener(this);
 		btn_Dangxuat.addActionListener(this);
 	}
@@ -300,6 +303,9 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		} else if (src.equals(itemQuanLyHD)) {
 			panel_QuanLyHoaDon = new HoaDon_GUI();
 			switchPage(panel_QuanLyHoaDon);
+		} else if (src.equals(itemThongKeHD)) {
+			panel_ThongKeHoaDon = new Panel_ThongKeHoaDon();
+			switchPage(panel_ThongKeHoaDon);
 		} else if(src.equals(btn_Dangxuat)) {
 			this.dispose();
 			new TrangChu_GUI();

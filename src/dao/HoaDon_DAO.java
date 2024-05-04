@@ -4,8 +4,13 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 import connectDB.ConnectDB;
 import entity.HoaDon;
 import entity.KhachHang;
@@ -112,7 +117,33 @@ public class HoaDon_DAO {
 		return dsHoaDon;
 	}
 	
-
+	public ArrayList<HoaDon> getAllHoaDonTheoThang(LocalDate date) {
+		ArrayList<HoaDon> dsHoaDon = new ArrayList<HoaDon>();
+		Connection con = ConnectDB.getInstance().getConnection();
+		String query = "select * from HoaDon where Month(ngayMua) = ?";
+		
+		try {
+			PreparedStatement statement = con.prepareStatement(query);
+			statement.setInt(1, date.getMonthValue());
+			ResultSet rs = statement.executeQuery();
+			
+			while (rs.next()) {
+				int maHoaDon = rs.getInt(1);
+				KhachHang khachHang = new KhachHang(rs.getInt(2));
+				NhanVien nhanVien = new NhanVien(rs.getInt(3));
+				Date ngayMua = rs.getDate(4);
+				double tongTien = rs.getDouble(5);
+				
+				HoaDon hd = new HoaDon(maHoaDon, khachHang, nhanVien, ngayMua, tongTien);
+				
+				dsHoaDon.add(hd);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return dsHoaDon;
+	}
+	
 	public HoaDon getHoaDonTheoMa(int maHD) {
 		Connection con = ConnectDB.getInstance().getConnection();
 		String query = "select * from HoaDon where maDon = ?";
@@ -218,5 +249,66 @@ public class HoaDon_DAO {
 			// TODO: handle exception
 		}
 		return list;
+	}
+	
+	public Map<Integer , Double> thongKeDoanhThuTheoNgay(int month, int year){
+		Map<Integer , Double> data = new HashMap<Integer, Double>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec doanhThuTheoNgay ?, ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, month);
+			stament.setInt(2, year);	
+			
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				data.put(rs.getInt(1), rs.getDouble(2)); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return data;
+	}
+	
+	public Map<Integer , Double> thongKeDoanhThuTheoThang(int year){
+		Map<Integer , Double> data = new HashMap<Integer, Double>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec doanhThuTheoThang ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, year);	
+			
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				data.put(rs.getInt(1), rs.getDouble(2)); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return data;
 	}
 }

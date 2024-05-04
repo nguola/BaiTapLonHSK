@@ -399,3 +399,26 @@ as
 	group by loaiSanPham
 	order by sum(thanhTien)
 go
+
+--Thống kê doanh thu cửa hàng bán được theo ngày
+create proc doanhThuTheoNgay
+	@month int,
+	@year int
+as
+	select day(ngayMua), sum(thanhTien) as doanhThu
+	from HoaDon hd join ChiTietHoaDon ct on hd.maDon = ct.maDon 
+	where month(ngayMua) = @month and year(ngayMua) = @year
+	group by day(ngayMua)
+go
+
+--Thống kê doanh thu cửa hàng bán được theo Tháng
+create proc doanhThuTheoThang
+	@year int
+as
+	select month(ngayMua), sum(thanhTien) as doanhThu
+	from HoaDon hd join ChiTietHoaDon ct on hd.maDon = ct.maDon 
+	where year(ngayMua) = @year
+	group by month(ngayMua)
+go
+
+
