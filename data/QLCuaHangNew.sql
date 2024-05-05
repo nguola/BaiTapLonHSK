@@ -375,12 +375,13 @@ create proc doanhThuTheoThoiGian
 	@Datestart date = null,
 	@DateEnd date = null
 as
-	select ngayMua, sum(thanhTien) as doanhThu
+	select cast(ngayMua as date), sum(thanhTien) as doanhThu
 	from HoaDon hd join ChiTietHoaDon ct on hd.maDon = ct.maDon 
 	join SanPham sp on ct.maSanPham = sp.maSanPham 
 	where maNhanVien = @maNV and (@Datestart is null or ngayMua >= @Datestart) and
 	(@DateEnd is null or ngayMua <= @DateEnd)
-	group by ngayMua
+	group by cast(ngayMua as date)
+	order by cast(ngayMua as date)
 go
 
 -- Tìm sản phẩm có doanh thu cao nhất mà nhân viên X bán được

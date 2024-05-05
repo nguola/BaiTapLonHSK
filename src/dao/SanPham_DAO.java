@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import connectDB.ConnectDB;
@@ -433,7 +434,7 @@ public class SanPham_DAO {
 	}
 	
 	public Map<String , Double> thongKeDoanhThuTheoLoai(int maNV, Date dateStart, Date dateEnd){
-		Map<String , Double> data = new HashMap<String, Double>();
+		Map<String , Double> data = new LinkedHashMap<String, Double>();
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement stament = null;
@@ -464,7 +465,7 @@ public class SanPham_DAO {
 	}
 	
 	public Map<String , Double> thongKeDoanhThuTheoThoiGian(int maNV, Date dateStart, Date dateEnd){
-		Map<String , Double> data = new HashMap<String, Double>();
+		Map<String , Double> data = new LinkedHashMap<String, Double>();
 		ConnectDB.getInstance();
 		Connection con = ConnectDB.getConnection();
 		PreparedStatement stament = null;
