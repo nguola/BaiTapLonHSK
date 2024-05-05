@@ -565,9 +565,9 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			txtCen41.setText(currencyFormat.format(hd.getTongTien()));
 		} else if (src.equals(headerTable)) {
 			int index = headerTable.columnAtPoint(e.getPoint());
-			ArrayList<HoaDon> temp = hoaDon_DAO.getAllHoaDonOrderBY(headerVal[index], sort[index]);
+			list = hoaDon_DAO.getAllHoaDonOrderBY(headerVal[index], sort[index]);
 			sort[index] = sort[index].equals("ASC") ? "DESC" : "ASC";
-			updateTable(temp);
+			updateTable(list);
 		} 
 		
 		
