@@ -160,7 +160,7 @@ VALUES
 (1003, 4000, N'Bánh mì sandwich thịt gà', 25000, N'Cái', N'Đồ ăn', 50),
 (1004, 4001, N'Nước ngọt Coca-Cola 500ml', 15000, N'Cái', N'Thức uống', 30),
 (1005, 4000, N'Bánh quy sô cô la', 35000, N'Gói', N'Đồ ăn', 10),
-(1003, 4001, N'Nước trái cây ép ép táo', 25000, N'Cốc', N'Thức uống', 15),
+(1003, 4001, N'Nước trái cây ép táo', 25000, N'Cốc', N'Thức uống', 15),
 (1001, 4000, N'Mì gói hảo hạng vị gà', 8000, N'Bịch', N'Đồ ăn', 25),
 (1002, 4001, N'Nước suối Lavie 1.5L', 10000, N'Chai', N'Thức uống', 10),
 (1003, 4002, N'Ống hút cỏ hình động vật', 30000, N'Cái', N'Đồ gia dụng', 50),
