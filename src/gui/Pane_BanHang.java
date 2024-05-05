@@ -443,8 +443,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		Tongthanhtien.add(Box.createHorizontalGlue());
 		Tongthanhtien.add(tf_Tongthanhtien);
 		jp_content_lapHoaDon.add(Tongthanhtien);
-		jp_content_lapHoaDon
-				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Lập hóa đơn"));
+		jp_content_lapHoaDon.setBorder(BorderFactory.createLineBorder(Color.red));
 
 		jp_lapHoaDon.add(jp_content_lapHoaDon);
 		jp_thongtin.add(jp_lapHoaDon, BorderLayout.SOUTH);
@@ -778,7 +777,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 				String ten_text = tf_tenKH.getText();
 				String dt_text = tf_dtKH.getText();
 				String diaChi_text = tf_diaChiKH.getText();
-				
+
 				if (ten_text.trim().isEmpty()) {
 					JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống");
 					tf_tenKH.setText("");
@@ -801,7 +800,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 					check = false;
 				}
 			}
-			if(check) {
+			if (check) {
 				if (table_HoaDon.getRowCount() != -1) {
 					int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn lập hóa đơn", "",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
