@@ -23,6 +23,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -58,7 +59,7 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 
 	public Panel_ThongKe(TaiKhoan tk) {
 		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
-		
+
 		// Cấu hình cho trang
 		setLayout(new BorderLayout());
 
@@ -96,7 +97,7 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 		tacVu.add(pn_keuThongKe);
 
 		Box pn_chonThoiGian = Box.createVerticalBox();
-		
+
 		radio_time = new JRadioButton();
 		radio_time.setSelected(true);
 		String[] time = { "Tất cả", "Ngày này", "Tuần này", "Tháng này" };
@@ -105,7 +106,7 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 		JPanel chonThoiGian = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		chonThoiGian.add(radio_time);
 		chonThoiGian.add(cbbTime);
-		
+
 		Box pn_chonNgay = Box.createHorizontalBox();
 		radio_date = new JRadioButton();
 		ButtonGroup group_time = new ButtonGroup();
@@ -118,13 +119,13 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 		chonNgay.add(enddate);
 		chonNgay.add(btn_thongKe);
 		pn_chonNgay.add(chonNgay);
-		
+
 		pn_chonThoiGian.add(chonThoiGian);
 		pn_chonThoiGian.add(Box.createHorizontalStrut(20));
 		pn_chonThoiGian.add(pn_chonNgay);
 		pn_chonThoiGian.setBorder(BorderFactory.createTitledBorder("Chọn thời gian"));
 		group_time.add(radio_date);
-		group_time.add(radio_time);		
+		group_time.add(radio_time);
 		tacVu.add(pn_chonThoiGian);
 		tacVu.add(Box.createVerticalStrut(480));
 		west.add(Box.createHorizontalStrut(40));
@@ -138,19 +139,24 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 		Do_Thi.add(Box.createHorizontalStrut(50), BorderLayout.EAST);
 
 		add(Do_Thi, BorderLayout.CENTER);
-		
+
 		// Add actionListener
 		cbbTime.addActionListener(this);
 		radio_date.addActionListener(this);
 		radio_doanhThuTheoLoai.addActionListener(this);
 		radio_doanhThuThoiGian.addActionListener(this);
+		btn_thongKe.addActionListener(this);
 	}
 
 	public JFreeChart bieuDoThongKeDoanhThuTheoLoai(Date dateStart, Date dateEnd) {
 		// Cập nhật lại bộ giá trị của biểu đồ
 		updateDataSetTheoLoai(dateStart, dateEnd);
 		// Tạo biểu đồ từ dữ liệu
-		JFreeChart chart = ChartFactory.createStackedBarChart3D("Biểu đồ thống kê doanh thu theo từng loại sản phẩm", // Tiêu đề của biểu đồ
+		JFreeChart chart = ChartFactory.createStackedBarChart3D("Biểu đồ thống kê doanh thu theo từng loại sản phẩm", // Tiêu
+																														// đề
+																														// của
+																														// biểu
+																														// đồ
 				"Loại sản phẩm", // Nhãn trục X
 				"Doanh thu", // Nhãn trục Y
 				dataset // Dữ liệu của biểu đồ
@@ -158,12 +164,15 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 
 		return chart;
 	}
-	
+
 	public JFreeChart bieuDoThongKeDoanhThuTheoThoiGian(Date dateStart, Date dateEnd) {
 		// Cập nhật lại bộ giá trị của biểu đồ
 		updateDataSetTheoThoiGian(dateStart, dateEnd);
 		// Tạo biểu đồ từ dữ liệu
-		JFreeChart chart = ChartFactory.createStackedBarChart3D("Biểu đồ thống kê doanh thu theo thời gian", // Tiêu đề của biểu đồ
+		JFreeChart chart = ChartFactory.createStackedBarChart3D("Biểu đồ thống kê doanh thu theo thời gian", // Tiêu đề
+																												// của
+																												// biểu
+																												// đồ
 				"Thời gian", // Nhãn trục X
 				"Doanh thu", // Nhãn trục Y
 				dataset // Dữ liệu của biểu đồ
@@ -174,25 +183,25 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 
 	public void updateDataSetTheoLoai(Date dateStart, Date dateEnd) {
 		Map<String, Double> data = sanPham_dao.thongKeDoanhThuTheoLoai(nv.getMaNhanVien(), dateStart, dateEnd);
-		
+
 		dataset.clear();
-		
+
 		for (Entry<String, Double> entry : data.entrySet()) {
 			dataset.setValue(entry.getValue(), entry.getKey(), entry.getKey());
 		}
 
 	}
-	
+
 	public void updateDataSetTheoThoiGian(Date dateStart, Date dateEnd) {
 		Map<String, Double> data = sanPham_dao.thongKeDoanhThuTheoThoiGian(nv.getMaNhanVien(), dateStart, dateEnd);
-		
+
 		dataset.clear();
-		
+
 		for (Entry<String, Double> entry : data.entrySet()) {
 			dataset.setValue(entry.getValue(), entry.getKey(), entry.getKey());
 		}
 	}
-	
+
 	public void chuyenBieuDo(JFreeChart chart) {
 		pn_chart.removeAll();
 		pn_chart.add(new ChartPanel(chart), BorderLayout.CENTER);
@@ -204,13 +213,13 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		Object o = e.getSource();
 		if (o.equals(cbbTime)) {
-			if(radio_time.isSelected()) {
+			if (radio_time.isSelected()) {
 				Date timeStart = null;
 				Date timeEnd = null;
-				
+
 				String item = (String) cbbTime.getSelectedItem();
 				LocalDate now = LocalDate.now();
-				
+
 				switch (item) {
 				case "Ngày này": {
 					timeStart = Date.valueOf(now);
@@ -229,26 +238,46 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 					break;
 				}
 				}
-				
-				if(radio_doanhThuTheoLoai.isSelected()) {
+
+				if (radio_doanhThuTheoLoai.isSelected()) {
 					updateDataSetTheoLoai(timeStart, timeEnd);
-				}
-				else {
+				} else {
 					updateDataSetTheoThoiGian(timeStart, timeEnd);
 				}
 			}
-		}
-		else if(o.equals(radio_doanhThuThoiGian)) {
+		} else if (o.equals(radio_doanhThuThoiGian)) {
+			radio_time.setSelected(true);
+			cbbTime.setSelectedIndex(0);
+			startDate.setDate(null);
+			enddate.setDate(null);
 			chuyenBieuDo(bieuDoThongKeDoanhThuTheoThoiGian(null, null));
-		}
-		else if(o.equals(radio_doanhThuTheoLoai)) {
+		} else if (o.equals(radio_doanhThuTheoLoai)) {
+			radio_time.setSelected(true);
+			cbbTime.setSelectedIndex(0);
+			startDate.setDate(null);
+			enddate.setDate(null);
 			chuyenBieuDo(bieuDoThongKeDoanhThuTheoLoai(null, null));
-		}
-		else if(o.equals(o.equals(btn_thongKe))){
-			if(radio_date.isSelected()) {
-				Date start = new Date(startDate.getDate().getTime());
-				Date end = new Date(enddate.getDate().getTime());
-//				if()
+		} else if (o.equals(btn_thongKe)) {
+			if (radio_date.isSelected()) {
+				Date start = null;
+				Date end = null;
+				if (startDate.getDate() == null) {
+					JOptionPane.showMessageDialog(this, "Hãy chọn ngày bắt đầu");
+				}
+				else if (enddate.getDate() == null) {
+					JOptionPane.showMessageDialog(this, "Hãy chọn ngày kết thúc");
+				}
+				else {
+					start = new Date(startDate.getDate().getTime());
+					end = new Date(enddate.getDate().getTime());	
+					
+					if (radio_doanhThuTheoLoai.isSelected()) {
+						updateDataSetTheoLoai(start, end);
+					} else {
+						updateDataSetTheoThoiGian(start, end);
+					}
+				}
+
 			}
 		}
 	}
