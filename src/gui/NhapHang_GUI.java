@@ -316,7 +316,7 @@ public class NhapHang_GUI extends JPanel implements ActionListener, MouseListene
 		String keyword = txtSearch.getText();
 		ArrayList<SanPham> temp = new ArrayList<SanPham>();
 		for (SanPham sanPham : listSP) {
-			if (Integer.toString(sanPham.getMaSanPham()).contains(keyword)) {
+			if (Integer.toString(sanPham.getMaSanPham()).contains(keyword) || sanPham.getTen().contains(keyword)) {
 				temp.add(sanPham);
 			}
 		}
