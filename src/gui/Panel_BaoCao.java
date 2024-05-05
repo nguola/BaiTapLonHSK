@@ -13,6 +13,7 @@ import java.sql.Date;
 import java.text.NumberFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -50,7 +51,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
 	private HoaDon_DAO hoaDon_DAO = new HoaDon_DAO();
 	private SanPham_DAO sanPham_dao = new SanPham_DAO();
-	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
+	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 	private JTextField tf_ma;
 	private JTextField tf_ten;
 	private JTextField tf_DT;
@@ -82,7 +83,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 
 		// Code Center
 		Box jCenter = Box.createHorizontalBox();
-		
+
 		JPanel jBaoCao = new JPanel(new BorderLayout());
 
 		Box thongTinNhanVien = Box.createVerticalBox();
@@ -158,10 +159,10 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		tf_tongDoanhThu.setEditable(false);
 		double TongTien = 0;
 
-		for(HoaDon hd : list) {
+		for (HoaDon hd : list) {
 			TongTien += hd.getTongTien();
 		}
-		
+
 		tf_tongDoanhThu.setText(currencyFormat.format(TongTien));
 		tongDoanhThu.add(Box.createHorizontalStrut(20));
 		tongDoanhThu.add(lb_tongDoanhThu);
@@ -176,7 +177,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		sanPhamCaoNhat.add(lb_sanPhamCaoNhat);
 		sanPhamCaoNhat.add(tf_sanPhamCaoNhat);
 		tf_sanPhamCaoNhat.setText(sanPham_dao.SanPhamDoanhThuCaoNhat(nv.getMaNhanVien(), null, null));
-		
+
 		JPanel sanPhamThapNhat = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lb_sanPhamThapNhat = new JLabel("Sản phẩm bán thấp nhất:");
 		tf_sanPhamThapNhat = new JTextField(15);
@@ -196,26 +197,26 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		jCenter.add(Box.createHorizontalStrut(30));
 		jCenter.add(jBaoCao);
 		jCenter.add(Box.createHorizontalStrut(50));
-		
+
 		add(jCenter, BorderLayout.CENTER);
-		
+
 		// Code West
 
 		// Tạo comboBox chọn theo ngày, theo tuần, theo tháng
 		JPanel jChonTacVu = new JPanel();
 
-		String[] time = { "Tất cả", "Ngày này", "Tuần này", "Tháng này" };
+		String[] time = { "Tất cả", "Hôm nay", "Tuần này", "Tháng này" };
 		cbbTime = new JComboBox<String>(time);
 		cbbTime.setFont(new Font("Arial", Font.BOLD, 15));
 
 		jChonTacVu.add(cbbTime);
 		jChonTacVu.setBorder(BorderFactory.createTitledBorder("Chọn thời gian"));
 		JPanel jWest = new JPanel();
-		
+
 		jWest.add(Box.createHorizontalStrut(30));
 		jWest.add(jChonTacVu);
 		jWest.add(Box.createHorizontalStrut(30));
-		
+
 		add(jWest, BorderLayout.WEST);
 
 		// Code South
@@ -246,7 +247,9 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		modelListHD.setRowCount(0);
 		try {
 			for (HoaDon hoaDon : list) {
-				modelListHD.addRow(new Object[] { hoaDon.getMaDon(), (hoaDon.getKhachHang().getMaKhachHang() == 0) ? "Khách hàng tự do" : hoaDon.getKhachHang().getMaKhachHang(),
+				modelListHD.addRow(new Object[] { hoaDon.getMaDon(),
+						(hoaDon.getKhachHang().getMaKhachHang() == 0) ? "Khách hàng tự do"
+								: hoaDon.getKhachHang().getMaKhachHang(),
 						hoaDon.getNgayMua(), currencyFormat.format(hoaDon.getTongTien()) });
 			}
 		} catch (Exception e) {
@@ -306,10 +309,10 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 			String item = (String) cbbTime.getSelectedItem();
 			LocalDate now = LocalDate.now();
 			switch (item) {
-			case "Ngày này": {
+			case "Hôm nay": {
 				timeStart = Date.valueOf(now);
-                timeEnd = Date.valueOf(now);
-                break;
+				timeEnd = Date.valueOf(now);
+				break;
 			}
 			case "Tháng này": {
 				LocalDate firstDate = LocalDate.of(now.getYear(), now.getMonthValue(), 1);
@@ -322,20 +325,20 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 				timeEnd = Date.valueOf(now.with(DayOfWeek.SUNDAY));
 				break;
 			}
-		}
+			}
 			tf_sanPhamCaoNhat.setText(sanPham_dao.SanPhamDoanhThuCaoNhat(nv.getMaNhanVien(), timeStart, timeEnd));
 			tf_sanPhamThapNhat.setText(sanPham_dao.SanPhamDoanhThuThapNhat(nv.getMaNhanVien(), timeStart, timeEnd));
 		} else if (o.equals(btn_baoCao)) {
-			//Định dạng là chọn thư mục để lưu file
+			// Định dạng là chọn thư mục để lưu file
 			JFileChooser fileChooser = new JFileChooser();
 			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			
-	        int result = fileChooser.showOpenDialog(null);
-	        if (result == JFileChooser.APPROVE_OPTION) {
-	            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-	            ExportFileExcel(list, selectedFilePath);
-	            
-	        }
+
+			int result = fileChooser.showOpenDialog(null);
+			if (result == JFileChooser.APPROVE_OPTION) {
+				String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+				ExportFileExcel(list, selectedFilePath);
+
+			}
 		}
 	}
 
@@ -350,7 +353,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		String item = (String) cbbTime.getSelectedItem();
 		LocalDate now = LocalDate.now();
 		switch (item) {
-		case "Ngày này": {
+		case "Hôm nay": {
 			timeStart = Date.valueOf(now);
 			timeEnd = Date.valueOf(now);
 			break;
@@ -372,7 +375,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		temp = hoaDon_DAO.HoaDonFilter(timeStart, timeEnd, priceStart, priceEnd, maKH, maNV);
 		return temp;
 	}
-	
+
 	public void ExportFileExcel(ArrayList<HoaDon> list, String filePath) {
 		XSSFWorkbook wordkbook = new XSSFWorkbook();
         XSSFSheet sheet=wordkbook.createSheet("Danh sách hóa đơn");
@@ -380,6 +383,17 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
         Cell cell=null;
         
         String item = (String) cbbTime.getSelectedItem();
+        switch (item) {
+        	case "Tất cả": item = "";
+        					break;
+        	case "Hôm nay": {
+        		LocalDate currentDate = LocalDate.now();
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd MMMM yyyy");
+                item = "Ngày " + currentDate.format(formatter);
+                break;
+        	}
+        	default : break;
+        }
         String tieuDe = "Báo cáo bán hàng " + (item.equalsIgnoreCase("Tất cả") ? "" : item);
         row=sheet.createRow(1);
         cell=row.createCell(1,CellType.STRING);
@@ -441,7 +455,7 @@ public class Panel_BaoCao extends JPanel implements ActionListener, MouseListene
 		// TODO Auto-generated method stub
 		double TongTien = 0;
 
-		for(HoaDon hd : list) {
+		for (HoaDon hd : list) {
 			TongTien += hd.getTongTien();
 		}
 
