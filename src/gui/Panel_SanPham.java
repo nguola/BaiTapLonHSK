@@ -12,6 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,17 +29,22 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
@@ -54,6 +61,7 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 
 import com.aspose.words.Document;
 import com.aspose.words.DocumentBuilder;
@@ -66,7 +74,7 @@ import entity.KhuVuc;
 import entity.KhuyenMai;
 import entity.SanPham;
 
-public class Panel_SanPham extends JFrame implements ActionListener, MouseListener {
+public class Panel_SanPham extends JPanel implements ActionListener, MouseListener {
 	private JTextField txtMaSanPham, txtMaKhuyenMai, txtMaKhuVuc, txtTen, txtDonVi, txtGiaBan, txtsoLuong, txtTimKiem,
 			txtLocGia;
 	private JComboBox<String> cboxSanPham, cboxLocSanPham, cboxLocGia;
@@ -316,9 +324,9 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 		setVisible(true);
 		// Đọc dữ liệu từ cơ sở dữ liệu vào bảng
 		docDuLieuVaoTable();
-		//sự kiện click vào table đõ lên textFiled
+		// sự kiện click vào table đõ lên textFiled
 		tableSanPham.addMouseListener(this);
-		
+
 		// Xử lí sự kiện khi click vào tiêu đề cột
 		// khởi tạo TableSorter
 		sort = new TableRowSorter<TableModel>(sanPhamModel);
@@ -338,7 +346,7 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 					}
 				}
 			}
-		}); 
+		});
 		// xử lí sự kiện
 		txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -561,16 +569,12 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 						String dieuKien = sanPhamDao.getDieuKienKhuyenMai(maKM);
 
 						// Tạo chuỗi định dạng cho nội dung trong TextArea
-						String textContent = String.format("\n	Chi Tiết Sản Phẩm	\n\n"
-								+ "==================================================\n"
-								+ " -Mã sản phẩm: %d\n" 
-								+ " -Tên sản phẩm: %s\n" 
-								+ " -Giá bán: %s\n"
-								+ " -Loại sản phẩm: %s\n" 
-								+ " -Khu Vực: %s\n" 
-								+ " -Điều Kiện Khuyến mãi:\n %s\n"
-								+ "==================================================\n", maSP,
-								ten, gia, loaiSP, tenKhuVuc, dieuKien);
+						String textContent = String.format(
+								"\n	Chi Tiết Sản Phẩm	\n\n" + "==================================================\n"
+										+ " -Mã sản phẩm: %d\n" + " -Tên sản phẩm: %s\n" + " -Giá bán: %s\n"
+										+ " -Loại sản phẩm: %s\n" + " -Khu Vực: %s\n" + " -Điều Kiện Khuyến mãi:\n %s\n"
+										+ "==================================================\n",
+								maSP, ten, gia, loaiSP, tenKhuVuc, dieuKien);
 						Font font = new Font("Arial", Font.PLAIN, 20);
 						textArea.setFont(font);
 						textArea.setText(textContent);
@@ -601,7 +605,59 @@ public class Panel_SanPham extends JFrame implements ActionListener, MouseListen
 				}
 			}
 		});
+		// sự kiện popmenu cho table
+		tableSanPham.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// Kiểm tra nếu người dùng click chuột phải và có dòng được chọn
+				if (SwingUtilities.isRightMouseButton(e) && tableSanPham.getSelectedRow() != -1) {
+					// Lấy vị trí của dòng được chọn
+					int row = tableSanPham.getSelectedRow();
+					// Tạo JPopupMenu
+					JPopupMenu popupMenu = new JPopupMenu();
+					// Tạo JMenuItem cho tùy chọn "Sửa"
+					JMenuItem menuItemXoa = new JMenuItem("Xóa");
+					JMenuItem menuItemXuatFile = new JMenuItem("Xuất file");
+					// Đặt ActionListener cho JMenuItem
+					menuItemXoa.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int index = tableSanPham.getSelectedRow();
+							int masp = Integer.parseInt(tableSanPham.getValueAt(index, 0).toString());
+							try {
+								sanPhamDao.remove(masp);
+								sanPhamModel.removeRow(index);
+								JOptionPane.showMessageDialog(null, "Xóa thành công");
+							} catch (Exception err) {
+								JOptionPane.showMessageDialog(null, "Lỗi khi xóa" + err.getMessage());
+							}
+						}
+					});
+					menuItemXuatFile.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int selectedRow = tableSanPham.getSelectedRow();
+							JFileChooser fileChooser = new JFileChooser();
+							fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+							int result = fileChooser.showOpenDialog(null);
+							if (result == JFileChooser.APPROVE_OPTION) {
 
+								int maSP = Integer.parseInt(tableSanPham.getValueAt(selectedRow, 0).toString());
+
+								sanpham = sanPhamDao.getSanPhamTheoMa(maSP);
+								String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
+								exportPDF(selectedFilePath, sanpham);
+							}
+						}
+					});
+					// Thêm JMenuItem "Sửa" vào JPopupMenu
+					popupMenu.add(menuItemXoa);
+					popupMenu.add(menuItemXuatFile);
+					// Hiển thị JPopupMenu tại vị trí chuột
+					popupMenu.show(tableSanPham, e.getX(), e.getY());
+				}
+			}
+		});
 	}
 
 	public void exportPDF(String filePath, SanPham sanpham) {

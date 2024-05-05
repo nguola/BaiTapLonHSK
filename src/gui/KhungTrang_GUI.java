@@ -30,7 +30,7 @@ import dao.SanPham_DAO;
 import entity.NhanVien;
 import entity.TaiKhoan;
 
-public class KhungTrang_GUI extends JFrame implements WindowListener, ActionListener {
+public class KhungTrang_GUI extends JFrame implements WindowListener, ActionListener, MouseListener {
 
 	private TaiKhoan tk;
 	private JLabel lb_TieuDe;
@@ -69,7 +69,11 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private HoaDon_GUI panel_QuanLyHoaDon;
 	private Panel_ThongKeHoaDon panel_ThongKeHoaDon;
 	private Panel_ThongKePhieuDat panel_ThongKePhieuDat;
+<<<<<<< Updated upstream
 	private NhanVien nv;
+=======
+	private Panel_SanPham panel_SanPham;
+>>>>>>> Stashed changes
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -221,8 +225,72 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		itemThongKePhieuNhap.addActionListener(this);
 		itemQuanLyHD.addActionListener(this);
 		itemThongKeHD.addActionListener(this);
-		mnuKhachHang.addActionListener(this);
 		btn_Dangxuat.addActionListener(this);
+		mnuKhachHang.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				panelQuanLiKhachHang = new Panel_QuanLiKhachHang();
+				switchPage(panelQuanLiKhachHang);
+			}
+		});
+		mnuSanPham.addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				panel_SanPham = new Panel_SanPham();
+				switchPage(panel_SanPham);
+				
+			}
+		});
 	}
 
 	public void switchPage(JPanel panel) {
@@ -309,13 +377,46 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		} else if (src.equals(itemQuanLyHD)) {
 			panel_QuanLyHoaDon = new HoaDon_GUI();
 			switchPage(panel_QuanLyHoaDon);
-		} else if (src.equals(itemThongKeHD)) {
+		}else if(src.equals(mnuSanPham)) {
+			panel_SanPham = new Panel_SanPham();
+			switchPage(panel_SanPham);
+		}
+		else if (src.equals(itemThongKeHD)) {
 			panel_ThongKeHoaDon = new Panel_ThongKeHoaDon();
 			switchPage(panel_ThongKeHoaDon);
 		} else if(src.equals(btn_Dangxuat)) {
 			this.dispose();
 			new TrangChu_GUI();
 		}
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
