@@ -103,8 +103,8 @@ public class DangNhap_GUI extends JFrame implements ActionListener {
 			if (tenDangNhap.trim().isEmpty()) {
 				JOptionPane.showMessageDialog(this, "Tên đăng nhập không được để trống");
 				tf_tenDangNhap.requestFocus();
-			}else if(!tenDangNhap.matches("\\d+")) {
-				JOptionPane.showMessageDialog(this, "Tên đăng nhập không chứa kí tự");
+			}else if(!tenDangNhap.matches("\\d{4}")) {
+				JOptionPane.showMessageDialog(this, "Tên đăng nhập chứa 4 chữ số");
 				tf_tenDangNhap.requestFocus();
 				tf_tenDangNhap.setText("");				
 				tpf_matKhau.setText("");
