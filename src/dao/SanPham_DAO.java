@@ -462,6 +462,37 @@ public class SanPham_DAO {
 		
 		return data;
 	}
+	
+	public Map<String , Double> thongKeDoanhThuTheoThoiGian(int maNV, Date dateStart, Date dateEnd){
+		Map<String , Double> data = new HashMap<String, Double>();
+		ConnectDB.getInstance();
+		Connection con = ConnectDB.getConnection();
+		PreparedStatement stament = null;
+		try {
+			String sql = "exec doanhThuTheoThoiGian ?, ?, ?";
+			stament = con.prepareStatement(sql);
+			stament.setInt(1, maNV);
+			stament.setDate(2, dateStart);
+			stament.setDate(3, dateEnd);
+			ResultSet rs = stament.executeQuery();
+			while(rs.next()) {
+				data.put(rs.getString(1), rs.getDouble(2)); 
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// TODO: handle exception
+		}
+		finally {
+			try {
+				stament.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+				// TODO: handle exception
+			}
+		}
+		
+		return data;
+	}
 
 	public String SanPhamDoanhThuCaoNhat(int maNV, Date dateStart, Date dateEnd){
 		String loaiSP = "";

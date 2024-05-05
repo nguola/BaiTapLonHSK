@@ -104,16 +104,7 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 	private String[] headerVal = {"maDon", "maKhachHang", "maNhanVien", "ngayMua", "tongTien"};
 	
 	public HoaDon_GUI() {
-		super();
 		setLayout(new BorderLayout());
-		
-		//kết nối DB
-		try {
-			ConnectDB.getInstance().connect();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		};
 		
 		//Phần North
 		JPanel pnNorth = new JPanel();

@@ -25,7 +25,9 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import connectDB.ConnectDB;
+import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
+import entity.NhanVien;
 import entity.TaiKhoan;
 
 public class KhungTrang_GUI extends JFrame implements WindowListener, ActionListener {
@@ -46,6 +48,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private JLabel lb_TenNhaVien;
 	private Box jp_SouthThongTin;
 	SanPham_DAO sanPham_dao = new SanPham_DAO();
+	NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
 	private JMenuItem itemBanHang;
 	private JMenuItem itemThongTin;
 	private JMenuItem itemBaoCao;
@@ -66,6 +69,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private HoaDon_GUI panel_QuanLyHoaDon;
 	private Panel_ThongKeHoaDon panel_ThongKeHoaDon;
 	private Panel_ThongKePhieuDat panel_ThongKePhieuDat;
+	private NhanVien nv;
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
@@ -82,6 +86,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 			// TODO: handle exception
 		}
 
+		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
 		this.add(pnCen, BorderLayout.CENTER);
 
 		panel_BanHang = new Pane_BanHang(tk);
@@ -184,7 +189,7 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		lb_MSNV = new JLabel("Mã NV: " + tk.getNhanvien().getMaNhanVien());
 		lb_MSNV.setFont(new Font("Arial", Font.BOLD, 20));
 
-		lb_TenNhaVien = new JLabel(tk.getNhanvien().getTen());
+		lb_TenNhaVien = new JLabel(nv.getTen());
 		lb_TenNhaVien.setFont(new Font("Arial", Font.BOLD, 20));
 
 		ImageIcon taiKhoan_icon = new ImageIcon("img/BanHangImg/TaiKhoanIcon.png");

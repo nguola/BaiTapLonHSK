@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import javax.swing.Box;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -19,7 +19,7 @@ import dao.NhanVien_DAO;
 import entity.NhanVien;
 import entity.TaiKhoan;
 
-public class Form_ThongTinNhanVien extends JFrame{
+public class Form_ThongTinNhanVien extends JDialog{
 	private JPanel jp_North;
 	private JLabel lb_TieuDe;
 	private JTextField tf_ma;
@@ -32,7 +32,7 @@ public class Form_ThongTinNhanVien extends JFrame{
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
 
 	public Form_ThongTinNhanVien(TaiKhoan tk) {
-		super();
+		setModal(true);
 		NhanVien nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
 		setSize(700, 500);
 		setLocationRelativeTo(null);
