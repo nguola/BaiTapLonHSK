@@ -92,17 +92,17 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
 		b1.add(txt1);
 		
 		Box b2 = Box.createHorizontalBox();
-		JLabel lb2 = new JLabel("Mã Khách hàng: ");
+		JLabel lb2 = new JLabel("Khách hàng: ");
 		lb2.setPreferredSize(new Dimension(120, HEIGHT));
-		txt2 = new JTextField(Integer.toString(hoaDon.getKhachHang().getMaKhachHang()));
+		txt2 = new JTextField(khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen());
 		txt2.setEditable(false);
 		b2.add(lb2);
 		b2.add(txt2);
 		b2.add(Box.createHorizontalStrut(10));
 		
-		JLabel lb21 = new JLabel("Mã Nhân viên: ");
+		JLabel lb21 = new JLabel("Nhân viên: ");
 		lb21.setPreferredSize(new Dimension(120, HEIGHT));
-		txt21 = new JTextField(Integer.toString(hoaDon.getNhanVien().getMaNhanVien()));
+		txt21 = new JTextField(nhanVien_DAO.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen());
 		txt21.setEditable(false);
 		b2.add(lb21);
 		b2.add(txt21);
@@ -158,7 +158,7 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
 		for (ChiTietHoaDon chiTietHoaDon : listCTHD) {
 			dtm.addRow(new Object[] {
 					chiTietHoaDon.getHoaDon().getMaDon(),
-					chiTietHoaDon.getSanPham().getMaSanPham(),
+					sanPham_DAO.getSanPhamTheoMa(chiTietHoaDon.getSanPham().getMaSanPham()).getTen(),
 					chiTietHoaDon.getThanhTien(),
 					chiTietHoaDon.getSoLuong()
 			});

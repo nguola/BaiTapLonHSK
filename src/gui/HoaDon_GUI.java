@@ -57,6 +57,8 @@ import com.toedter.calendar.JDateChooser;
 
 import connectDB.ConnectDB;
 import dao.HoaDon_DAO;
+import dao.KhachHang_DAO;
+import dao.NhanVien_DAO;
 import entity.HoaDon;
 import entity.KhachHang;
 import entity.NhanVien;
@@ -83,6 +85,8 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 	private JButton btnUndo;
 	private JButton btnXemChiTiet;
 	private HoaDon_DAO hoaDon_DAO = new HoaDon_DAO();
+	private NhanVien_DAO nhanVien_DAO = new NhanVien_DAO();
+	private KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
 	private ArrayList<HoaDon> list = null;
 	private JTextField txtCen1;
 	private JTextField txtCen2;
@@ -369,8 +373,8 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			for (HoaDon hoaDon : list) {
 				modelListHD.addRow(new Object[] {
 						hoaDon.getMaDon(),
-						hoaDon.getKhachHang().getMaKhachHang(),
-						hoaDon.getNhanVien().getMaNhanVien(),
+						khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen(),
+						nhanVien_DAO.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen(),
 						hoaDon.getNgayMua(),
 						currencyFormat.format(hoaDon.getTongTien())
 				});
@@ -466,8 +470,13 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			} catch (Exception e) {
 			}
 		}
-		maKH = txtInputMaKH.getText().isEmpty() ? -1 : Integer.parseInt(txtInputMaKH.getText());
-		maNV = txtInputMaNV.getText().isEmpty() ? -1 : Integer.parseInt(txtInputMaNV.getText());
+		try {
+			maKH = txtInputMaKH.getText().isEmpty() ? -1 : Integer.parseInt(txtInputMaKH.getText());
+			maNV = txtInputMaNV.getText().isEmpty() ? -1 : Integer.parseInt(txtInputMaNV.getText());
+		} catch (Exception e) {
+			// TODO: handle exception
+			JOptionPane.showMessageDialog(this, "Mã Phải là số");
+		}
 		
 		temp = hoaDon_DAO.HoaDonFilter(timeStart, timeEnd, priceStart, priceEnd, maKH, maNV);
 		return temp;
@@ -569,8 +578,8 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			int index = tbListHD.getSelectedRow();
 			HoaDon hd = list.get(index);
 			txtCen1.setText(Integer.toString(hd.getMaDon()));
-			txtCen2.setText(Integer.toString(hd.getKhachHang().getMaKhachHang()));
-			txtCen21.setText(Integer.toString(hd.getNhanVien().getMaNhanVien()));
+			txtCen2.setText(khachHang_DAO.getKhachHangTheoMa(hd.getKhachHang().getMaKhachHang()).getTen());
+			txtCen21.setText(nhanVien_DAO.getNhanVienTheoMaNV(hd.getNhanVien().getMaNhanVien()).getTen());
 			txtCen4.setText(hd.getNgayMua().toString());
 			txtCen41.setText(currencyFormat.format(hd.getTongTien()));
 		} else if (src.equals(headerTable)) {
@@ -610,9 +619,7 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object src = e.getSource();
-		if (src.equals(addHD)) {
-			
-		} else if (src.equals(removeHD) || src.equals(popupXoa)){
+		if (src.equals(removeHD) || src.equals(popupXoa)){
 			int index = tbListHD.getSelectedRow();
 			if (index < 0) {
 				JOptionPane.showMessageDialog(this, "Vui lòng chọn Hóa Đơn để xóa");
