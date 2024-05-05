@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -61,6 +63,7 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 	private JComboBox<String> cbbMaNV;
 	private JButton btnLoc;
 	private JButton btnXoa;
+	private JComboBox<String> cbbSort;
 
 	public PhieuNhap_GUI(TaiKhoan tk) {
 		setLayout(new BorderLayout());
@@ -86,8 +89,6 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 		pnNorthCen.setLayout(new BoxLayout(pnNorthCen, BoxLayout.X_AXIS));
 		pnNorth.add(pnNorthCen);
 		
-		btnThem = new JButton("Thêm");
-		btnThem.addActionListener(this);
 		btnXoa = new JButton("Xóa");
 		btnXoa.addActionListener(this);
 		btnChiTiet = new JButton("Chi Tiết");
@@ -95,7 +96,6 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 		btnXuatExcel = new JButton("Xuất Excel");
 		btnXuatExcel.addActionListener(this);
 		
-		pnNorthCen.add(btnThem);
 		pnNorthCen.add(btnXoa);
 		pnNorthCen.add(btnChiTiet);
 		pnNorthCen.add(btnXuatExcel);
@@ -111,6 +111,20 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 		pnNorthRight.add(lbSearch);
 		pnNorthRight.add(txtSearch);
 		pnNorthRight.add(btnLamMoi);
+		pnNorthRight.add(Box.createHorizontalStrut(25));
+		
+		JLabel lbSort = new JLabel("Sắp xếp: ");
+		cbbSort = new JComboBox<String>();
+		
+		cbbSort.addItem("Mã Phiếu");
+		cbbSort.addItem("Mã Nhân Viên");
+		cbbSort.addItem("Nhà Cung Cấp");
+		cbbSort.addItem("Ngày đặt");
+		cbbSort.addItem("Tổng Tiền");
+		
+		pnNorthRight.add(lbSort);
+		pnNorthRight.add(Box.createHorizontalStrut(5));
+		pnNorthRight.add(cbbSort);
 		
 		pnNorth.add(pnNorthRight);
 		
@@ -218,6 +232,8 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 		JScrollPane srcll = new JScrollPane(tb);
 		pnCen.add(srcll);
 		updateTable(listPD);
+		
+		cbbSort.addActionListener(this);
 		
 		setVisible(true);
 	}
@@ -374,9 +390,32 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 				listPD = phieuDat_DAO.getAllPhieuDat();
 				updateTable(listPD);
 			}
-		} else if (src.equals(btnThem)) {
-//			this.dispose();
-//			new NhapHang_GUI(new TaiKhoan(new NhanVien(3000, "Toan Hao", "000000", true, 30000, "Admin")));
+		} else if (src.equals(cbbSort)) {
+			String val = cbbSort.getSelectedItem().toString();
+			ArrayList<PhieuDat> sortedList = new ArrayList<>(listPD);
+			switch (val) {
+				case "Mã Phiếu": {
+					Collections.sort(sortedList, Comparator.comparing(PhieuDat::getMaPhieu));
+					break;
+				}
+				case "Mã Nhân Viên": {
+					Collections.sort(sortedList, Comparator.comparing(phieuDat -> phieuDat.getNhanVien().getMaNhanVien()));
+					break;
+				}
+				case "Nhà Cung Cấp": {
+					Collections.sort(sortedList, Comparator.comparing(phieuDat -> phieuDat.getNhaCungCap()));
+					break;
+				}
+				case "Ngày Đặt": {
+					Collections.sort(sortedList, Comparator.comparing(phieuDat -> phieuDat.getNgayDat())); 
+					break;
+				}
+				case "Tổng Tiền": {
+					Collections.sort(sortedList, Comparator.comparing(phieuDat -> phieuDat.getTongTien()));
+					break;
+				}
+			}
+			updateTable(sortedList);
 		}
  	}
 
