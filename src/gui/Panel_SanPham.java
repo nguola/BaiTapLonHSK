@@ -9,6 +9,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -35,6 +37,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
@@ -295,25 +298,25 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 		tableSanPham.addMouseListener(this);
 
 		// Xử lí sự kiện khi click vào tiêu đề cột
-		// khởi tạo TableSorter
-		sort = new TableRowSorter<TableModel>(sanPhamModel);
-		tableSanPham.setRowSorter(sort);
-		tableSanPham.getTableHeader().addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int colIndex = tableSanPham.columnAtPoint(e.getPoint());
-				if (colIndex == -1)
-					return; // Khi click không phải tiêu đề
-				else {
-					if (sort.getSortKeys().isEmpty() || sort.getSortKeys().get(0).getColumn() != colIndex) {
-						// Nếu chưa được sắp xếphoặc đã được sắp xếp nhưng không theo thứ tự tăng
-						// dần,thì sắp xếp tăng dần
-						sort.setSortKeys(List.of(new RowSorter.SortKey(colIndex, SortOrder.ASCENDING)));
-						sort.sort();
-					}
-				}
-			}
-		});
+//		// khởi tạo TableSorter
+//		sort = new TableRowSorter<TableModel>(sanPhamModel);
+//		tableSanPham.setRowSorter(sort);
+//		tableSanPham.getTableHeader().addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				int colIndex = tableSanPham.columnAtPoint(e.getPoint());
+//				if (colIndex == -1)
+//					return; // Khi click không phải tiêu đề
+//				else {
+//					if (sort.getSortKeys().isEmpty() || sort.getSortKeys().get(0).getColumn() != colIndex) {
+//						// Nếu chưa được sắp xếphoặc đã được sắp xếp nhưng không theo thứ tự tăng
+//						// dần,thì sắp xếp tăng dần
+//						sort.setSortKeys(List.of(new RowSorter.SortKey(colIndex, SortOrder.ASCENDING)));
+//						sort.sort();
+//					}
+//				}
+//			}
+//		});
 		// xử lí sự kiện
 		txtTimKiem.getDocument().addDocumentListener(new DocumentListener() {
 			@Override
@@ -365,26 +368,70 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 			}
 		});
 
-		// sự kiện thêm
+//		// sự kiện thêm
+//		btnThem.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				SanPham sanpham = new SanPham();
+//				sanpham.setMaKhuyenMai(new KhuyenMai(Integer.parseInt(txtMaKhuyenMai.getText())));
+//				sanpham.setMaKhuVuc(new KhuVuc(Integer.parseInt(txtMaKhuVuc.getText())));
+//				sanpham.setTen(txtTen.getText());
+//				sanpham.setGiaSanPham(Double.parseDouble(txtGiaBan.getText()));
+//				sanpham.setDonVi(txtDonVi.getText());
+//				sanpham.setLoaiSanPham(cboxSanPham.getSelectedItem().toString());
+//				sanpham.setSoLuongTonKho(Integer.parseInt(txtsoLuong.getText()));
+//				if (!sanPhamDao.create(sanpham)) {
+//					JOptionPane.showMessageDialog(null, "Thêm không thành công!");
+//				} else {
+//					JOptionPane.showMessageDialog(null, "Thêm thành công.");
+//					docDuLieuVaoTable();
+//				}
+//			}
+//		});
+		// Sự kiện thêm
 		btnThem.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				SanPham sanpham = new SanPham();
-				sanpham.setMaKhuyenMai(new KhuyenMai(Integer.parseInt(txtMaKhuyenMai.getText())));
-				sanpham.setMaKhuVuc(new KhuVuc(Integer.parseInt(txtMaKhuVuc.getText())));
-				sanpham.setTen(txtTen.getText());
-				sanpham.setGiaSanPham(Double.parseDouble(txtGiaBan.getText()));
-				sanpham.setDonVi(txtDonVi.getText());
-				sanpham.setLoaiSanPham(cboxSanPham.getSelectedItem().toString());
-				sanpham.setSoLuongTonKho(Integer.parseInt(txtsoLuong.getText()));
-				if (!sanPhamDao.create(sanpham)) {
-					JOptionPane.showMessageDialog(null, "Thêm không thành công!");
-				} else {
-					JOptionPane.showMessageDialog(null, "Thêm thành công.");
-					docDuLieuVaoTable();
-				}
-			}
+		    @Override
+		    public void mouseClicked(MouseEvent e) {
+		        // Kiểm tra mã khuyến mãi
+		        String maKhuyenMaiInput = txtMaKhuyenMai.getText().trim();
+		        if (!maKhuyenMaiInput.matches("\\d+")) {
+		            JOptionPane.showMessageDialog(null, "Mã khuyến mãi phải là số!");
+		            return;
+		        }
+		        
+		        // Kiểm tra mã khu vực
+		        String maKhuVucInput = txtMaKhuVuc.getText().trim();
+		        if (!maKhuVucInput.matches("\\d+")) {
+		            JOptionPane.showMessageDialog(null, "Mã khu vực phải là số!");
+		            return;
+		        }
+
+		        // Kiểm tra số lượng
+		        String soLuongInput = txtsoLuong.getText().trim();
+		        if (!soLuongInput.matches("\\d+")) {
+		            JOptionPane.showMessageDialog(null, "Số lượng phải là số!");
+		            return;
+		        }
+
+		        // Tiến hành thêm sản phẩm
+		        SanPham sanpham = new SanPham();
+		        sanpham.setMaKhuyenMai(new KhuyenMai(Integer.parseInt(maKhuyenMaiInput)));
+		        sanpham.setMaKhuVuc(new KhuVuc(Integer.parseInt(maKhuVucInput)));
+		        sanpham.setTen(txtTen.getText());
+		        sanpham.setGiaSanPham(Double.parseDouble(txtGiaBan.getText()));
+		        sanpham.setDonVi(txtDonVi.getText());
+		        sanpham.setLoaiSanPham(cboxSanPham.getSelectedItem().toString());
+		        sanpham.setSoLuongTonKho(Integer.parseInt(soLuongInput));
+
+		        if (!sanPhamDao.create(sanpham)) {
+		            JOptionPane.showMessageDialog(null, "Thêm không thành công!");
+		        } else {
+		            JOptionPane.showMessageDialog(null, "Thêm thành công.");
+		            docDuLieuVaoTable();
+		        }
+		    }
 		});
+
 		// sự kiện sửa
 		btnSua.addMouseListener(new MouseAdapter() {
 			@Override
@@ -586,6 +633,13 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 					JMenuItem menuItemXoa = new JMenuItem("Xóa");
 					JMenuItem menuItemXuatFile = new JMenuItem("Xuất file");
 					JMenuItem menuItemThongTinSP = new JMenuItem("Thông Tin Sản Phẩm");
+					
+					// Đặt phím tắt cho từng chức năng
+					// setAccelerator được sử dụng để thiết lập phím tắt cho mỗi JMenuItem.
+		            menuItemXoa.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_X, InputEvent.CTRL_DOWN_MASK));
+		            menuItemXuatFile.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F, InputEvent.CTRL_DOWN_MASK));
+		            menuItemThongTinSP.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_T, InputEvent.CTRL_DOWN_MASK));
+					
 					// Đặt ActionListener cho JMenuItem
 					menuItemXoa.addActionListener(new ActionListener() {
 						@Override
@@ -720,7 +774,7 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void mouseClicked(MouseEvent e) { 
 		int row = tableSanPham.getSelectedRow();
 		txtMaKhuyenMai.setText(sanPhamModel.getValueAt(row, 1).toString());
 		txtMaKhuVuc.setText(sanPhamModel.getValueAt(row, 2).toString());
