@@ -1,7 +1,7 @@
 ﻿use master
 go
-drop database QLCuaHang
-go
+--drop database QLCuaHang
+--go
 create database QLCuaHang
 go
 use QLCuaHang
@@ -455,3 +455,28 @@ as
 	group by month(ngayDat)
 go
 
+CREATE OR ALTER TRIGGER Trigger_UpgradeKhachHang
+ON HoaDon
+AFTER INSERT
+AS
+BEGIN
+    DECLARE @NgưỡngTien INT;
+    DECLARE @MaKhachHang INT;
+    DECLARE @TongTien INT;
+
+    -- Thiết lập ngưỡng tiền để nâng cấp khách hàng lên VIP
+    SET @NgưỡngTien = 200000; -- Số tiền ngưỡng
+
+    -- Lấy thông tin về hóa đơn vừa được thêm vào
+    SELECT @MaKhachHang = inserted.maKhachHang, @TongTien = inserted.tongTien
+    FROM inserted;
+
+    -- Kiểm tra tổng số tiền của hóa đơn
+    IF @TongTien >= @NgưỡngTien
+    BEGIN
+        -- Nếu tổng số tiền vượt qua ngưỡng, nâng cấp loại khách hàng lên VIP
+        UPDATE KhachHang
+        SET loaiKhachHang = 'VIP'
+        WHERE maKhachHang = @MaKhachHang;
+    END;
+END;
