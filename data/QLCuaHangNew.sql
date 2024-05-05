@@ -72,7 +72,7 @@ create table ChiTietHoaDon(
     thanhTien FLOAT,
     soLuong INT,
     PRIMARY KEY (maDon, maSanPham),
-    FOREIGN KEY (maDon) REFERENCES HoaDon(maDon),
+    FOREIGN KEY (maDon) REFERENCES HoaDon(maDon) ON DELETE CASCADE,
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
 go
@@ -91,7 +91,7 @@ create table ChiTietPhieuDat(
     thanhTien float,
 	soLuong int,
     PRIMARY KEY (maPhieu, maSanPham),
-	FOREIGN KEY (maPhieu) REFERENCES PhieuDat(maPhieu),
+	FOREIGN KEY (maPhieu) REFERENCES PhieuDat(maPhieu) ON DELETE CASCADE,
     FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
 );
 go

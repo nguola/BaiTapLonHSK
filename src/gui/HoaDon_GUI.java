@@ -104,8 +104,8 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
 	private JButton importHD;
 	private JMenuItem popupImportExcel;
-	private String[] sort = {"ASC", "ASC", "ASC", "ASC", "ASC"};
-	private String[] headerVal = {"maDon", "maKhachHang", "maNhanVien", "ngayMua", "tongTien"};
+	private String[] sort = {"ASC", "ASC","null", "ASC","null", "ASC", "ASC"};
+	private String[] headerVal = {"maDon", "maKhachHang", "null", "maNhanVien", "null","ngayMua", "tongTien"};
 	
 	public HoaDon_GUI() {
 		setLayout(new BorderLayout());
@@ -208,7 +208,7 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 		pnCen.add(pnTitle);
 		
 		//Tạo table
-		String[] header = {"Mã hóa đơn", "Khách hàng", "Nhân viên", "Ngày mua", "Tổng tiền"};
+		String[] header = {"Mã hóa đơn", "Mã Khách Hàng", "Tên Khách hàng", "Mã Nhân Viên", "Nhân viên", "Ngày mua", "Tổng tiền"};
 		modelListHD = new DefaultTableModel(header, 0) {
 			@Override
 			public boolean isCellEditable(int row, int column) {
@@ -373,7 +373,9 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			for (HoaDon hoaDon : list) {
 				modelListHD.addRow(new Object[] {
 						hoaDon.getMaDon(),
+						hoaDon.getKhachHang().getMaKhachHang(),
 						khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen(),
+						hoaDon.getNhanVien().getMaNhanVien(),
 						nhanVien_DAO.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen(),
 						hoaDon.getNgayMua(),
 						currencyFormat.format(hoaDon.getTongTien())
@@ -584,6 +586,9 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			txtCen41.setText(currencyFormat.format(hd.getTongTien()));
 		} else if (src.equals(headerTable)) {
 			int index = headerTable.columnAtPoint(e.getPoint());
+			if (index == 2 || index == 4) {
+				return;
+			}
 			list = hoaDon_DAO.getAllHoaDonOrderBY(headerVal[index], sort[index]);
 			sort[index] = sort[index].equals("ASC") ? "DESC" : "ASC";
 			updateTable(list);

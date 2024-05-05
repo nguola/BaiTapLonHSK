@@ -130,7 +130,7 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
 		pnCen.add(b3);
 		pnCen.add(Box.createVerticalStrut(20));
 		
-		Object[] obj = {"Mã Đơn", "Mã Sản phẩm", "Thành tiền", "Số lượng"};
+		Object[] obj = {"Mã Đơn", "Sản phẩm", "Thành tiền", "Số lượng"};
 		dtm = new DefaultTableModel(null, obj);
 		tbChiTietHD = new JTable(dtm);
 		JScrollPane scrTBChiTietHD = new JScrollPane(tbChiTietHD);
@@ -221,10 +221,6 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
         } catch (Exception e) {
             e.printStackTrace();
         }
-	}
-	
-	public static void main(String[] args) {
-		new HoaDon_GUI();
 	}
 	
 	public void openFile(String filePath) {
