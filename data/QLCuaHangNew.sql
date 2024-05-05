@@ -98,26 +98,26 @@ go
 -- Dữ liệu cho bảng KhachHang
 INSERT INTO KhachHang (ten, soDienThoai, diaChi, loaiKhachHang)
 VALUES
-(N'Nguyễn Phúc Vinh', '0123456789', N'123 Đường Cộng Hòa, Quận Tân Bình, TP. HCM', N'VIP'),
+(N'Nguyễn Phúc Vinh', '0123456789', N'123 Đường Cộng Hòa, Quận Tân Bình, TP. HCM', N'Thường'),
 (N'Trần Văn Phi', '0987654321', N'456 Đường Nguyễn Văn, Quận Bình Thạnh, TP. HCM', N'Thường'),
-(N'Nguyễn Văn Tùng', '0123456789', N'123 Đường Nguyễn Trãi, Quận 1, TP. HCM', N'VIP'),
+(N'Nguyễn Văn Tùng', '0123456789', N'123 Đường Nguyễn Trãi, Quận 1, TP. HCM', N'Thường'),
 (N'Trần Thị Lê Huyền', '0987654321', N'101 Đường Lê Lợi, Quận Tân Phú, TP. HCM', N'Thường'),
-(N'Phạm Thị Hạnh', '0987654321', N'789 Đường Điện Biên Phủ, Quận Bình Thạnh, TP. HCM', N'VIP'),
+(N'Phạm Thị Hạnh', '0987654321', N'789 Đường Điện Biên Phủ, Quận Bình Thạnh, TP. HCM', N'Thường'),
 (N'Lê Văn Nam', '0123456789', N'123 Đường Võ Văn Ngân, Quận Thủ Đức, TP. HCM', N'Thường'),
-(N'Đường Thị Hiền', '0987654321', N'101 Đường Nguyễn Đình Chiểu, Quận 3, TP. HCM', N'VIP'),
+(N'Đường Thị Hiền', '0987654321', N'101 Đường Nguyễn Đình Chiểu, Quận 3, TP. HCM', N'Thường'),
 (N'Nguyễn Thị Bích', '0987654321', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'Thường'),
-(N'Phạm Thị Hồng', '0987654321', N'456 Đường Lý Thái Tổ, Quận 1, TP. HCM', N'VIP'),
+(N'Phạm Thị Hồng', '0987654321', N'456 Đường Lý Thái Tổ, Quận 1, TP. HCM', N'Thường'),
 (N'Đường Thị Nga', '0987654321', N'101 Đường Pasteur, Quận 1, TP. HCM', N'Thường'),
-(N'Nguyễn Thị Mai', '0987654321', N'789 Đường Võ Văn Tần, Quận 3, TP. HCM', N'VIP'),
+(N'Nguyễn Thị Mai', '0987654321', N'789 Đường Võ Văn Tần, Quận 3, TP. HCM', N'Thường'),
 (N'Phạm Thị Dung', '0987654321', N'456 Đường Nguyễn Du, Quận 1, TP. HCM', N'Thường'),
-(N'Đường Thị Thanh', '0987654321', N'101 Đường Phạm Ngũ Lão, Quận 1, TP. HCM', N'VIP'),
+(N'Đường Thị Thanh', '0987654321', N'101 Đường Phạm Ngũ Lão, Quận 1, TP. HCM', N'Thường'),
 (N'Nguyễn Thị Huyền', '0987654321', N'789 Đường Đề Thám, Quận 1, TP. HCM', N'Thường'),
-(N'Phạm Thị Loan', '0987654321', N'456 Đường Trần Hưng Đạo, Quận 1, TP. HCM', N'VIP'),
+(N'Phạm Thị Loan', '0987654321', N'456 Đường Trần Hưng Đạo, Quận 1, TP. HCM', N'Thường'),
 (N'Lê Thị Huệ', '0987654321', N'789 Đường Nguyễn Trãi, Quận 1, TP. HCM', N'Thường'),
-(N'Đường Văn Long', '0123456789', N'789 Đường Nguyễn Cửu Trinh, Quận 1, TP. HCM', N'VIP'),
+(N'Đường Văn Long', '0123456789', N'789 Đường Nguyễn Cửu Trinh, Quận 1, TP. HCM', N'Thường'),
 (N'Nguyễn Văn Đông', '0123456789', N'456 Đường Kha Vạn Cân, Quận Thủ Đức, TP. HCM', N'Thường'),
 (N'Phạm Văn Hồng', '0123456789', N'123 Đường Nguyễn Đình Chiểu, Quận 3, TP. HCM', N'VIP'),
-(N'Đường Văn Bình', '0123456789', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'VIP');
+(N'Đường Văn Bình', '0123456789', N'789 Đường Nam Kỳ Khởi Nghĩa, Quận 3, TP. HCM', N'Thường');
 -- Dữ liệu cho bảng NhanVien
 INSERT INTO NhanVien (ten, soDienThoai, gioiTinh, luong, loai)
 VALUES
@@ -466,7 +466,7 @@ BEGIN
     DECLARE @TongTien INT;
 
     -- Thiết lập ngưỡng tiền để nâng cấp khách hàng lên VIP
-    SET @NgưỡngTien = 200000; -- Số tiền ngưỡng
+    SET @NgưỡngTien = 1000000; -- Số tiền ngưỡng
 
     -- Lấy thông tin về hóa đơn vừa được thêm vào
     SELECT @MaKhachHang = inserted.maKhachHang, @TongTien = tongTien
