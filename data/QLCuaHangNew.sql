@@ -461,16 +461,20 @@ ON HoaDon
 AFTER INSERT
 AS
 BEGIN
-    DECLARE @NgưỡngTien INT;
+    DECLARE @NgưỡngTien float;
     DECLARE @MaKhachHang INT;
-    DECLARE @TongTien INT;
+    DECLARE @TongTien float;
 
     -- Thiết lập ngưỡng tiền để nâng cấp khách hàng lên VIP
     SET @NgưỡngTien = 1000000; -- Số tiền ngưỡng
 
     -- Lấy thông tin về hóa đơn vừa được thêm vào
-    SELECT @MaKhachHang = inserted.maKhachHang, @TongTien = tongTien
+    SELECT @MaKhachHang = inserted.maKhachHang
     FROM inserted;
+
+	set @TongTien = (select sum(tongTien)
+						from HoaDon
+						where maKhachHang = @MaKhachHang)
 
     -- Kiểm tra tổng số tiền của hóa đơn
     IF @TongTien >= @NgưỡngTien

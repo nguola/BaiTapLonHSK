@@ -104,6 +104,9 @@ public class DialogThemKhachHang extends JDialog implements MouseListener {
 			btnThem.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseClicked(MouseEvent e) {
+					 if (!validateData()) {
+				            return; 
+				        }
 					// TODO Auto-generated method stub
 					KhachHang khachHang = new KhachHang();
 					khachHang.setTen(txtTen.getText());
@@ -121,7 +124,30 @@ public class DialogThemKhachHang extends JDialog implements MouseListener {
 			});
 		}
 	}
+	
+	 // Hàm validate regex
+    private boolean validateData() {
+        String tenRegex = "^[a-zA-Z\\s]+";
+        String sdtRegex = "^0\\d{9,10}$"; // Số điện thoại bắt đầu bằng số 0 và có độ dài từ 10-11 chữ số
+        
+        String ten = txtTen.getText();
+        String sdt = txtSoDienThoai.getText();
 
+        // Kiểm tra tên
+        if (!ten.matches(tenRegex)) {
+            JOptionPane.showMessageDialog(null, "Tên không hợp lệ! Vui lòng nhập lại.");
+            return false;
+        }
+
+        // Kiểm tra số điện thoại
+        if (!sdt.matches(sdtRegex)) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại không hợp lệ! Vui lòng nhập lại.");
+            return false;
+        }
+
+        return true;
+    }
+	
 	@Override
 	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub

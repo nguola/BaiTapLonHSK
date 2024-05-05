@@ -26,7 +26,7 @@ public class TrangChu_GUI extends JFrame implements ActionListener {
 		super();
 		setSize(600, 600);
 		setLocationRelativeTo(null);
-		this.setTitle("Cửa hàng tiện lợi Goods Store");
+		this.setTitle("Cửa hàng tiện lợi Goods Store");	
 
 		// code North
 		jp_North = new JPanel();
