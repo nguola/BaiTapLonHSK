@@ -143,6 +143,7 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 		// Add actionListener
 		cbbTime.addActionListener(this);
 		radio_date.addActionListener(this);
+		radio_time.addActionListener(this);
 		radio_doanhThuTheoLoai.addActionListener(this);
 		radio_doanhThuThoiGian.addActionListener(this);
 		btn_thongKe.addActionListener(this);
@@ -263,22 +264,30 @@ public class Panel_ThongKe extends JPanel implements ActionListener {
 				Date end = null;
 				if (startDate.getDate() == null) {
 					JOptionPane.showMessageDialog(this, "Hãy chọn ngày bắt đầu");
-				}
-				else if (enddate.getDate() == null) {
+				} else if (enddate.getDate() == null) {
 					JOptionPane.showMessageDialog(this, "Hãy chọn ngày kết thúc");
-				}
-				else {
+				} else {
 					start = new Date(startDate.getDate().getTime());
-					end = new Date(enddate.getDate().getTime());	
-					
-					if (radio_doanhThuTheoLoai.isSelected()) {
-						updateDataSetTheoLoai(start, end);
+					end = new Date(enddate.getDate().getTime());
+
+					if (start.after(end)) {
+						JOptionPane.showMessageDialog(this, "Ngày bắt đầu phải trước ngày kết thúc");
+						startDate.setDate(null);
+						enddate.setDate(null);
 					} else {
-						updateDataSetTheoThoiGian(start, end);
+						if (radio_doanhThuTheoLoai.isSelected()) {
+							updateDataSetTheoLoai(start, end);
+						} else {
+							updateDataSetTheoThoiGian(start, end);
+						}
 					}
 				}
-
 			}
+		}
+		else if(o.equals(radio_date) || o.equals(radio_time)) {
+			cbbTime.setSelectedIndex(0);
+			startDate.setDate(null);
+			enddate.setDate(null);
 		}
 	}
 }

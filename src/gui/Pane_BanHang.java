@@ -479,8 +479,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		radio_moi.addActionListener(this);
 		radio_rong.addActionListener(this);
 		tf_maKH.addActionListener(this);
-		tf_tenKH.addActionListener(this);
-		tf_dtKH.addActionListener(this);
 		btn_LapHoaDon.addActionListener(this);
 	}
 
@@ -566,7 +564,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	public void createHoaDon(String filePath, HoaDon hoaDon) {
 		String inputFilePath = "data\\HoaDon\\HoaDon_Mau.docx";
 		String outputFilePathWord = "data\\HoaDon\\HoaDon_" + hoaDon.getMaDon() + ".docx";
-		String outputFilePathPDF = filePath + "HoaDonBanHang_" + hoaDon.getMaDon() + ".pdf";
+		String outputFilePathPDF = filePath + "\\HoaDonBanHang_" + hoaDon.getMaDon() + ".pdf";
 
 		String[] searchTokens = { "%MAHOADON%", "%MANHANVIEN%", "%TENNHANVIEN%", "%MAKHACHHANG%", "%TENKHACHHANG%",
 				"%NGAYMUA%", "%TONGTIEN%" };
@@ -633,7 +631,9 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 				try {
 					int maSP = Integer.parseInt(model_sanPham.getValueAt(selected_row, 0).toString());
 					int soLuong = Integer.parseInt(JOptionPane.showInputDialog("Nhập số lượng muốn đặt"));
-					if (soLuong > Integer.parseInt(table_SanPham.getValueAt(selected_row, 5).toString())) {
+					if (soLuong <= 0) {
+						JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ");
+					} else if (soLuong > Integer.parseInt(table_SanPham.getValueAt(selected_row, 5).toString())) {
 						JOptionPane.showMessageDialog(this, "Số lượng đặt không được lớn hơn số lượng tồn kho!!");
 					} else {
 						SanPham sp = sanPham_dao.getSanPhamTheoMa(maSP);
@@ -672,7 +672,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 						}
 					}
 				} catch (Exception e2) {
-					e2.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Số lượng là số");
 				}
 			}
@@ -773,32 +772,46 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 					// TODO: handle exception
 				}
 			}
-		} else if (o.equals(tf_tenKH)) {
-			String ten_text = tf_tenKH.getText();
-			if (ten_text.trim().isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống");
-				tf_tenKH.setText("");
-			}
-		} else if (o.equals(tf_dtKH)) {
-			String dt_text = tf_dtKH.getText();
-			if (dt_text.trim().isEmpty()) {
-				JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống");
-				tf_dtKH.setText("");
-			} else if (!dt_text.matches("^(084||012)\\d{7}$")) {
-				JOptionPane.showMessageDialog(this, "Số điện thoại bắt đầu bằng 084 hoặc 0123 và phải có 10 số");
-				tf_dtKH.setText("");
-			}
 		} else if (o.equals(btn_LapHoaDon)) {
-			if (table_HoaDon.getRowCount() != 0) {
-				int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn lập hóa đơn", "",
-						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (chon == JOptionPane.YES_OPTION) {
-					themHoaDonSQL();
+			boolean check = true;
+			if (radio_moi.isSelected()) {
+				String ten_text = tf_tenKH.getText();
+				String dt_text = tf_dtKH.getText();
+				String diaChi_text = tf_diaChiKH.getText();
+				
+				if (ten_text.trim().isEmpty()) {
+					JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống");
+					tf_tenKH.setText("");
+					tf_tenKH.requestFocus();
+					check = false;
+				} else if (dt_text.trim().isEmpty()) {
+					JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống");
+					tf_dtKH.setText("");
+					tf_dtKH.requestFocus();
+					check = false;
+				} else if (!dt_text.matches("^\\d{10}$")) {
+					JOptionPane.showMessageDialog(this, "Số điện thoại là số và phải có 10 số");
+					tf_dtKH.setText("");
+					tf_dtKH.requestFocus();
+					check = false;
+				} else if (diaChi_text.trim().isEmpty()) {
+					JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống");
+					tf_diaChiKH.setText("");
+					tf_diaChiKH.requestFocus();
+					check = false;
 				}
-			} else
-				JOptionPane.showMessageDialog(this, "Hãy nhập đầy đủ thông tin trước khi lập hóa đơn");
-		}
-		else if(o.equals(menuItemThongTin)) {
+			}
+			if(check) {
+				if (table_HoaDon.getRowCount() != -1) {
+					int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn lập hóa đơn", "",
+							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+					if (chon == JOptionPane.YES_OPTION) {
+						themHoaDonSQL();
+					}
+				} else
+					JOptionPane.showMessageDialog(this, "Hãy nhập đầy đủ thông tin trước khi lập hóa đơn");
+			}
+		} else if (o.equals(menuItemThongTin)) {
 			int row = table_SanPham.getSelectedRow();
 			int maSanPham = Integer.parseInt(table_SanPham.getValueAt(row, 0).toString());
 			new ThongTinSanPham_GUI(maSanPham);
