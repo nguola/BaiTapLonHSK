@@ -618,6 +618,7 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 					// Tạo JMenuItem cho tùy chọn "Sửa"
 					JMenuItem menuItemXoa = new JMenuItem("Xóa");
 					JMenuItem menuItemXuatFile = new JMenuItem("Xuất file");
+					JMenuItem menuItemThongTinSP = new JMenuItem("Thông Tin Sản Phẩm");
 					// Đặt ActionListener cho JMenuItem
 					menuItemXoa.addActionListener(new ActionListener() {
 						@Override
@@ -650,9 +651,18 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 							}
 						}
 					});
+					menuItemThongTinSP.addActionListener(new ActionListener() {
+						@Override
+						public void actionPerformed(ActionEvent e) {
+							int row = tableSanPham.getSelectedRow();
+							int maSanPham = Integer.parseInt(tableSanPham.getValueAt(row, 0).toString());
+							new ThongTinSanPham_GUI(maSanPham);
+						}
+					});
 					// Thêm JMenuItem "Sửa" vào JPopupMenu
 					popupMenu.add(menuItemXoa);
 					popupMenu.add(menuItemXuatFile);
+					popupMenu.add(menuItemThongTinSP);
 					// Hiển thị JPopupMenu tại vị trí chuột
 					popupMenu.show(tableSanPham, e.getX(), e.getY());
 				}
