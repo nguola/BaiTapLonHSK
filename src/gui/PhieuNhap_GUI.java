@@ -64,6 +64,7 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 	private JButton btnLoc;
 	private JButton btnXoa;
 	private JComboBox<String> cbbSort;
+	private JButton btnRefresh;
 
 	public PhieuNhap_GUI(TaiKhoan tk) {
 		setLayout(new BorderLayout());
@@ -216,7 +217,10 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 		pnWest.add(groupBTN);
 		btnLoc = new JButton("Lọc");
 		btnLoc.addActionListener(this);
+		btnRefresh = new JButton("Làm Mới");
+		btnRefresh.addActionListener(this);
 		groupBTN.add(btnLoc);
+		groupBTN.add(btnRefresh);
 		
 		pnWest.add(Box.createVerticalStrut(250));
 		
@@ -272,6 +276,7 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 		txtTuSoTien.setText("");
 		txtDenSoTien.setText("");
 		txtSearch.setText("");
+		cbbSort.setSelectedIndex(0);
 	}
 	
 	public void ExportFileExcel(ArrayList<PhieuDat> list, String filePath) {
@@ -320,7 +325,7 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		Object src = e.getSource();
-		if (src.equals(btnLamMoi)) {
+		if (src.equals(btnLamMoi) || src.equals(btnRefresh)) {
 			refresh();
 		} else if (src.equals(btnXuatExcel)) {
 			JFileChooser fileChooser = new JFileChooser();

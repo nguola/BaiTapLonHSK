@@ -156,6 +156,7 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 		JLabel lbCen1 = new JLabel("Mã Hóa Đơn: ");
 		lbCen1.setPreferredSize(new Dimension(120, HEIGHT));
 		txtCen1 = new JTextField();
+		txtCen1.setEditable(false);
 		bCen1.add(lbCen1);
 		bCen1.add(txtCen1);
 		pnCen.add(bCen1);
@@ -165,9 +166,11 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 		JLabel lbCen2 = new JLabel("Khách Hàng: ");
 		lbCen2.setPreferredSize(new Dimension(120, HEIGHT));
 		txtCen2 = new JTextField();
+		txtCen2.setEditable(false);
 		JLabel lbCen21 = new JLabel("Nhân Viên: ");
 		lbCen21.setPreferredSize(new Dimension(120, HEIGHT));
 		txtCen21 = new JTextField();
+		txtCen21.setEditable(false);
 		bCen2.add(lbCen2);
 		bCen2.add(txtCen2);
 		bCen2.add(Box.createHorizontalStrut(10));
@@ -180,9 +183,11 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 		JLabel lbCen4 = new JLabel("Ngày mua: ");
 		lbCen4.setPreferredSize(new Dimension(120, HEIGHT));
 		txtCen4 = new JTextField();
+		txtCen4.setEditable(false);
 		JLabel lbCen41 = new JLabel("Tổng tiền: ");
 		lbCen41.setPreferredSize(new Dimension(120, HEIGHT));
 		txtCen41 = new JTextField();
+		txtCen41.setEditable(false);
 		bCen4.add(lbCen4);
 		bCen4.add(txtCen4);
 		bCen4.add(Box.createHorizontalStrut(10));
