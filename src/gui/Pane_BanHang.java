@@ -13,6 +13,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -47,11 +49,13 @@ import com.aspose.words.Document;
 import dao.ChiTietHoaDon_DAO;
 import dao.HoaDon_DAO;
 import dao.KhachHang_DAO;
+import dao.KhuyenMai_DAO;
 import dao.NhanVien_DAO;
 import dao.SanPham_DAO;
 import entity.ChiTietHoaDon;
 import entity.HoaDon;
 import entity.KhachHang;
+import entity.KhuyenMai;
 import entity.NhanVien;
 import entity.SanPham;
 import entity.TaiKhoan;
@@ -100,14 +104,12 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 	private JPanel Tongthanhtien;
 	private JLabel lb_Tongthanhtien;
 	private JTextField tf_Tongthanhtien;
-	private JPanel giamgia;
-	private JLabel lb_giamgia;
-	private JTextField tf_giamgia;
 	private SanPham_DAO sanPham_dao = new SanPham_DAO();
 	private KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
 	private NhanVien_DAO nhanVien_dao = new NhanVien_DAO();
 	private HoaDon_DAO hoaDon_dao = new HoaDon_DAO();
 	private ChiTietHoaDon_DAO chiTietHoaDon_dao = new ChiTietHoaDon_DAO();
+	private KhuyenMai_DAO khuyenMai_dao = new KhuyenMai_DAO();
 	private JButton btn_hienTatCa;
 	private JPanel pane_trangThaiKhachHang;
 	private JRadioButton radio_moi;
@@ -441,15 +443,6 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		Tongthanhtien.add(Box.createHorizontalGlue());
 		Tongthanhtien.add(tf_Tongthanhtien);
 		jp_content_lapHoaDon.add(Tongthanhtien);
-
-		giamgia = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		lb_giamgia = new JLabel("Giảm giá:");
-		tf_giamgia = new JTextField(20);
-		tf_giamgia.setEditable(false);
-		giamgia.add(lb_giamgia);
-		giamgia.add(Box.createHorizontalStrut(40));
-		giamgia.add(tf_giamgia);
-		jp_content_lapHoaDon.add(giamgia);
 		jp_content_lapHoaDon
 				.setBorder(BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.red), "Lập hóa đơn"));
 
@@ -497,9 +490,9 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		}
 	}
 
-	public void update_TableHoaDon(SanPham sp, int soLuong) {
-		model_HoaDon.addRow(new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getDonVi(), sp.getGiaSanPham(), soLuong,
-				sp.getGiaSanPham() * soLuong });
+	public void update_TableHoaDon(SanPham sp, int soLuong, double thanhTien) {
+		model_HoaDon.addRow(
+				new Object[] { sp.getMaSanPham(), sp.getTen(), sp.getDonVi(), sp.getGiaSanPham(), soLuong, thanhTien });
 	}
 
 	public ArrayList<SanPham> Loc_SanPham(String ma, String ten, String loai, String donVi) {
@@ -644,8 +637,21 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 					} else {
 						SanPham sp = sanPham_dao.getSanPhamTheoMa(maSP);
 						int rowIndex = kiemTraThem(maSP);
+						Pattern pattern = Pattern.compile("\\d{1,3}(\\.\\d{3})+");
+						KhuyenMai km = khuyenMai_dao.getKhuyenMaiTheoMa(sp.getMaKhuyenMai().getMaKhuyenMai());
+						Matcher matcher = pattern.matcher(km.getDieuKien());
+
+						int dieuKienValue = 0;
+						if (matcher.find()) {
+							String so = matcher.group();
+							dieuKienValue = Integer.parseInt(so.replace(".", ""));
+						}
+
 						if (rowIndex == -1) {
-							update_TableHoaDon(sp, soLuong);
+							double thanhTien = sp.getGiaSanPham() * soLuong;
+							if (thanhTien >= dieuKienValue)
+								thanhTien = thanhTien * (1 - km.getGiamGia());
+							update_TableHoaDon(sp, soLuong, thanhTien);
 						} else {
 							int soLuongMoi = soLuong
 									+ Integer.parseInt(table_HoaDon.getValueAt(rowIndex, 4).toString());
@@ -655,6 +661,8 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 							} else {
 								Object newSoLuong = soLuongMoi;
 								double thanhTienMoi = sp.getGiaSanPham() * soLuongMoi;
+								if (thanhTienMoi >= dieuKienValue)
+									thanhTienMoi = thanhTienMoi * (1 - km.getGiamGia());
 								Object newThanhTien = thanhTienMoi;
 
 								model_HoaDon.setValueAt(newSoLuong, rowIndex, 4);
@@ -663,6 +671,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 						}
 					}
 				} catch (Exception e2) {
+					e2.printStackTrace();
 					JOptionPane.showMessageDialog(this, "Số lượng là số");
 				}
 			}
@@ -779,7 +788,14 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 				tf_dtKH.setText("");
 			}
 		} else if (o.equals(btn_LapHoaDon)) {
-			themHoaDonSQL();
+			if (table_HoaDon.getRowCount() != 0) {
+				int chon = JOptionPane.showConfirmDialog(this, "Bạn có chắc muốn lập hóa đơn", "",
+						JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+				if (chon == JOptionPane.YES_OPTION) {
+					themHoaDonSQL();
+				}
+			} else
+				JOptionPane.showMessageDialog(this, "Hãy nhập đầy đủ thông tin trước khi lập hóa đơn");
 		}
 	}
 

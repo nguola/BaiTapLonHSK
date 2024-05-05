@@ -18,14 +18,14 @@ public class KhuyenMai_DAO {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public KhuyenMai getKhuyenMaiTheoMa(String maKM) throws Exception {
+	public KhuyenMai getKhuyenMaiTheoMa(int maKM) throws Exception {
 
 		Connection con = ConnectDB.getInstance().getConnection();
 		String query = "select * from KhuyenMai where maKhuyenMai = ?";
 		
 		try {
 			PreparedStatement statement = con.prepareStatement(query);
-			statement.setString(1, maKM);
+			statement.setInt(1, maKM);
 			ResultSet rs = statement.executeQuery();
 			
 			if(rs.next()) {
@@ -33,9 +33,8 @@ public class KhuyenMai_DAO {
 				Date ngayBatDau = rs.getDate(2);
 				Date ngayKetThuc = rs.getDate(3);
 				Double giamGia = rs.getDouble(4);
-				Double dieuKien = rs.getDouble(5);
-				double mucGiamToiDa = rs.getDouble(7);
-				KhuyenMai km = new KhuyenMai(maKhuyenMai, ngayBatDau, ngayKetThuc, giamGia, dieuKien, mucGiamToiDa);
+				String dieuKien = rs.getString(5);
+				KhuyenMai km = new KhuyenMai(maKhuyenMai, ngayBatDau, ngayKetThuc, giamGia, dieuKien);
 				return km;
 			};
 			
@@ -49,15 +48,14 @@ public class KhuyenMai_DAO {
 	public boolean themKhuyenMai(KhuyenMai khuyenMai) {
 		boolean status = false;
 		Connection con = ConnectDB.getInstance().getConnection();
-		String query = "insert into KhuyenMai values (?, ?, ?, ?, ?)";
+		String query = "insert into KhuyenMai values (?, ?, ?, ?)";
 
 		try {
 			PreparedStatement statement = con.prepareStatement(query);
 			statement.setDate(1, khuyenMai.getNgayBatDau());
 			statement.setDate(2, khuyenMai.getNgayKetThuc());
 			statement.setDouble(3, khuyenMai.getGiamGia());
-			statement.setDouble(4, khuyenMai.getDieuKien());
-			statement.setDouble(5, khuyenMai.getMucGiamToiDa());
+			statement.setString(4, khuyenMai.getDieuKien());
 			status = statement.execute();
 
 		} catch (Exception e) {
@@ -89,9 +87,8 @@ public class KhuyenMai_DAO {
 			statement.setDate(1, khuyenMai.getNgayBatDau());
 			statement.setDate(2, khuyenMai.getNgayKetThuc());
 			statement.setDouble(3, khuyenMai.getGiamGia());
-			statement.setDouble(4, khuyenMai.getDieuKien());
-			statement.setDouble(5, khuyenMai.getMucGiamToiDa());
-			statement.setInt(6, khuyenMai.getMaKhuyenMai());
+			statement.setString(4, khuyenMai.getDieuKien());
+			statement.setInt(5, khuyenMai.getMaKhuyenMai());
 			status = statement.execute();
 		} catch (Exception e) {
 			e.printStackTrace();
