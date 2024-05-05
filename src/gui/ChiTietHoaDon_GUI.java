@@ -56,7 +56,6 @@ public class ChiTietHoaDon_GUI extends JDialog implements ActionListener{
 	private JTable tbChiTietHD;
 	private ArrayList<ChiTietHoaDon> listCTHD;
 	private ChiTietHoaDon_DAO chiTietHoaDon_DAO;
-	private JTextField txtSearch;
 	private JButton printHD;
 	private NhanVien_DAO nhanVien_DAO = new NhanVien_DAO();
 	private KhachHang_DAO khachHang_DAO = new KhachHang_DAO();

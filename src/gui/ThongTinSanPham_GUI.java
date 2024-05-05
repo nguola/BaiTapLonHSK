@@ -85,11 +85,11 @@ public class ThongTinSanPham_GUI extends JDialog {
 		khuVucSP.add(tf_khuVuc);
 		
 		JPanel khuyenMaiSP = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		JLabel khuyenMai = new JLabel("Khu Vuc:");
+		JLabel khuyenMai = new JLabel("Khuyến mãi:");
 		tf_khuyenMai = new JTextField(30);
 		tf_khuyenMai.setEditable(false);
 		KhuyenMai km = khuyenMai_dao.getKhuyenMaiTheoMa(sp.getMaKhuyenMai().getMaKhuyenMai());
-		tf_khuyenMai.setText(km.getDieuKien());
+		tf_khuyenMai.setText("Giảm " + (int)(km.getGiamGia()*100) + "% " + km.getDieuKien());
 		khuyenMaiSP.add(khuyenMai);
 		khuyenMaiSP.add(Box.createHorizontalStrut(10));
 		khuyenMaiSP.add(tf_khuyenMai);
