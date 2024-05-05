@@ -446,6 +446,11 @@ public class HoaDon_GUI extends JPanel implements ActionListener, MouseListener,
 			if (enddate.getDate() != null) {
 				timeEnd = new Date(enddate.getDate().getTime());	
 			}
+			if (timeStart != null && timeEnd != null && timeStart.after(timeEnd)) {
+				JOptionPane.showMessageDialog(this, "Ngày bắt đầu phải trước ngày kết thúc");
+				return list;
+			}
+			
 		} 
 		if (cbbPrice.getSelectedItem() != null) {
 			String removeString = ((String) cbbPrice.getSelectedItem()).replaceAll("[^-\\d]", "");

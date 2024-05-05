@@ -263,6 +263,7 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 	}
 	
 	public void refresh() {
+		listPD = phieuDat_DAO.getAllPhieuDat();
 		updateTable(listPD);
 		cbbMaNV.setSelectedIndex(-1);
 		cbbNCC.setSelectedIndex(-1);
@@ -350,6 +351,11 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 				denNgay = new Date(dateDenNgay.getDate().getTime());
 			}
 			
+			if (tuNgay != null && denNgay != null && tuNgay.after(denNgay)) {
+				JOptionPane.showMessageDialog(this, "Ngày bắt đầu phải trước ngày kết thúc");
+				return;
+			}
+			
 			try {
 				if (!txtTuSoTien.getText().trim().isEmpty()) {
 					tuSoTien = Double.parseDouble(txtTuSoTien.getText());
@@ -362,12 +368,18 @@ public class PhieuNhap_GUI extends JPanel implements ActionListener, DocumentLis
 					JOptionPane.showMessageDialog(this, "Số tiền Phải Lớn hơn hoặc bằng 0");
 					return;
 				}
+				
+				if (tuSoTien > denSoTien) {
+					JOptionPane.showMessageDialog(this, "Số tiền đầu phải bé hơn số tiền sau");
+					return;
+				}
+				
  			} catch (Exception e2) {
 				JOptionPane.showMessageDialog(this, "Số Tiền Phải là Số nguyên");
 			}
 			
-			ArrayList<PhieuDat> temp = phieuDat_DAO.PhieuDatFilter(tuNgay, denNgay, tuSoTien, denSoTien, ncc, maNV);
-			updateTable(temp);
+			listPD = phieuDat_DAO.PhieuDatFilter(tuNgay, denNgay, tuSoTien, denSoTien, ncc, maNV);
+			updateTable(listPD);
 		} else if (src.equals(btnChiTiet)) {
 			int index = tb.getSelectedRow();
 			if (index < 0) {
