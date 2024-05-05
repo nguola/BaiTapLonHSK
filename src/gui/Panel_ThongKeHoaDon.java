@@ -3,8 +3,10 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Font;
 import java.sql.Date;
+import java.text.NumberFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -30,6 +32,7 @@ public class Panel_ThongKeHoaDon extends JPanel{
 	private ArrayList<HoaDon> listHDTheoThang = new ArrayList<HoaDon>();
 	private DefaultCategoryDataset datasetTheoNgay;
 	private DefaultCategoryDataset datasetTheoThang;
+	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
 	public Panel_ThongKeHoaDon() {
 		// TODO Auto-generated constructor stub
 		setLayout(new BorderLayout());
@@ -49,7 +52,7 @@ public class Panel_ThongKeHoaDon extends JPanel{
 		for (HoaDon hoaDon : listHDTheoThang) {
 			total += hoaDon.getTongTien();
 		}
-		JTextField txtKQDT = new JTextField("Tổng Doanh Thu: " + total);
+		JTextField txtKQDT = new JTextField("Tổng Doanh Thu: " + currencyFormat.format(total));
 		txtKQDT.setEditable(false);
 		txtKQDT.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		
