@@ -466,6 +466,7 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 		// add sự kiện
 		btn_them.addActionListener(this);
 		menuItemThem.addActionListener(this);
+		menuItemThongTin.addActionListener(this);
 		btn_xoa.addActionListener(this);
 		menuItemXoa.addActionListener(this);
 		model_HoaDon.addTableModelListener(this);
@@ -796,6 +797,11 @@ public class Pane_BanHang extends JPanel implements ActionListener, TableModelLi
 				}
 			} else
 				JOptionPane.showMessageDialog(this, "Hãy nhập đầy đủ thông tin trước khi lập hóa đơn");
+		}
+		else if(o.equals(menuItemThongTin)) {
+			int row = table_SanPham.getSelectedRow();
+			int maSanPham = Integer.parseInt(table_SanPham.getValueAt(row, 0).toString());
+			new ThongTinSanPham_GUI(maSanPham);
 		}
 	}
 

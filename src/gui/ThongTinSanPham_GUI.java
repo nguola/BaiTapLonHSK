@@ -1,263 +1,118 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.awt.FlowLayout;
+import java.awt.Image;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 import java.util.Locale;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
+import javax.swing.ImageIcon;
 import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableCell;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-
-import com.aspose.words.Document;
-
-import dao.ChiTietHoaDon_DAO;
-import dao.KhachHang_DAO;
-import dao.NhanVien_DAO;
+import dao.KhuVuc_DAO;
+import dao.KhuyenMai_DAO;
 import dao.SanPham_DAO;
-import entity.ChiTietHoaDon;
-import entity.HoaDon;
+import entity.KhuVuc;
+import entity.KhuyenMai;
+import entity.SanPham;
 
-public class ThongTinSanPham_GUI extends JDialog implements ActionListener{
-	private HoaDon hoaDon;
-	private JTextField txt1;
-	private JTextField txt2;
-	private JTextField txt21;
-	private JTextField txt3;
-	private JTextField txt31;
+public class ThongTinSanPham_GUI extends JDialog {
+	private SanPham_DAO sanPham_dao = new SanPham_DAO();
+	private KhuyenMai_DAO khuyenMai_dao = new KhuyenMai_DAO();
+	private KhuVuc_DAO khuVuc_dao = new KhuVuc_DAO();
+	private JTextField tf_ma;
+	private JTextField tf_ten;
+	private JTextField tf_gia;
+	private JTextField tf_khuVuc;
+	private JTextField tf_khuyenMai;
 	private static NumberFormat currencyFormat = NumberFormat.getCurrencyInstance(new Locale("vi","VN"));
-	private DefaultTableModel dtm;
-	private JTable tbChiTietHD;
-	private ArrayList<ChiTietHoaDon> listCTHD;
-	private ChiTietHoaDon_DAO chiTietHoaDon_DAO;
-	private JTextField txtSearch;
-	private JButton printHD;
-	private NhanVien_DAO nhanVien_DAO = new NhanVien_DAO();
-	private KhachHang_DAO khachHang_DAO = new KhachHang_DAO();
-	private SanPham_DAO sanPham_DAO = new SanPham_DAO();
 	
-	public ThongTinSanPham_GUI(HoaDon hoaDon) {
-		this.hoaDon = hoaDon;
-		listCTHD = new ArrayList<ChiTietHoaDon>();
-		chiTietHoaDon_DAO = new ChiTietHoaDon_DAO();
-		listCTHD = chiTietHoaDon_DAO.getAllChiTietHoaDonTheoMaHoaDon(hoaDon.getMaDon());
-		
+	public ThongTinSanPham_GUI(int maSanPham) {
 		setModal(true);
-		setTitle("Chi tiết hóa đơn");
-		setSize(800, 600);
+		setSize(550, 300);
 		setLocationRelativeTo(null);
+		SanPham sp = sanPham_dao.getSanPhamTheoMa(maSanPham);
 		
-		JPanel pnNorth = new JPanel();
-		JLabel title = new JLabel("Chi tiết hóa đơn");
-		title.setFont(new Font(getName(), Font.BOLD, 20));
-		pnNorth.add(title);
-		add(pnNorth, BorderLayout.NORTH);
+		Box panel = Box.createHorizontalBox();
 		
-		//Panel Center
-		JPanel pnCen = new JPanel();
-		pnCen.setLayout(new BoxLayout(pnCen, BoxLayout.Y_AXIS));
-		pnCen.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		Box hinh = Box.createVerticalBox();
+		String url = "img/ThongTinSanPhamimg/"+ sp.getTen() +".jpg";
+		ImageIcon sanPham_icon = new ImageIcon(url);
+		Image scaled = scaleImage(sanPham_icon.getImage(), 160, 180);
+		JLabel sanPham = new JLabel(new ImageIcon(scaled));
+		hinh.add(sanPham);
 		
-		Box b1 = Box.createHorizontalBox();
-		JLabel lb1 = new JLabel("Mã hóa đơn: ");
-		lb1.setPreferredSize(new Dimension(120, HEIGHT));
-		txt1 = new JTextField(Integer.toString(hoaDon.getMaDon()));
-		txt1.setEditable(false);
-		b1.add(lb1);
-		b1.add(txt1);
+		Box thongTin = Box.createVerticalBox();
 		
-		Box b2 = Box.createHorizontalBox();
-		JLabel lb2 = new JLabel("Mã Khách hàng: ");
-		lb2.setPreferredSize(new Dimension(120, HEIGHT));
-		txt2 = new JTextField(Integer.toString(hoaDon.getKhachHang().getMaKhachHang()));
-		txt2.setEditable(false);
-		b2.add(lb2);
-		b2.add(txt2);
-		b2.add(Box.createHorizontalStrut(10));
+		JPanel maSP = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel ma = new JLabel("Mã sản phẩm:");
+		tf_ma = new JTextField(30);
+		tf_ma.setEditable(false);
+		tf_ma.setText(String.valueOf(sp.getMaSanPham()));
+		maSP.add(ma);
+		maSP.add(Box.createHorizontalStrut(10));
+		maSP.add(tf_ma);
 		
-		JLabel lb21 = new JLabel("Mã Nhân viên: ");
-		lb21.setPreferredSize(new Dimension(120, HEIGHT));
-		txt21 = new JTextField(Integer.toString(hoaDon.getNhanVien().getMaNhanVien()));
-		txt21.setEditable(false);
-		b2.add(lb21);
-		b2.add(txt21);
+		JPanel tenSP = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel ten = new JLabel("Tên sản phẩm:");
+		tf_ten = new JTextField(30);
+		tf_ten.setEditable(false);
+		tf_ten.setText(sp.getTen());
+		tenSP.add(ten);
+		tenSP.add(Box.createHorizontalStrut(10));
+		tenSP.add(tf_ten);
 		
-		Box b3 = Box.createHorizontalBox();
-		JLabel lb3 = new JLabel("Ngày mua: ");
-		lb3.setPreferredSize(new Dimension(120, HEIGHT));
-		txt3 = new JTextField(hoaDon.getNgayMua().toString());
-		txt3.setEditable(false);
-		b3.add(lb3);
-		b3.add(txt3);
-		b3.add(Box.createHorizontalStrut(10));
+		JPanel giaSP = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel gia = new JLabel("Giá:");
+		tf_gia = new JTextField(30);
+		tf_gia.setEditable(false);
+		tf_gia.setText(currencyFormat.format(sp.getGiaSanPham()));
+		giaSP.add(gia);
+		giaSP.add(Box.createHorizontalStrut(10));
+		giaSP.add(tf_gia);
 		
-		JLabel lb31 = new JLabel("Tổng tiền: ");
-		lb31.setPreferredSize(new Dimension(120, HEIGHT));
-		txt31 = new JTextField(currencyFormat.format(hoaDon.getTongTien()));
-		txt31.setEditable(false);
-		b3.add(lb31);
-		b3.add(txt31);
+		JPanel khuVucSP = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel khuVuc = new JLabel("Khu Vuc:");
+		tf_khuVuc = new JTextField(30);
+		tf_khuVuc.setEditable(false);
+		KhuVuc kv = khuVuc_dao.getKhuVucTheoMa(sp.getMaKhuVuc().getMaKhuVuc());
+		tf_khuVuc.setText(kv.getTenKhuVuc());
+		khuVucSP.add(khuVuc);
+		khuVucSP.add(Box.createHorizontalStrut(10));
+		khuVucSP.add(tf_khuVuc);
 		
-		pnCen.add(b1);
-		pnCen.add(Box.createVerticalStrut(10));
-		pnCen.add(b2);
-		pnCen.add(Box.createVerticalStrut(10));
-		pnCen.add(b3);
-		pnCen.add(Box.createVerticalStrut(20));
+		JPanel khuyenMaiSP = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		JLabel khuyenMai = new JLabel("Khu Vuc:");
+		tf_khuyenMai = new JTextField(30);
+		tf_khuyenMai.setEditable(false);
+		KhuyenMai km = khuyenMai_dao.getKhuyenMaiTheoMa(sp.getMaKhuyenMai().getMaKhuyenMai());
+		tf_khuyenMai.setText(km.getDieuKien());
+		khuyenMaiSP.add(khuyenMai);
+		khuyenMaiSP.add(Box.createHorizontalStrut(10));
+		khuyenMaiSP.add(tf_khuyenMai);
 		
-		Object[] obj = {"Mã Đơn", "Mã Sản phẩm", "Thành tiền", "Số lượng"};
-		dtm = new DefaultTableModel(null, obj);
-		tbChiTietHD = new JTable(dtm);
-		JScrollPane scrTBChiTietHD = new JScrollPane(tbChiTietHD);
-		updateTable();
+		thongTin.add(maSP);
+		thongTin.add(tenSP);
+		thongTin.add(giaSP);
+		thongTin.add(khuVucSP);
+		thongTin.add(khuyenMaiSP);
 		
-		pnCen.add(scrTBChiTietHD);
+		panel.add(Box.createHorizontalStrut(20));
+		panel.add(hinh);
+		panel.add(Box.createHorizontalStrut(20));
+		panel.add(thongTin);
+		panel.add(Box.createHorizontalStrut(20));
 		
-		add(pnCen, BorderLayout.CENTER);
+		add(panel);
 		
-		//Panel West
-		JPanel pnSouth = new JPanel();
-		pnSouth.setBorder(BorderFactory.createTitledBorder("Chức năng"));
-		add(pnSouth, BorderLayout.SOUTH);
-		
-		printHD = new JButton("In hóa đơn");
-		printHD.setMnemonic('p');
-		printHD.addActionListener(this);
-		
-		pnSouth.add(printHD);
-		
+		setVisible(true);
 	}
 	
-	public void updateTable() {
-		dtm.setRowCount(0);
-		for (ChiTietHoaDon chiTietHoaDon : listCTHD) {
-			dtm.addRow(new Object[] {
-					chiTietHoaDon.getHoaDon().getMaDon(),
-					chiTietHoaDon.getSanPham().getMaSanPham(),
-					chiTietHoaDon.getThanhTien(),
-					chiTietHoaDon.getSoLuong()
-			});
-		}
-	}
-	
-	public void createHoaDon(String filePath, HoaDon hoaDon) {
-		String inputFilePath = "data\\HoaDon\\HoaDon_Mau.docx";
-		String outputFilePathWord = "data\\HoaDon\\HoaDon_" + hoaDon.getMaDon() + ".docx";
-        String outputFilePathPDF = filePath + "invoice_" + hoaDon.getMaDon() +".pdf";
-        
-        String[] searchTokens = {"%MAHOADON%", "%MANHANVIEN%", "%TENNHANVIEN%", "%MAKHACHHANG%", "%TENKHACHHANG%", "%NGAYMUA%", "%TONGTIEN%"};
-        String[] replacementTokens = {
-	        		Integer.toString(hoaDon.getMaDon()), 
-	        		Integer.toString(hoaDon.getNhanVien().getMaNhanVien()),
-	        		nhanVien_DAO.getNhanVienTheoMaNV(hoaDon.getNhanVien().getMaNhanVien()).getTen(), 
-	        		Integer.toString(hoaDon.getKhachHang().getMaKhachHang()), 
-	        		khachHang_DAO.getKhachHangTheoMa(hoaDon.getKhachHang().getMaKhachHang()).getTen(), 
-	        		hoaDon.getNgayMua().toString(), 
-	        		Double.toString(hoaDon.getTongTien())
-        		};
-
-        try (FileInputStream fis = new FileInputStream(inputFilePath);
-             XWPFDocument document = new XWPFDocument(fis)) {
-        	
-            for (XWPFParagraph paragraph : document.getParagraphs()) {
-                for (XWPFRun run : paragraph.getRuns()) {
-                    String text = run.getText(0);
-                    if (text != null) {
-                        for (int i = 0; i < searchTokens.length; i++) {
-                            if (text.contains(searchTokens[i])) {
-                                text = text.replace(searchTokens[i], replacementTokens[i]);
-                            }
-                        }
-                        run.setText(text, 0);
-                    }
-                }
-            }
-            
-            XWPFTable table = document.getTables().get(0);
-            ArrayList<ChiTietHoaDon> listCTHD = chiTietHoaDon_DAO.getAllChiTietHoaDonTheoMaHoaDon(hoaDon.getMaDon());
-            for (int i = 0; i < listCTHD.size(); i++ ) {
-            	XWPFTableRow newRow = table.createRow();
-                newRow.getCell(0).setText(Integer.toString(listCTHD.get(i).getSanPham().getMaSanPham()));
-                newRow.getCell(1).setText(sanPham_DAO.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getTen());
-                newRow.getCell(2).setText(Integer.toString(listCTHD.get(i).getSoLuong()));
-                newRow.getCell(3).setText(Double.toString(sanPham_DAO.getSanPhamTheoMa(listCTHD.get(i).getSanPham().getMaSanPham()).getGiaSanPham()));
-                newRow.getCell(4).setText(Double.toString(listCTHD.get(i).getThanhTien()));
-            }
-
-            try (FileOutputStream fos = new FileOutputStream(outputFilePathWord)) {
-                document.write(fos);
-            }
-            
-            Document doc = new Document(outputFilePathWord);
-            doc.save(outputFilePathPDF);
-            
-            openFile(outputFilePathPDF);
-            
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-	}
-	public static void main(String[] args) {
-		new HoaDon_GUI();
-	}
-	
-	public void openFile(String filePath) {
-		try {
-			File wordFile = new File(filePath);
-
-	        if (!wordFile.exists()) {
-	            return;
-	        }
-	        Desktop desktop = Desktop.getDesktop();
-
-	        if (desktop.isSupported(Desktop.Action.OPEN)) {
-	            desktop.open(wordFile);
-	        }
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		Object src = e.getSource();
-		if (src.equals(printHD)) {
-			JFileChooser fileChooser = new JFileChooser();
-			fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-			
-	        int result = fileChooser.showOpenDialog(null);
-	        if (result == JFileChooser.APPROVE_OPTION) {
-	            String selectedFilePath = fileChooser.getSelectedFile().getAbsolutePath();
-	            createHoaDon(selectedFilePath, hoaDon);
-	            JOptionPane.showMessageDialog(this, "In Hóa Đơn Thành Công");
-	        }
-		}
+	private Image scaleImage(Image image, int w, int h) {
+		Image scaled = image.getScaledInstance(w, h, Image.SCALE_SMOOTH);
+		return scaled;
 	}
 }

@@ -25,16 +25,6 @@ public class DialogThemKhachHang extends JDialog implements MouseListener {
 		this.trangThaiThem = trangThaiThem;
 	}
 
-	public static void main(String[] args) {
-		try {
-			DialogThemKhachHang dialog = new DialogThemKhachHang("Thêm");
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 	public DialogThemKhachHang(String type) {
 		setModal(true);// chặn tất cả các sự kiện tương tác với các cửa sổ khác của ứng dụng cho đến
 						// khi nó được đóng

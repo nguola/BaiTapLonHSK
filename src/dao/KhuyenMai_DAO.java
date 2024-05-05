@@ -18,7 +18,7 @@ public class KhuyenMai_DAO {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public KhuyenMai getKhuyenMaiTheoMa(int maKM) throws Exception {
+	public KhuyenMai getKhuyenMaiTheoMa(int maKM) {
 
 		Connection con = ConnectDB.getInstance().getConnection();
 		String query = "select * from KhuyenMai where maKhuyenMai = ?";
