@@ -469,7 +469,7 @@ BEGIN
     SET @NgưỡngTien = 200000; -- Số tiền ngưỡng
 
     -- Lấy thông tin về hóa đơn vừa được thêm vào
-    SELECT @MaKhachHang = inserted.maKhachHang, @TongTien = inserted.tongTien
+    SELECT @MaKhachHang = inserted.maKhachHang, @TongTien = tongTien
     FROM inserted;
 
     -- Kiểm tra tổng số tiền của hóa đơn
