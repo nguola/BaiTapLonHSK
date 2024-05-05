@@ -28,12 +28,6 @@ public class Panel_QuanLiKhachHang extends JPanel implements ActionListener, Mou
 	private TableRowSorter<TableModel> sort;
 
 	public Panel_QuanLiKhachHang() {
-//		try {
-//			ConnectDB.getInstance().connect();
-//			System.out.println("Connected!!!");
-//		} catch (SQLException e) {
-//			e.printStackTrace();
-//		}
 		
 		khachHangDAO = new KhachHang_DAO();
 		setLayout(new BorderLayout());

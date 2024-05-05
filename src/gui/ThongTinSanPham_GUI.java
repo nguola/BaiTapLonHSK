@@ -1,13 +1,11 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Image;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 import javax.swing.Box;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;

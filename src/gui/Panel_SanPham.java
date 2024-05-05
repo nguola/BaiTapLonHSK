@@ -12,14 +12,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.SQLException;
 import java.text.NumberFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -29,11 +25,8 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -46,7 +39,6 @@ import javax.swing.RowSorter;
 import javax.swing.SortOrder;
 import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
-import javax.swing.border.Border;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
@@ -55,28 +47,18 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
-import org.apache.poi.hpsf.Date;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.apache.poi.xwpf.usermodel.XWPFTable;
-import org.apache.poi.xwpf.usermodel.XWPFTableRow;
-import org.apache.xmlbeans.impl.xb.xsdschema.Public;
 
 import com.aspose.words.Document;
-import com.aspose.words.DocumentBuilder;
-
-import connectDB.ConnectDB;
-import dao.KhachHang_DAO;
 import dao.SanPham_DAO;
-import entity.KhachHang;
 import entity.KhuVuc;
 import entity.KhuyenMai;
 import entity.SanPham;
 
 public class Panel_SanPham extends JPanel implements ActionListener, MouseListener {
-	private JTextField txtMaSanPham, txtMaKhuyenMai, txtMaKhuVuc, txtTen, txtDonVi, txtGiaBan, txtsoLuong, txtTimKiem,
-			txtLocGia;
+	private JTextField txtMaKhuyenMai, txtMaKhuVuc, txtTen, txtDonVi, txtGiaBan, txtsoLuong, txtTimKiem;
 	private JComboBox<String> cboxSanPham, cboxLocSanPham, cboxLocGia;
 	private JButton btnThem, btnSua, btnXoa, btnLamMoi, btnXuatFile;
 	private JTextArea textArea;
@@ -89,12 +71,6 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 	private TableRowSorter<TableModel> sort;
 
 	public Panel_SanPham() {
-		try {
-			ConnectDB.getInstance().connect();
-			System.out.println("Connected!!!");
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
 		sanPhamDao = new SanPham_DAO();
 		setLayout(new BorderLayout());
 		setPreferredSize(new Dimension(800, 600));
@@ -128,15 +104,6 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 		panel1.add(cboxSanPham);
 		pCenter_1.add(panel1);
 		pCenter_1.add(Box.createVerticalStrut(20));
-
-//		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-//		JLabel lblMaSP = new JLabel("Mã sản phẩm: ");
-//		panel2.add(lblMaSP);
-//		txtMaSanPham = new JTextField(20);
-//		txtMaSanPham.setPreferredSize(new Dimension(302, 25));
-//		panel2.add(txtMaSanPham);
-//		pCenter_1.add(panel2);
-//		pCenter_1.add(Box.createVerticalStrut(20));
 
 		JPanel panel2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JLabel lblMaKM = new JLabel("Mã khuyến mãi: ");

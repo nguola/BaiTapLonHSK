@@ -81,11 +81,6 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		this.setResizable(false);
 		setLocationRelativeTo(null);
 		this.setTitle("Cửa hàng tiện lợi Goods Store");
-		try {
-			ConnectDB.getInstance().connect();
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
 
 		nv = nhanVien_dao.getNhanVienTheoMaNV(tk.getNhanvien().getMaNhanVien());
 		this.add(pnCen, BorderLayout.CENTER);
