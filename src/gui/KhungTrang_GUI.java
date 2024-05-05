@@ -69,11 +69,8 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 	private HoaDon_GUI panel_QuanLyHoaDon;
 	private Panel_ThongKeHoaDon panel_ThongKeHoaDon;
 	private Panel_ThongKePhieuDat panel_ThongKePhieuDat;
-<<<<<<< Updated upstream
 	private NhanVien nv;
-=======
 	private Panel_SanPham panel_SanPham;
->>>>>>> Stashed changes
 
 	public KhungTrang_GUI(TaiKhoan tk) {
 		super();
