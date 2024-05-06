@@ -769,13 +769,13 @@ public class Panel_SanPham extends JPanel implements ActionListener, MouseListen
 		model.setRowCount(0);
 	}
 
-	public static void main(String[] args) {
-		new Panel_SanPham();
-	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) { 
 		int row = tableSanPham.getSelectedRow();
+		if (row < 0) {
+			return;
+		}
 		txtMaKhuyenMai.setText(sanPhamModel.getValueAt(row, 1).toString());
 		txtMaKhuVuc.setText(sanPhamModel.getValueAt(row, 2).toString());
 		txtTen.setText(sanPhamModel.getValueAt(row, 3).toString());
