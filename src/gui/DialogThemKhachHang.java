@@ -52,6 +52,7 @@ public class DialogThemKhachHang extends JDialog implements MouseListener {
 		String[] item = {"Thường","VIP"};
 		cbxLoai = new JComboBox<String>(item);
 		cbxLoai.setPreferredSize(new Dimension(100, 30));
+		cbxLoai.setEnabled(false);
 
 		btnThem = new JButton("Thêm");
 		btnThem.setBackground(new Color(0, 255, 204));

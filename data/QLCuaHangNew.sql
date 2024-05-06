@@ -35,7 +35,7 @@ go
 create table TaiKhoan(
 	maNhanVien int PRIMARY KEY NOT NULL,
     matKhau NVARCHAR(50) NOT NULL,
-    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien)
+    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien) ON DELETE CASCADE
 );
 go
 create table KhuVuc(
@@ -52,8 +52,8 @@ create table SanPham(
     donVi NVARCHAR(50) NULL,
 	loaiSanPham NVARCHAR(50) NULL,
 	soLuongTonKho int not null,
-	 FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai),
-    FOREIGN KEY (maKhuVuc) REFERENCES KhuVuc(maKhuVuc),
+	 FOREIGN KEY (maKhuyenMai) REFERENCES KhuyenMai(maKhuyenMai) ON DELETE CASCADE,
+    FOREIGN KEY (maKhuVuc) REFERENCES KhuVuc(maKhuVuc) ON DELETE CASCADE,
 )
 go
 create table HoaDon(
@@ -62,8 +62,8 @@ create table HoaDon(
     maNhanVien int NOT NULL,
     ngayMua DATETIME NOT NULL,
     tongTien FLOAT NOT NULL,
-    FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang),
-    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
+    FOREIGN KEY (maKhachHang) REFERENCES KhachHang(maKhachHang) ON DELETE CASCADE,
+    FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien) ON DELETE CASCADE,
 )
 go
 create table ChiTietHoaDon(
@@ -73,7 +73,7 @@ create table ChiTietHoaDon(
     soLuong INT,
     PRIMARY KEY (maDon, maSanPham),
     FOREIGN KEY (maDon) REFERENCES HoaDon(maDon) ON DELETE CASCADE,
-    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
+    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham) ON DELETE CASCADE
 );
 go
 create table PhieuDat(
@@ -82,7 +82,7 @@ create table PhieuDat(
 	nhaCungCap nvarchar(100) not null,
 	ngayDat Datetime not null,
 	tongTien float not null
-	 FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien),
+	 FOREIGN KEY (maNhanVien) REFERENCES NhanVien(maNhanVien) ON DELETE CASCADE,
 );
 go
 create table ChiTietPhieuDat(
@@ -92,7 +92,7 @@ create table ChiTietPhieuDat(
 	soLuong int,
     PRIMARY KEY (maPhieu, maSanPham),
 	FOREIGN KEY (maPhieu) REFERENCES PhieuDat(maPhieu) ON DELETE CASCADE,
-    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham)
+    FOREIGN KEY (maSanPham) REFERENCES SanPham(maSanPham) ON DELETE CASCADE
 );
 go
 -- Dữ liệu cho bảng KhachHang
@@ -456,7 +456,7 @@ as
 	group by month(ngayDat)
 go
 
-CREATE OR ALTER TRIGGER Trigger_UpgradeKhachHang
+CREATE TRIGGER Trigger_UpgradeKhachHang
 ON HoaDon
 AFTER INSERT
 AS

@@ -346,6 +346,9 @@ public class NhapHang_GUI extends JPanel implements ActionListener, MouseListene
 		Object src = e.getSource();
 		if (src.equals(tbDSSP)) {
 			int index = tbDSSP.getSelectedRow();
+			if (index < 0) {
+				return;
+			}
 			int maSP = Integer.parseInt(tbDSSP.getValueAt(index, 0).toString());
 			int indexSP = listSP.indexOf(new SanPham(maSP));
 			txtMaSP.setText(Integer.toString(listSP.get(indexSP).getMaSanPham()));

@@ -106,7 +106,6 @@ public class PhieuDat_DAO {
 			statement.setString(5, nCC);
 			statement.setInt(6, maNV);
 			ResultSet rs = statement.executeQuery();
-			System.out.println(rs.getRow());
 			while (rs.next()) {
 				int maPhieuDat = rs.getInt(1);
 				NhanVien nhanVien = new NhanVien(rs.getInt(2));

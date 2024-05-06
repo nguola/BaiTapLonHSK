@@ -25,7 +25,7 @@ import entity.KhachHang;
 
 public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	private final JPanel contentPanel = new JPanel();
-	private JLabel lblMaKhachHang, lblTenKhachHang, lblSoDienThoai, lblDiaChi, lblLoaiKhachHang, lblTitle;
+	private JLabel lblTenKhachHang, lblSoDienThoai, lblDiaChi, lblLoaiKhachHang, lblTitle;
 	private boolean trangThaiSua = false;
 	private JTextField txtMa, txtTen, txtSoDienThoai, txtDiaChi;
 	private JButton btnSua;
@@ -48,17 +48,6 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 	public JTextField getTxtDiaChi() {return txtDiaChi;}
 	
 	public JComboBox<String> getTxtLoai() {return cbxLoai;}
-	
-	public static void main(String[] args) {
-		Panel_QuanLiKhachHang panel = new Panel_QuanLiKhachHang();
-		try {
-			DialogSuaKhachHang dialog = new DialogSuaKhachHang("Sửa",2000,panel);
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	public DialogSuaKhachHang(String type, int maKhachHang, Panel_QuanLiKhachHang panel) {
 		setModal(true);//chặn tất cả các sự kiện tương tác với các cửa sổ khác của ứng dụng cho đến khi nó được đóng
@@ -87,6 +76,7 @@ public class DialogSuaKhachHang extends JDialog implements ActionListener {
 		String[] item = {"Thường","VIP"};
 		cbxLoai = new JComboBox<String>(item);
 		cbxLoai.setPreferredSize(new Dimension(100, 30));
+		cbxLoai.setEnabled(false);
 
 		btnSua = new JButton("Sửa");
 		btnSua.setBackground(new Color(0, 255, 204));
