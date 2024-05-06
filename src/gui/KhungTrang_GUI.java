@@ -289,7 +289,6 @@ public class KhungTrang_GUI extends JFrame implements WindowListener, ActionList
 		pnCen.removeAll();
 		pnCen.add(panel);
 		pnCen.revalidate();
-		pnCen.repaint();
 	}
 
 	private Image scaleImage(Image image, int w, int h) {
